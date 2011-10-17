@@ -3,12 +3,19 @@
 */
 
 // Declare the data document
-var dataObject = {
+var df_document = {
   name: 'Dave',
   dob: '1969-12-20',
   children: 5,
-  comment: 'Blah blah'
+  comment: 'Blah blah',
+  employees: [
+	{ name: 'Sue', dob: '1970-01-01' },
+	{ name: 'Bob', dob: '1972-11-03' }
+  ]
 };
+
+/* Pointer into the df_document providing the context for rendering */
+var df_document_ptr = df_document;
 
 /* Create an ordering to the sections so we can go to
    the next or prev one */
@@ -19,17 +26,27 @@ var current_section_index = 0;
 
 function dump() {
 	console.log('>>> dump');
-	console.log('>>> dump dataObject: ' + JSON.stringify(dataObject));
+	console.log('>>> dump df_document: ' + JSON.stringify(df_document));
 	console.log('>>> dump');
 }
 
+function set_document_ptr(value) {
+	console.log('set_document_ptr.');
+	df_document_ptr = value;
+}
+
+function get_document_ptr(value) {
+	return df_document_ptr;
+}
+
+
 function set_value(path, value) {
 	console.log('set_value. Set path "'+ path + '" to value "' + value + '"');
-	dataObject[path] = value;
+	df_document_ptr[path] = value;
 }
 
 function get_value(path) {
-	var value = dataObject[path];
+	var value = df_document_ptr[path];
 	console.log('get_value. Value at path "'+ path + '" is "' + value + '"');
 	return value;
 }
@@ -43,7 +60,7 @@ function render_current_section() {
 	$('#content').unbind
 	
 	// Render template into 'content' div
-	$('#content').html(tmpl(ordered_section_ids[current_section_index], {}));
+	$('#content').html(tmpl(ordered_section_ids[current_section_index], { df_document_ptr: df_document_ptr }));
 	
 	// Bind changes on the form fields to specific values on the data object
 	$('#content [df_bindto]').each(function() {
@@ -55,6 +72,13 @@ function render_current_section() {
 	});
     console.log('render_current_section ' + ordered_section_ids[current_section_index]);
 }
+
+function navigate_to(section_index) {
+	current_section_index = section_index;
+	render_current_section();
+	console.log('navigate_to ' + current_section_index);
+}
+
 
 function navigate_up() {
 	if (current_section_index > 0 ) {

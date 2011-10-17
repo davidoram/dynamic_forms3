@@ -49,16 +49,39 @@
     <div>
       <h1>Section 1</h1>
       <label>Name</label><input id="name" type="text" df_bindto="name"></input><br>
+      <label>DOB</label><input id="s2_f2" type="date" df_bindto="dob"><br>
+      <label>Num children</label><input id="s2_f4" type="number" min="0" max="12" df_bindto="children"><br>
+      <label>Text</label><textarea id="s2_f5" rows="3" columns="40" df_bindto="comment"></textarea><br>
     </div> 
   </script>
+  
   <script type="text/html" id="section_2">
     <div>
     <h1>Section 2 heading</h1>
-    <label>DOB</label><input id="s2_f2" type="date" df_bindto="dob"><br>
-    <label>Num children</label><input id="s2_f4" type="number" min="0" max="12" df_bindto="children"><br>
-    <label>Text</label><textarea id="s2_f5" rows="3" columns="40" df_bindto="comment"></textarea><br>
+    <table>
+      <tr><td>Name</td></tr>
+      <% for ( var i = 0; i < df_document_ptr.employees.length; i++ ) { %>
+        <tr>
+            <td>
+              <a href="#df_document_ptr.employees[<%=i%>]"
+                 onclick="set_document_ptr(get_document_ptr().employees[<%=i%>]); navigate_to(2)">
+                  <%=df_document_ptr.employees[i].name%>
+              </a>
+            </td>
+        </tr> 
+      <% } %>
+    </table>
     </div> 
   </script>
+
+  <script type="text/html" id="section_3">
+    <div>
+    <h1>Section 3 heading</h1>
+    <label>Name</label><input id="name" type="text" df_bindto="name"></input><br>
+    <label>DOB</label><input id="s2_f2" type="date" df_bindto="dob"><br>
+    </div> 
+  </script>
+
 </body>
 </html>
 
