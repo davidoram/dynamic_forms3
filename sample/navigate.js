@@ -2,6 +2,14 @@
  * Navigate.js
 */
 
+// Declare the data document
+var dataObject = {
+  name: 'Dave',
+  dob: '1969-12-20',
+  children: 5,
+  comment: 'Blah blah'
+};
+
 /* Create an ordering to the sections so we can go to
    the next or prev one */
 var ordered_section_ids = [ 'section_1', 'section_2', 'section_3'];
