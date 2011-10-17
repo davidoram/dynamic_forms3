@@ -559,16 +559,19 @@ footnotes: function () {
 <div id="content">
 <h2 id="_preface">Preface</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The design of dynamic_forms3  has been preceeded by 3 years of thought into the attendent problems of
-designing, implementing maintaining and enhancing procurement systems.</p></div>
+<div class="paragraph"><p>The design of dynamic_forms3 (df3)  has been preceded by the authors thought into the attendant problems of
+designing, implementing maintaining and enhancing procurement systems, along with the considerable
+influence of colleagues at the MSI.</p></div>
 </div>
 <h2 id="_approach">Approach</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>DF3 takes the approach of separating the tasks of designing a procurement process from, publishing that process, and
-subsequently allowing users to submit proposals for assessment, decisions being made.</p></div>
-<div class="paragraph"><p>It does not concern itself with anything beyond the decision point, that is; any contracting or further work.</p></div>
+<div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
+that provide a means to capture data into documents.  Documents can be pushed through a workflow
+which supports a business process.</p></div>
+<div class="paragraph"><p>The initial deign does not concern itself with anything beyond these requirements, but that having been said
+the system has been created with the aim of solving problems in the <em>procurement</em> business domain.</p></div>
 <h3 id="_modules">Modules</h3><div style="clear:left"></div>
-<div class="paragraph"><p>The system is modular with independent modules being reposnsible for different parts of the system</p></div>
+<div class="paragraph"><p>The system is modular with independent modules being responsible for different parts of the system</p></div>
 <div class="tableblock">
 <table rules="all"
 width="60%"
@@ -663,6 +666,10 @@ user a real sense of the physical structure of what they are editing.</p></div>
 <div class="paragraph"><p>In this example Child 1 represents a child record that is <em>owned</em> by  the list displayed in Section 2. That list
 might have an <em>Add</em> button which would dynamically add Child 2 to the right of Child 1.  Similarly deleting a
 Child would remove it.</p></div>
+<h3 id="_data_structures_2">Data Structures</h3><div style="clear:left"></div>
+<div class="paragraph"><p>df_document stores the document instance data, in JSON format.
+It is persisted to and from the permanent document store.</p></div>
+<div class="paragraph"><p>df_form stores the presentation layout of the forms that are used to</p></div>
 </div>
 <h2 id="workflow_module">Workflow Module</h2>
 <div class="sectionbody">
@@ -689,7 +696,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-09-21 07:02:16 NZDT
+Last updated 2011-10-17 20:57:26 NZDT
 </div>
 </div>
 </body>

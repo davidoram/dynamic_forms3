@@ -8,22 +8,25 @@ v1.0, 2011-09
 [preface]
 Preface
 -------
-The design of dynamic_forms3  has been preceeded by 3 years of thought into the attendent problems of
-designing, implementing maintaining and enhancing procurement systems.
+The design of dynamic_forms3 (df3)  has been preceded by the authors thought into the attendant problems of
+designing, implementing maintaining and enhancing procurement systems, along with the considerable
+influence of colleagues at the MSI.
 
 
 Approach
 --------
 
-DF3 takes the approach of separating the tasks of designing a procurement process from, publishing that process, and 
-subsequently allowing users to submit proposals for assessment, decisions being made.
+df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
+that provide a means to capture data into documents.  Documents can be pushed through a workflow
+which supports a business process.
 
-It does not concern itself with anything beyond the decision point, that is; any contracting or further work. 
+The initial design does not concern itself with anything beyond these requirements, but that having been said,
+the system has been created with the aim of solving problems in the 'procurement' business domain. 
 
 
 Modules
 ~~~~~~~
-The system is modular with independent modules being reposnsible for different parts of the system
+The system is modular with independent modules being responsible for different parts of the system
 
 .Modules
 [width="60%",options="header"]
@@ -47,15 +50,6 @@ Data Structures
 The data is optimised as to what is required to create pages, and configure the <<runtime_module>>.
 The essence is the data structures, data types, and containment relationships.
 
-////////////////////////////////////////////////////////////////
-  form {
-    id: 1,
-    data: [
-      { field: 'name', type: 'string'},
-      { field: 'dob', type: 'date'},
-    ]
-  }
-////////////////////////////////////////////////////////////////
 
 
 [[compiler_module]]
@@ -110,6 +104,52 @@ user a real sense of the physical structure of what they are editing.
 In this example Child 1 represents a child record that is 'owned' by  the list displayed in Section 2. That list
 might have an 'Add' button which would dynamically add Child 2 to the right of Child 1.  Similarly deleting a 
 Child would remove it.  
+
+Data Structures
+~~~~~~~~~~~~~~~
+
+df_document stores the document instance data, in JSON format. 
+It is persisted to and from the permanent document store.
+
+////////////////////////////////////////////////////////////////
+  df_document = {
+    _id: 1,
+    name: 'Dave',
+    dob: '1969-10-22',
+    employees: [
+      { name: 'Sue', dob: '1970-01-01' },
+      { name: 'Bob', dob: '1972-11-03' }
+    ]
+  }
+////////////////////////////////////////////////////////////////
+
+df_form stores the presentation layout of the forms that are used to 
+////////////////////////////////////////////////////////////////
+  df_form {
+    sections[
+      {
+        heading: 'Personal details',
+        fields: [
+          { field: 'name', type: 'string' },
+          { field: 'dob', type: 'date'},
+        ]
+      },
+      {
+        heading: 'Employee List',
+        fields: [
+          { field: 'employees[]', type: 'list' },
+        ]
+      }
+      {
+        heading: 'Employee',
+        fields: [
+          { field: 'employees[].name', type: 'string' },
+          { field: 'employees[].dob', type: 'date'},
+        ]
+      }
+    ]
+  }
+////////////////////////////////////////////////////////////////
 
 
 
