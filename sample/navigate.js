@@ -58,7 +58,7 @@ function peek_doc_ptr() {
 
 
 function set_value(path, value) {
-	var expression = eval_path() + "." + path + " = " + value;
+	var expression = eval_path() + "." + path + " = '" + value + "'";
 	console.log('set_value. "'+ expression + '"');
 	eval(expression);
 }
