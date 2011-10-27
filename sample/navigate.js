@@ -15,7 +15,7 @@ var df_document = {
 };
 
 /* Pointer into the df_document providing the context for rendering */
-var df_document_ptr = df_document;
+var df_document_ptr = [ ];
 
 /* Create an ordering to the sections so we can go to
    the next or prev one */
@@ -27,28 +27,46 @@ var current_section_index = 0;
 function dump() {
 	console.log('>>> dump');
 	console.log('>>> dump df_document: ' + JSON.stringify(df_document));
+	console.log('>>> dump df_document_ptr: ' + JSON.stringify(df_document_ptr));
 	console.log('>>> dump');
 }
 
-function set_document_ptr(value) {
-	console.log('set_document_ptr.');
-	df_document_ptr = value;
+function push_doc_ptr(json_path_element) {
+	if (typeof json_path_element != 'string') {
+		throw "json_path_element must be a string";
+	}
+	console.log('push_doc_ptr: ' + json_path_element);
+	df_document_ptr.push( json_path_element );
 }
 
-function get_document_ptr(value) {
-	return df_document_ptr;
+function pop_doc_ptr() {
+	df_document_ptr.pop();
+}
+
+function eval_path() {
+	var eval_path = 'df_document' ;
+	if (df_document_ptr.length > 0) {
+		eval_path = eval_path + '.' + df_document_ptr.join('.') 
+	}
+	return eval_path;
+}
+
+function peek_doc_ptr() {
+	console.log('peek_doc_ptr. path "'+ eval_path + '"');
+	return eval(eval_path());
 }
 
 
 function set_value(path, value) {
-	console.log('set_value. Set path "'+ path + '" to value "' + value + '"');
-	df_document_ptr[path] = value;
+	var expression = eval_path() + "." + path + " = " + value;
+	console.log('set_value. "'+ expression + '"');
+	eval(expression);
 }
 
 function get_value(path) {
-	var value = df_document_ptr[path];
-	console.log('get_value. Value at path "'+ path + '" is "' + value + '"');
-	return value;
+	var expression = eval_path() + "." + path;
+	console.log('get_value.  "'+ expression + '"');
+	return eval(expression);
 }
 
 function value_changed(event) {
@@ -56,11 +74,20 @@ function value_changed(event) {
 }
 
 function render_current_section() {
+    console.log('render_current_section');
+
 	// Remove all existing bindings in the form
 	$('#content').unbind
 	
 	// Render template into 'content' div
-	$('#content').html(tmpl(ordered_section_ids[current_section_index], { df_document_ptr: df_document_ptr }));
+	// retrieve template as a String
+	var input = $('#' + ordered_section_ids[current_section_index]).html();
+	// context from stack
+	var context = peek_doc_ptr(); 
+	// render
+	var output = Shotenjin.render(input, context);	
+	// replace
+	$('#content').html(output);
 	
 	// Bind changes on the form fields to specific values on the data object
 	$('#content [df_bindto]').each(function() {
@@ -73,8 +100,9 @@ function render_current_section() {
     console.log('render_current_section ' + ordered_section_ids[current_section_index]);
 }
 
-function navigate_to(section_index) {
-	current_section_index = section_index;
+function navigate_to(section_id, data) {
+	push_doc_ptr(data);
+	current_section_index = ordered_section_ids.indexOf(section_id);
 	render_current_section();
 	console.log('navigate_to ' + current_section_index);
 }

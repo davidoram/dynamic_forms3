@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <link href="navigate.css" media="screen" rel="stylesheet" type="text/css" />
     <script src="jquery-1.6.2.js" type="text/javascript"></script>
-    <script src="micro-template.js" type="text/javascript"></script>
+    <script src="shotenjin.js" type="text/javascript"></script>
     <script src="navigate.js" type="text/javascript"></script>
     <meta name="description" content="PROJ-21345-AGR - Automated milking for cows" />
     <script type="text/javascript">
@@ -60,16 +60,17 @@
     <h1>Section 2 heading</h1>
     <table>
       <tr><td>Name</td></tr>
-      <% for ( var i = 0; i < df_document_ptr.employees.length; i++ ) { %>
+      <?js for ( var i = 0; i < employees.length; i++ ) { ?>
         <tr>
             <td>
-              <a href="#df_document_ptr.employees[<%=i%>]"
-                 onclick="set_document_ptr(get_document_ptr().employees[<%=i%>]); navigate_to(2)">
-                  <%=df_document_ptr.employees[i].name%>
+              <a href="#employees[${i}]"
+                 onclick="console.log('clicked'); navigate_to('section_3','employees[${i}]'); return false;">
+                  #{employees[i].name}
               </a>
             </td>
         </tr> 
-      <% } %>
+      <?js } ?>
+      
     </table>
     </div> 
   </script>

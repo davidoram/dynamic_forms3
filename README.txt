@@ -111,7 +111,6 @@ Data Structures
 df_document stores the document instance data, in JSON format. 
 It is persisted to and from the permanent document store.
 
-////////////////////////////////////////////////////////////////
   df_document = {
     _id: 1,
     name: 'Dave',
@@ -121,10 +120,9 @@ It is persisted to and from the permanent document store.
       { name: 'Bob', dob: '1972-11-03' }
     ]
   }
-////////////////////////////////////////////////////////////////
 
-df_form stores the presentation layout of the forms that are used to 
-////////////////////////////////////////////////////////////////
+df_form stores the presentation layout of the forms:
+
   df_form {
     sections[
       {
@@ -149,9 +147,34 @@ df_form stores the presentation layout of the forms that are used to
       }
     ]
   }
-////////////////////////////////////////////////////////////////
 
 
+When the page is rendered the user is presented with a rendering of the initial section.
+Each section renders data within the document at a specific position, gathering all of its data
+from the information at that point.
+
+The df_document stores information in a containment hierarchy, so the 'root' document contains
+fields 'name', 'dob' and a list of 'employees'.  Each employee is contained within a specific position
+within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.
+
+When rendering any section the system keeps track of where it is within the hierarchy of the df_document
+so that the page knows where to get its data from.  A stack of pointers into the df_document is
+maintained in the variable df_document_ptr_stack. The df_document_ptr_stack is initialised with a pointer to the
+df_document (root), and if the user navigates to a section that represents a child record, then a
+pointer to that specific data item eg: employee[1], is pushed on the df_document_ptr_stack.
+
+Whenever a section is rendered, it is passed the top value in the df_document_ptr_stack as its data context, 
+that it uses to retrieves its data from.  
+
+The page renderer also evaluates the df_document_ptr stack, and will display a navigation button
+( <- ) to return the user from a child record, to the section that displays the list of child records.
+
+The section displaying the list of child records participates, by pushing the correct data context onto
+the df_document_ptr_stack when the user navigates to a child record.
+
+  df_document_ptr_stack = [
+    
+  ]
 
 [[workflow_module]]
 Workflow Module

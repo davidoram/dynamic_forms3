@@ -568,7 +568,7 @@ influence of colleagues at the MSI.</p></div>
 <div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
 that provide a means to capture data into documents.  Documents can be pushed through a workflow
 which supports a business process.</p></div>
-<div class="paragraph"><p>The initial deign does not concern itself with anything beyond these requirements, but that having been said
+<div class="paragraph"><p>The initial design does not concern itself with anything beyond these requirements, but that having been said,
 the system has been created with the aim of solving problems in the <em>procurement</em> business domain.</p></div>
 <h3 id="_modules">Modules</h3><div style="clear:left"></div>
 <div class="paragraph"><p>The system is modular with independent modules being responsible for different parts of the system</p></div>
@@ -669,7 +669,71 @@ Child would remove it.</p></div>
 <h3 id="_data_structures_2">Data Structures</h3><div style="clear:left"></div>
 <div class="paragraph"><p>df_document stores the document instance data, in JSON format.
 It is persisted to and from the permanent document store.</p></div>
-<div class="paragraph"><p>df_form stores the presentation layout of the forms that are used to</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>df_document = {
+  _id: 1,
+  name: 'Dave',
+  dob: '1969-10-22',
+  employees: [
+    { name: 'Sue', dob: '1970-01-01' },
+    { name: 'Bob', dob: '1972-11-03' }
+  ]
+}</tt></pre>
+</div></div>
+<div class="paragraph"><p>df_form stores the presentation layout of the forms:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>df_form {
+  sections[
+    {
+      heading: 'Personal details',
+      fields: [
+        { field: 'name', type: 'string' },
+        { field: 'dob', type: 'date'},
+      ]
+    },
+    {
+      heading: 'Employee List',
+      fields: [
+        { field: 'employees[]', type: 'list' },
+      ]
+    }
+    {
+      heading: 'Employee',
+      fields: [
+        { field: 'employees[].name', type: 'string' },
+        { field: 'employees[].dob', type: 'date'},
+      ]
+    }
+  ]
+}</tt></pre>
+</div></div>
+<div class="paragraph"><p>When the page is rendered the user is presented with a rendering of the initial section.
+Each section renders data within the document at a specific position, gathering all of its data
+from the information at that point.</p></div>
+<div class="paragraph"><p>The df_document stores information in a containment hierarchy, so the <em>root</em> document contains
+fields <em>name</em>, <em>dob</em> and a list of <em>employees</em>.  Each employee is contained within a specific position
+within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.</p></div>
+<div class="paragraph"><p>When rendering any section the system keeps track of where it is within the hierarchy of the df_document
+so that the page knows where to get its data from.  A stack of pointers into the df_document is
+maintained in the variable df_document_ptr_stack. The df_document_ptr_stack is initialised with a pointer to the
+df_document (root), and if the user navigates to a section that represents a child record, then a
+pointer to that specific data item eg: employee[1], is pushed on the df_document_ptr_stack.</p></div>
+<div class="paragraph"><p>Whenever a section is rendered, it is passed the top value in the df_document_ptr_stack as its data context,
+that it uses to retrieves its data from.</p></div>
+<div class="paragraph"><p>The page renderer also evaluates the df_document_ptr stack, and will display a navigation button
+( &#8592; ) to return the user from a child record, to the section that displays the list of child records.</p></div>
+<div class="paragraph"><p>The section displaying the list of child records participates, by pushing the correct data context onto
+the df_document_ptr_stack when the user navigates to a child record.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>df_document_ptr_stack = [</tt></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>]</tt></pre>
+</div></div>
 </div>
 <h2 id="workflow_module">Workflow Module</h2>
 <div class="sectionbody">
@@ -696,7 +760,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-10-17 20:57:26 NZDT
+Last updated 2011-10-18 17:11:08 NZDT
 </div>
 </div>
 </body>
