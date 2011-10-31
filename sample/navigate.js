@@ -27,6 +27,34 @@ var section_navigation =  [
 /* The 'current' section that has focus */
 var current_section_id = 'section_1';
 
+
+/* Precompiled template cache */
+var template_cache = { };
+
+function get_template(id) {
+	var start = new Date().getTime();
+	var cached = true;
+	if (!template_cache.hasOwnProperty(id)) {
+		cached = false;
+		var template_str =  $('#' + id).html();
+		template_cache.id = new Shotenjin.Template();
+		template_cache.id.convert(template_str);
+	}
+	var end = new Date().getTime();
+	log("get_template cached:" + cached + ", took " + ( end - start ) + " millisec" )
+	return template_cache.id;
+}
+ 
+function render_and_replace(template, context, id) {
+	var start = new Date().getTime();
+	var output = template.render(context);
+	var render = new Date().getTime();
+	$(id).html(output);
+	var end = new Date().getTime();
+	log("render_and_replace. render phase took " + ( render - start ) + " millisec, replace output phase took " + (end - render) + ' millisec' );
+}
+ 
+
 function log(msg) {
 	console.log(new Date() + ':' + msg);
 }
@@ -101,14 +129,9 @@ function render_current_section() {
 	$('#content').unbind
 	
 	// Render template into 'content' div
-	// retrieve template as a String
-	var input = $('#' + current_section_id).html();
-	// context from stack
-	var context = peek_doc_ptr(); 
-	// render
-	var output = Shotenjin.render(input, context);	
-	// replace
-	$('#content').html(output);
+	render_and_replace(get_template(current_section_id),
+	                   peek_doc_ptr(),
+	                   '#content');
 	
 	// Bind changes on the form fields to specific values on the data object
 	$('#content [df_bindto]').each(function() {
@@ -120,11 +143,9 @@ function render_current_section() {
 	});
 	
 	// Render the navigation controls
-	log('Render the navigation controls');
-	input = $('#df_navigation').html();
-	context = { };
-	output = Shotenjin.render(input, context);	
-	$('#footer').html(output);
+	render_and_replace(get_template('df_navigation'),
+	                   { },
+	                   '#footer');
 	
     log('render_current_section ' + current_section_id);
 }
