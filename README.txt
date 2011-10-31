@@ -23,6 +23,75 @@ which supports a business process.
 The initial design does not concern itself with anything beyond these requirements, but that having been said,
 the system has been created with the aim of solving problems in the 'procurement' business domain. 
 
+Architecture
+------------
+
+The system provides the means for end users to design, test and publish Forms.  Then users fill out the Forms which result in
+Document instances that conform to the layout and structure dictated in the Form.
+
+The system stores all of its data in JSON format.
+
+Permanent Data is stored in CouchDB.
+
+Clients run JavaScript enabled browsers.
+
+  +---------+               +-----------+               +---------+
+  | Browser |    <------>   | Webserver |    <------>   | CouchDB |
+  +---------+               +-----------+               +---------+
+
+Documents
+~~~~~~~~~
+Each Document instance is represented by a JSON document, which in turn is stored in CouchDB. The process of editing a Document 
+involves retrieving the Document, and Form from CouchDB, then rendering the Document through the Form and updating changes
+to the Document instance on the browser, and finally sending the edited Document back to stored in CouchDB.
+
+Forms
+~~~~~
+Each Form is split into Sections. A Sections generally fits on a page, has a heading and the various form elements such 
+as text boxes, date pickers and so forth. 
+
+One way to think of the Forms is this diagram, which shows Sections layed out in 2D physical space:
+
+    +---------------------+
+    | Section 1           |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    +---------------------+----------------------+
+    | Section 2           | Section 3 - Child <n>|
+    |                     |                      |
+    | Children            |                      |
+    | o Child 1           |                      |
+    | o Child 2           |                      |
+    |                     |                      |
+    |                     |                      |
+    +---------------------+----------------------+
+    | Section 4           |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    |                     |
+    +---------------------+
+
+
+The user sees one Section at a time, and can navigate up or down to the next/prev Section.
+
+When navigating between the Sections the system animates the movements so as to give the
+user a real sense of the physical structure of what they are editing.
+
+In this example Section 2 renders a list of child entities.  When clicking on an element in the list, the system
+will display Section 3, with the data for the particular Child being edited.
+
+That list might have an 'Add' button which would dynamically add another child to the list, and also a mechanism for
+deleting a child from the list.
+
+When viewing a child in Section 3, the user can navigate left to return to the list of Children.  
+
 
 Modules
 ~~~~~~~
@@ -40,22 +109,25 @@ The system is modular with independent modules being responsible for different p
 |==============================================
 
 
-[[builder_module]]
-Builder Module
---------------
-The builder provides the components to build forms interactively or using an API.
+
 
 Data Structures
 ~~~~~~~~~~~~~~~
 The data is optimised as to what is required to create pages, and configure the <<runtime_module>>.
 The essence is the data structures, data types, and containment relationships.
 
+[[builder_module]]
+Builder Module
+--------------
+The builder provides the components to build forms interactively or using an API.
+
+The result of building forms is a <<df_form>> data structure
 
 
 [[compiler_module]]
 Compiler Module
 ---------------
-Takes the form as built in the builder module & turns it into a different representation such as HTML and javascript 
+Takes the form as built in the <<builder_module>> & turns it into a different representation such as HTML and javascript 
 or static PDF 
 
 [[runtime_module]]
@@ -64,50 +136,11 @@ Runtime Module
 HTML as created by the <<compiler>> module uses the JavaScript runtime to maintain the data being edited on the HTML pages.
 It knows how to update the HTML correctly as per the users intentions and save the data back to the server.
 
-Each procurement round has a number of Forms for capturing the data required at different stages.  Each Form is split 
-into Sections. Sections have a heading and the various form elements such as text boxes, date pickers and so forth 
-on them. 
-
-The system presents the forms as a 2D layout with a viewport that allows the user to see a Section at a time, and
-navigate up or down to previous/next section and also right or left to dive into or out of collections of child data. 
-
-    +---------------------+
-    | Section 1           |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    +---------------------+----------------------+
-    | Section 2           | Child 1              |
-    |                     |                      |
-    | Children            |                      |
-    | o Child 1           |                      |
-    |                     |                      |
-    |                     |                      |
-    |                     |                      |
-    +---------------------+----------------------+
-    | Section 3           |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    |                     |
-    +---------------------+
-
-What the user sees is a View into this through what we call the ViewPort, which allows them to see 1 of these  
-Sections at a time.  When navigating between the Sections the system animates the movements so as to give the
-user a real sense of the physical structure of what they are editing.
-
-In this example Child 1 represents a child record that is 'owned' by  the list displayed in Section 2. That list
-might have an 'Add' button which would dynamically add Child 2 to the right of Child 1.  Similarly deleting a 
-Child would remove it.  
 
 Data Structures
 ~~~~~~~~~~~~~~~
 
+[[df_document]]
 df_document stores the document instance data, in JSON format. 
 It is persisted to and from the permanent document store.
 
@@ -121,6 +154,7 @@ It is persisted to and from the permanent document store.
     ]
   }
 
+[[df_form]]
 df_form stores the presentation layout of the forms:
 
   df_form {
