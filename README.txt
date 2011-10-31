@@ -130,13 +130,19 @@ df_form stores the presentation layout of the forms:
         fields: [
           { field: 'name', type: 'string' },
           { field: 'dob', type: 'date'},
-        ]
+        ],
+        navigation: {
+          down: 'Employee List',
+        }
       },
       {
         heading: 'Employee List',
         fields: [
           { field: 'employees[]', type: 'list' },
         ]
+        navigation: {
+          up: 'Personal details',
+        }
       }
       {
         heading: 'Employee',
@@ -144,6 +150,9 @@ df_form stores the presentation layout of the forms:
           { field: 'employees[].name', type: 'string' },
           { field: 'employees[].dob', type: 'date'},
         ]
+        navigation: {
+          left: 'Employee list',
+        }
       }
     ]
   }
@@ -172,9 +181,13 @@ The page renderer also evaluates the df_document_ptr stack, and will display a n
 The section displaying the list of child records participates, by pushing the correct data context onto
 the df_document_ptr_stack when the user navigates to a child record.
 
-  df_document_ptr_stack = [
-    
-  ]
+The stack will start empty ie: 
+  df_document_ptr_stack = [']
+which indicates that we are looking at the root of df_document
+
+If I have: 
+  df_document_ptr_stack = ['employees[0]']
+then I will be working on the first employee child record
 
 [[workflow_module]]
 Workflow Module

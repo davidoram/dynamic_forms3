@@ -10,7 +10,7 @@
     <script type="text/javascript">
 
     $(function() {
-        console.log('on document load');
+        log('on document load');
      		render_current_section();
     });
     
@@ -36,15 +36,12 @@
   
   </form>
 
-  <div id="footer">
-    <div class="navigation">
-      <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="navigate_up();">
-      <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="navigate_down();">
-    </div>
-      
-  </div>
+  <div id="footer"></div>
   
   <!-- HTML templates follow -->
+
+  <!-- Templates specific to this df_form -->
+
   <script type="text/html" id="section_1">
     <div>
       <h1>Section 1</h1>
@@ -64,7 +61,7 @@
         <tr>
             <td>
               <a href="#employees[${i}]"
-                 onclick="console.log('clicked'); navigate_to('section_3','employees[${i}]'); return false;">
+                 onclick="push_doc_ptr('employees[${i}]'); navigate_to('section_3'); return false;">
                   #{employees[i].name}
               </a>
             </td>
@@ -81,6 +78,24 @@
     <label>Name</label><input id="name" type="text" df_bindto="name"></input><br>
     <label>DOB</label><input id="s2_f2" type="date" df_bindto="dob"><br>
     </div> 
+  </script>
+
+  <!-- Standard Templates -->
+
+  <script type="text/html" id="df_navigation">
+    <div class="navigation">
+    <?js log('Rendering df_navigation'); ?> 
+    <?js var section = get_section_nav(); ?> 
+      <?js if (section.up) { ?>
+        <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="navigate_to('${section.up}');">
+      <?js } ?>
+      <?js if (section.down) { ?>
+        <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="navigate_to('${section.down}');">
+      <?js } ?>
+      <?js if (section.left) { ?>
+        <IMG SRC="icons/arrow_left_32x32.png" ALT="left" onclick="pop_doc_ptr(); navigate_to('${section.left}');">
+      <?js } ?>
+    </div>
   </script>
 
 </body>

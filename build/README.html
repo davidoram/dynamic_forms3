@@ -726,14 +726,12 @@ that it uses to retrieves its data from.</p></div>
 ( &#8592; ) to return the user from a child record, to the section that displays the list of child records.</p></div>
 <div class="paragraph"><p>The section displaying the list of child records participates, by pushing the correct data context onto
 the df_document_ptr_stack when the user navigates to a child record.</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>df_document_ptr_stack = [</tt></pre>
-</div></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>]</tt></pre>
-</div></div>
+<div class="paragraph"><p>The stack will start empty ie:
+  df_document_ptr_stack = [']
+which indicates that we are looking at the root of df_document</p></div>
+<div class="paragraph"><p>If I have:
+  df_document_ptr_stack = [<em>employees[0]</em>]
+then I will be working on the first employee child record</p></div>
 </div>
 <h2 id="workflow_module">Workflow Module</h2>
 <div class="sectionbody">
@@ -760,7 +758,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-10-18 17:11:08 NZDT
+Last updated 2011-10-30 07:53:34 NZDT
 </div>
 </div>
 </body>
