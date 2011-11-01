@@ -668,9 +668,6 @@ cellspacing="0" cellpadding="4">
 </tbody>
 </table>
 </div>
-<h3 id="_data_structures">Data Structures</h3><div style="clear:left"></div>
-<div class="paragraph"><p>The data is optimised as to what is required to create pages, and configure the <a href="#runtime_module">[runtime_module]</a>.
-The essence is the data structures, data types, and containment relationships.</p></div>
 </div>
 <h2 id="builder_module">Builder Module</h2>
 <div class="sectionbody">
@@ -686,7 +683,26 @@ or static PDF</p></div>
 <div class="sectionbody">
 <div class="paragraph"><p>HTML as created by the <a href="#compiler">[compiler]</a> module uses the JavaScript runtime to maintain the data being edited on the HTML pages.
 It knows how to update the HTML correctly as per the users intentions and save the data back to the server.</p></div>
-<h3 id="_data_structures_2">Data Structures</h3><div style="clear:left"></div>
+<h3 id="_process">Process</h3><div style="clear:left"></div>
+<div class="paragraph"><p>The steps required to allow users to enter data on forms is as follows:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Design the Form
+</p>
+</li>
+<li>
+<p>
+Publish the Form
+</p>
+</li>
+<li>
+<p>
+Create a Document against the Form
+</p>
+</li>
+</ol></div>
+<h3 id="_data_structures">Data Structures</h3><div style="clear:left"></div>
 <div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
 It is persisted to and from the permanent document store.</p></div>
 <div class="literalblock">
@@ -787,7 +803,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-11-01 07:16:18 NZDT
+Last updated 2011-11-01 17:33:16 NZDT
 </div>
 </div>
 </body>

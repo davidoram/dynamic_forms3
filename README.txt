@@ -111,11 +111,6 @@ The system is modular with independent modules being responsible for different p
 
 
 
-Data Structures
-~~~~~~~~~~~~~~~
-The data is optimised as to what is required to create pages, and configure the <<runtime_module>>.
-The essence is the data structures, data types, and containment relationships.
-
 [[builder_module]]
 Builder Module
 --------------
@@ -135,6 +130,14 @@ Runtime Module
 --------------
 HTML as created by the <<compiler>> module uses the JavaScript runtime to maintain the data being edited on the HTML pages.
 It knows how to update the HTML correctly as per the users intentions and save the data back to the server.
+
+Process
+~~~~~~~
+The steps required to allow users to enter data on forms is as follows:
+
+. Design the Form
+. Publish the Form
+. Create a Document instance using the Form
 
 
 Data Structures
