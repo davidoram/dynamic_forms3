@@ -139,6 +139,52 @@ The steps required to allow users to enter data on forms is as follows:
 . Publish the Form
 . Create a Document instance using the Form
 
+If we break the steps down as follows:
+
+Design the form
+This involes the user designing the data elements to be captured on the form, along with their
+data types and so forth. The result is a <<df_form>> document.
+
+[[publish_the_form]]
+Publish the form
+At this stage the <<df_form>> is passed through the <<compiler>> module, and the compiled HTML pages 
+stored.  Any errors during compilation will result in further form design being necessary.
+
+[[create_doc_using_form]]
+Create a Document instance using the Form.
+The user selects from a list of published forms, choosing the one which fulfills their needs closest,
+and is presented with an (initially) empty <<df_document>> which they edit through the HTML pages
+created when the form was published.  
+
+Samples
+-------
+
+[[sample]]
+Sample
+~~~~~~
+
+This directory contains a hand crafted HTML + Javascript sample that allows the user to edit a df_document
+in place.
+
+It validates the use of runtime templates being used to edit a df_document maintained in a single
+HTML file.  As the user navigates to different sections, the form is updated to on the fly
+with a template that represents that particular section.  The data form the df_document is bound to the 
+form & then any changes are reflected back in the df_document instance.
+
+Uses js templating library shotenjin.js from http://kuwata-lab.com/
+
+Work is complete on this sample, and it confirms the approach in <<create_doc_using_form>>
+
+[[sample2]]
+Sample2
+~~~~~~~
+This directory contains an example that seeks to validate the process of generating HTML and javascript
+templates for a specific df_form
+
+Executing the shell scripts will generate the equivalent hand crafted portions of <<sample>>, 
+using the tenjin templating library from http://kuwata-lab.com/
+
+This proves that the approch used to <<publish_the_form>> will work.
 
 Data Structures
 ~~~~~~~~~~~~~~~
