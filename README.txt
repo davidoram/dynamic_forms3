@@ -186,6 +186,42 @@ using the tenjin templating library from http://kuwata-lab.com/
 
 This proves that the approch used to <<publish_the_form>> will work.
 
+Two stages of templating occur:
+
+. Compiling the <<df_form>> structure to HTML - uses rbtenjin on the server
+. At runtime combining the templates generated with df_data - uses jstenjin in the browser 
+
+A new data structure is employed in this prototype.
+
+Each form represents a section, and each field is bound to the underlying data to be displayed
+in that field by attaching a JSONPath to that field eg:
+
+  <input df_jsonpath="$.name" type="text">
+  
+At runtime the df_jsonpath attribute is extracted, and resolved against the df_data document
+to retrieve the approriate data value and place that value into the <input>.
+
+Some forms represent lists of values within the df_data document. When the user selects a particular
+value from the list, this will set a value in the df_index hash eg: If the user selected was presented
+with a list of children:
+
+  Tom
+  Jack
+  
+and the user selected 'Tom' then the df_index hash will be populated as follows:
+
+  df_index {
+    "child_index" : 0
+  }  
+  
+When the user navigates to the 'child' form, the form template is constructed as follows:
+
+  <input df_jsonpath="$.children[child_index].name" type="text">
+
+child_index is replaced with the value in the df_index['child_index'], in this case 0, so will resolve
+to the correctly selected childs name eg: 'Tom'
+
+
 Data Structures
 ~~~~~~~~~~~~~~~
 

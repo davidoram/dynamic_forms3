@@ -1,0 +1,86 @@
+/*
+ * global stuff
+ */
+body {
+	background: #ccff66;
+}
+
+
+/*
+ * Make the header fixed at the top of the screen
+ */
+#header {
+	height: 40px;
+	width: 100%;
+	background: #a39522;
+	color: #ffcc66;
+}
+
+/* Space around Icons on the header */
+#header a img {
+  	padding-top: 5px;
+  	padding-left: 5px;
+}
+
+#header .search {
+	float: right;
+  	padding-top: 5px;
+  	padding-right: 5px;
+}
+
+/* Debugging - uncomment this. outlines dont participate in layout  */
+div { outline: 1px dashed red; } 
+
+#content {
+	width: 100%;
+}
+
+/*
+ * Unhihlight sections not current
+ */
+.section {
+	color: #bccf80;
+}
+
+
+/*
+ * Move the child out to the right
+ */
+.section.child {
+	
+}
+
+
+/*
+ * Highlight the 'current' section
+ */
+.section.current {
+	color: black;
+}
+
+
+
+/*
+ * Make the footer fixed at the bottom of the screen
+ */
+#footer {
+	position: fixed;
+	left: 0px;
+	bottom: 0px;
+	height: 40px;
+	width: 100%;
+	background: #a39522;
+	color: #ffcc66;
+}
+
+/* Centre the navigation element in the footer */
+#footer div.navigation {
+	width: 70px;
+	margin: 0 auto;
+}
+
+/* Space around Icons on the footer */
+#footer img {
+  	padding-top: 3px;
+}
+

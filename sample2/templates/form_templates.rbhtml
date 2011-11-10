@@ -1,0 +1,47 @@
+ <!-- Templates specific to df_form #{@df_form[:id]} -->
+ 
+ <!--
+ <p>#{pp @df_form['sections']}</p>
+ -->
+ 
+ <?rb for section in @df_form['sections'] ?>
+   <script type="text/html" id="#{section['id']}">
+    <div>
+      <h1>#{section['heading']}</h1>
+
+      <?rb if section['type'] == 'form' ?>
+      
+        <?rb for field in section['fields'] ?>
+          <?rb element_type = @element_for[field['type']] ?>
+          
+          <label>#{field['label']}</label>
+          
+          <?rb if element_type == 'input' ?>
+
+            <input type="#{@input_type_for.fetch(field['type'], 'text')}" 
+                   df_bindto="#{field['json_path']}" >
+            </input>
+            
+          <?rb elsif element_type == 'textarea' ?>
+
+            <textarea df_bindto="#{field['json_path']}" 
+                      rows="3" columns="40"></textarea>
+          
+          <?rb end ?>
+          
+          <br>
+        
+        <?rb end ?>
+      
+      <?rb elsif section['type'] == 'list' ?>
+      
+      <?rb else ?>
+      
+        <?rb raise "Error - unknown section.type: #{section['type']}" ?>
+        
+      <?rb end ?>
+      
+    </div>
+   </script>
+ <?rb end ?>
+ 

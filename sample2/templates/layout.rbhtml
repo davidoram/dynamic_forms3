@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <link href="navigate.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <script src="jquery-1.6.2.js" type="text/javascript"></script>
+    <script src="shotenjin.js" type="text/javascript"></script>
+    <script src="navigate.js" type="text/javascript"></script>
+    <meta name="description" content="PROJ-21345-AGR - Automated milking for cows" />
+    <script type="text/javascript">
+
+    $(function() {
+        log('on document load');
+     		render_current_section();
+    });
+    
+    </script>
+    
+  </head>
+
+</head>
+<body>
+  
+  <div id="header">
+     <A HREF="/home"><IMG SRC="icons/home_24x24.png" ALT="Home"></A>
+     <A HREF="/settings"><IMG SRC="icons/cog_alt_24x24.png" ALT="Settings"></A>
+     <IMG SRC="icons/eye_32x24.png" ALT="dump" onclick="dump();">
+     <div class="search">
+       <form>
+         <input name="q" type="search">
+         <input type="submit" value="Find">
+       </form>  
+     </div>
+   </div>  
+
+  <form>
+  <div id="content"></div>
+  
+  </form>
+
+  <div id="footer"></div>
+
+  <!-- Form specific templates -->
+  <?rb import 'form_templates.rbhtml' ?>
+  
+  <!-- Standard Templates -->
+
+   <script type="text/html" id="df_navigation">
+     <div class="navigation">
+     <?js log('Rendering df_navigation'); > 
+     <?js var section = get_section_nav(); > 
+       <?js if (section.up) { >
+         <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="navigate_to('#{@js}section.up#{@jse}');">
+       <?js } >
+       <?js if (section.down) { >
+         <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="navigate_to('#{@js}section.down#{@jse}');">
+       <?js } >
+       <?js if (section.left) { >
+         <IMG SRC="icons/arrow_left_32x32.png" ALT="left" onclick="pop_doc_ptr(); navigate_to('#{@js}section.left#{@jse}');">
+       <?js } >
+     </div>
+   </script>
+
+
+</body>
+</html>
+
