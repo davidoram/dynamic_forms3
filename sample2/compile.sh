@@ -17,7 +17,7 @@ THIS_DIR=`dirname $0`
 # Delete & recreate output dir
 rm -rf ${THIS_DIR}/output/* 
 
-rbtenjin -f ${THIS_DIR}/form_data/df_form1.rb --path=${THIS_DIR}/templates layout.rbhtml > ${THIS_DIR}/output/df_form1.html
+rbtenjin -C -f ${THIS_DIR}/form_data/df_form1.rb --path=${THIS_DIR}/templates layout.rbhtml > ${THIS_DIR}/output/df_form1.html
 if [[ $? ]]; then 
 	echo "ERROR! reported by rbtenjin"
 #	cat ${THIS_DIR}/output/df_form1.html

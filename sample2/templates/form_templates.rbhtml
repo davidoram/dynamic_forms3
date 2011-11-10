@@ -9,8 +9,9 @@
     <div>
       <h1>#{section['heading']}</h1>
 
+
       <?rb if section['type'] == 'form' ?>
-      
+        <!-- Form -->
         <?rb for field in section['fields'] ?>
           <?rb element_type = @element_for[field['type']] ?>
           
@@ -19,12 +20,12 @@
           <?rb if element_type == 'input' ?>
 
             <input type="#{@input_type_for.fetch(field['type'], 'text')}" 
-                   df_bindto="#{field['json_path']}" >
+                   df_jsonpath="#{field['json_path']}" >
             </input>
             
           <?rb elsif element_type == 'textarea' ?>
 
-            <textarea df_bindto="#{field['json_path']}" 
+            <textarea df_jsonpath="#{field['json_path']}" 
                       rows="3" columns="40"></textarea>
           
           <?rb end ?>
@@ -34,6 +35,26 @@
         <?rb end ?>
       
       <?rb elsif section['type'] == 'list' ?>
+        <!-- List -->
+        <?rb columns = section['columns'] ?> 
+        <?js var rows = jsonPath(df_data, "#{section['json_path']}"); ?>
+        <table>
+          <tr>
+            <?rb for column in columns ?>
+              <td>#{column['label']}</td>
+            <?rb end ?>
+          </tr>
+          <?js for ( var i = 0; i < rows.length; i++ ) { ?>
+            <tr>
+              <?rb for column in columns ?>
+                <td>
+                  <a>#{@js}rows[i].[#{column['label']}]#{@jse}</a>
+                </td>
+              <?rb end ?>
+            </tr> 
+          <?js } ?>
+
+        </table>
       
       <?rb else ?>
       

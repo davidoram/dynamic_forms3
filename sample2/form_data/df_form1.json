@@ -16,9 +16,10 @@
 			"heading": "Employee List",
 			"type": "list",
 			"index":"employees_index",
-			"fields":  [
-				{ "json_path": "$.employees[index].name", "type": "link" },
-				{ "json_path": "$.employees[index].dob", "type": "link" }
+			"json_path": "$.employees",
+			"columns":  [
+				{ "label": "Name", "json_path": "name", "type": "string" },
+		        { "label": "Date of birth", "json_path": "dob",  "type": "date" }
 			]
 		},
 		{
