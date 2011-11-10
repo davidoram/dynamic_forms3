@@ -17,6 +17,7 @@
 			"type": "list",
 			"index":"employees_index",
 			"json_path": "$.employees",
+			"child_section_id": "section_3",
 			"columns":  [
 				{ "label": "Name", "json_path": "name", "type": "string" },
 		        { "label": "Date of birth", "json_path": "dob",  "type": "date" }

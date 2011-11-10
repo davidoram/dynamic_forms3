@@ -6,6 +6,7 @@
   "type"=>"form",
   "heading"=>"Personal details"},
  {"id"=>"section_2",
+  "child_section_id"=>"section_3",
   "type"=>"list",
   "heading"=>"Employee List",
   "index"=>"employees_index",
@@ -90,10 +91,14 @@
           <?js for ( var i = 0; i < rows.length; i++ ) { ?>
             <tr>
                 <td>
-                  <a>#{rows[i].[Name]}</a>
+                  <a onclick="df_index['employees_index'] = #{i}; navigate_to('section_3'); return false;">
+                    #{rows[i].[Name]}
+                  </a>
                 </td>
                 <td>
-                  <a>#{rows[i].[Date of birth]}</a>
+                  <a onclick="df_index['employees_index'] = #{i}; navigate_to('section_3'); return false;">
+                    #{rows[i].[Date of birth]}
+                  </a>
                 </td>
             </tr> 
           <?js } ?>

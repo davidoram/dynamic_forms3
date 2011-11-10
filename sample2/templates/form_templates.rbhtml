@@ -48,7 +48,9 @@
             <tr>
               <?rb for column in columns ?>
                 <td>
-                  <a>#{@js}rows[i].[#{column['label']}]#{@jse}</a>
+                  <a onclick="df_index['#{section['index']}'] = #{@js}i#{@jse}; navigate_to('#{section['child_section_id']}'); return false;">
+                    #{@js}rows[i].[#{column['label']}]#{@jse}
+                  </a>
                 </td>
               <?rb end ?>
             </tr> 
