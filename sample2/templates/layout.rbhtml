@@ -6,13 +6,28 @@
 
     <script src="jquery-1.6.2.js" type="text/javascript"></script>
     <script src="shotenjin.js" type="text/javascript"></script>
-    <script src="navigate.js" type="text/javascript"></script>
-    <meta name="description" content="PROJ-21345-AGR - Automated milking for cows" />
+    <script src="jsonpath-0.8.0.js" type="text/javascript"></script>
+    <script src="df_core.js" type="text/javascript"></script>
+    <meta name="description" content="TODO - My project description" />
     <script type="text/javascript">
 
     $(function() {
-        log('on document load');
-     		render_current_section();
+        var sections = [];
+        <?rb for section in @df_form['sections'] ?>
+          sections.push("#{section['id']}");
+        <?rb end ?>
+        var df_document = {
+          name: 'Dave',
+          kids: 5,
+          comment: 'Blah blah',
+          employees: [
+        	{ name: 'Sue', dob: '1970-01-01' },
+        	{ name: 'Bob', dob: '1972-11-03' }
+          ]
+        };
+        
+        df = new DFCore( sections, df_document );
+     		df.render();
     });
     
     </script>

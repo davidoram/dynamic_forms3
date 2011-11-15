@@ -15,12 +15,23 @@
 THIS_DIR=`dirname $0`
 
 # Delete & recreate output dir
-rm -rf ${THIS_DIR}/output/* 
+rm -rf ${THIS_DIR}/output
+mkdir ${THIS_DIR}/output
+if [[ $? != 0 ]]; then 
+	echo "ERROR! Unable to recreate output dir"
+	exit 1	
+fi
 
 rbtenjin -C -f ${THIS_DIR}/form_data/df_form1.rb --path=${THIS_DIR}/templates layout.rbhtml > ${THIS_DIR}/output/df_form1.html
-if [[ $? ]]; then 
+if [[ $? != 0 ]]; then 
 	echo "ERROR! reported by rbtenjin"
-#	cat ${THIS_DIR}/output/df_form1.html
-#	exit 1	
+	cat ${THIS_DIR}/output/df_form1.html
+	exit 1	
 fi
 cp -r ${THIS_DIR}/static_content/* ${THIS_DIR}/output
+
+coffee --compile --bare --output ${THIS_DIR}/output ${THIS_DIR}/coffee/df_core.coffee
+if [[ $? != 0 ]]; then 
+	echo "ERROR! reported by coffee"
+	exit 1	
+fi
