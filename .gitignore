@@ -1,9 +1,13 @@
-build/
-sample2/output/
-sample2/output/df_form1.html
-
 sample2/output/df_form1.html
 
 build/README.html
+
+sample2/coffee/df_core.coffee
+
+sample2/output/shotenjin.js
+
+sample2/output/jsonpath-0.8.0.js
+
+sample2/output/df_core.js
 
 sample2/coffee/df_core.coffee
