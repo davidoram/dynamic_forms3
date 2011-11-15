@@ -1,9 +1,6 @@
  <!-- Templates specific to df_form #{@df_form[:id]} -->
  
- <!--
- <p>#{pp @df_form['sections']}</p>
- -->
- 
+
  <?rb for section in @df_form['sections'] ?>
    <script type="text/html" id="#{section['id']}">
     <div>

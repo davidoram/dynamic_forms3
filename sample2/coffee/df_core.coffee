@@ -31,10 +31,11 @@ class DFCore
 		
 	# Given a JSONPath string replace any instances of indexes with
 	# the appropriate values eg: 
-	resolve_index_for = (json_path) ->
+	resolve_index_for: (json_path) ->
 		str = json_path
 		for own index_key, index_value of @index_hash 
 			str.replace(index_key, index_value)
+		this.log "resolve_index_for #{json_path} -> #{str}"
 		str
 		
 	
@@ -49,27 +50,29 @@ class DFCore
 
 		# Get template str ...
 		template =  $('#' + @current_section).html()
-		this.log "template: #{template}"
+		#this.log "template: #{template}"
 
 		# ... convert template
 		@template_engine.convert(template)
 
 		# ... render it
 		output = @template_engine.render(@context)
-		this.log "output: #{output}"
+		#this.log "output: #{output}"
 		
 		# ... put rendering on the page
 		$(@html_dest_id).html(output);
 		
 		# .. bind each element which has custom attribute 'df_jsonpath'
-		$('#content [df_bindto]').each =>
+		$('#content [df_jsonpath]').each (index, element)  =>
 			# get the JSONPath....
-			json_path = @attr('df_bindto')
+			json_path = $(element).attr('df_jsonpath')
 			# .. replace any indexes
-			json_path = resolve_index_for(json_path)
+			json_path = this.resolve_index_for(json_path)
+
 			# .. put the data value at json_path into the html form
-			@val = jsonPath(@document, json_path)[0]
-			
+			value = jsonPath(@document, json_path)[0]
+			this.log "#{json_path} resolves to #{value}"
+			$(element).val( value )
 
 		this.log "<render"
 		
