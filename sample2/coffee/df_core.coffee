@@ -22,8 +22,18 @@ class DFCore
 
 		this.log "<constructor"
 
+	# Print a timestamped message to the console
 	log: (message) ->
 		console.log "#{new Date} #{message}"
+
+	# Log key state to the console
+	dump: ->
+		this.log '>>> dump --------------------------------------'
+		this.log '>>> dump document: ' + JSON.stringify(@document)
+		this.log '>>> dump sections: ' + JSON.stringify(@sections)
+		this.log '>>> dump current_section: ' + JSON.stringify(@current_section)
+		this.log '>>> dump index_hash: ' + JSON.stringify(@index_hash)
+		this.log '>>> dump --------------------------------------'
 		
 	# Set the index for a particular value
 	index_for: (key, value) ->
@@ -34,11 +44,16 @@ class DFCore
 	resolve_index_for: (json_path) ->
 		str = json_path
 		for own index_key, index_value of @index_hash 
-			str.replace(index_key, index_value)
+			str.replace index_key, index_value
 		this.log "resolve_index_for #{json_path} -> #{str}"
 		str
-		
 	
+	# Update the document at a given json_path to a new value
+	update_document: (json_path, new_value) ->
+		this.log "update_document at path #{json_path} to #{new_value}"
+		expression = json_path.replace /\$/gi, "this.document"	
+		eval "#{expression} = '#{new_value}'"
+		
 	# render the current section
 	render: ->
 
@@ -73,6 +88,11 @@ class DFCore
 			value = jsonPath(@document, json_path)[0]
 			this.log "#{json_path} resolves to #{value}"
 			$(element).val( value )
+			
+			# finally any changes made to the form field should be immediately reflected back
+			# in the json document
+			$(element).bind 'change', json_path, (event) =>
+				this.update_document event.data, event.target.value
 
 		this.log "<render"
 		

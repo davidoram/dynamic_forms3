@@ -40,7 +40,7 @@
   <div id="header">
      <A HREF="/home"><IMG SRC="icons/home_24x24.png" ALT="Home"></A>
      <A HREF="/settings"><IMG SRC="icons/cog_alt_24x24.png" ALT="Settings"></A>
-     <IMG SRC="icons/eye_32x24.png" ALT="dump" onclick="dump();">
+     <IMG SRC="icons/eye_32x24.png" ALT="dump" onclick="df.dump();">
      <div class="search">
        <form>
          <input name="q" type="search">
