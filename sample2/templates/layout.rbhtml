@@ -72,15 +72,15 @@
   -->
    <script type="text/html" id="df_navigation">
      <div class="navigation">
-     <?js if (section.up !== undefined ) { >
+     <?js if (section.up !== undefined ) { ?>
        <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="window.df.navigate_to('#{@js}section.up#{@jse}');">
-     <?js } >
-     <?js if (section.down !== undefined ) { >
+     <?js } ?>
+     <?js if (section.down !== undefined ) { ?>
        <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="window.df.navigate_to('#{@js}section.down#{@jse}');">
-     <?js } >
-     <?js if (section.left !== undefined ) { >
-       <IMG SRC="icons/arrow_up_32x32.png" ALT="left" onclick="window.df.navigate_to('#{@js}section.left#{@jse}');">
-     <?js } >
+     <?js } ?>
+     <?js if (section.left !== undefined ) { ?>
+       <IMG SRC="icons/arrow_left_32x32.png" ALT="left" onclick="window.df.navigate_to('#{@js}section.left#{@jse}');">
+     <?js } ?>
      </div>
    </script>
 

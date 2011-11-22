@@ -63,7 +63,7 @@ class DFCore
 	resolve_index_for: (json_path) ->
 		str = json_path
 		for own index_key, index_value of @index_hash 
-			str.replace index_key, index_value
+			str = str.replace index_key, index_value
 		this.log "resolve_index_for #{json_path} -> #{str}"
 		str
 	
