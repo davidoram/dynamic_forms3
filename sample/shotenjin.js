@@ -128,7 +128,7 @@ Shotenjin.Template.prototype = {
 		}
 		else {
 			_context = {};
-		}
+		}		
 		return eval(this.program);
 	},
 

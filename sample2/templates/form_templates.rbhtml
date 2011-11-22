@@ -1,5 +1,9 @@
- <!-- Templates specific to df_form #{@df_form[:id]} -->
- 
+<!-- Templates specific to df_form #{@df_form[:id]} -->
+
+<!-- 
+  Form templates are provided the following context when they are rendered at runtime:
+     { nil }
+  --> 
 
  <?rb for section in @df_form['sections'] ?>
    <script type="text/html" id="#{section['id']}">
@@ -34,7 +38,7 @@
       <?rb elsif section['type'] == 'list' ?>
         <!-- List -->
         <?rb columns = section['columns'] ?> 
-        <?js var rows = jsonPath(df_data, "#{section['json_path']}"); ?>
+        <?js var rows = window.df.document_data("#{section['json_path']}"); ?>
         <table>
           <tr>
             <?rb for column in columns ?>
@@ -45,8 +49,8 @@
             <tr>
               <?rb for column in columns ?>
                 <td>
-                  <a onclick="df.index_for['#{section['index']}'] = #{@js}i#{@jse}; df.navigate_to('#{section['child_section_id']}'); return false;">
-                    #{@js}rows[i].[#{column['label']}]#{@jse}
+                  <a onclick="window.df.index_for('#{section['index']}' ,#{@js}i#{@jse}); df.navigate_to('#{section['child_section_id']}'); return false;">
+                    #{@js}rows[i].#{column['json_path']}#{@jse}
                   </a>
                 </td>
               <?rb end ?>

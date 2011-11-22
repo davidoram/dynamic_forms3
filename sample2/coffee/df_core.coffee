@@ -1,15 +1,12 @@
 class DFCore
-	constructor: (@sections, @document) ->
+	constructor: (@form, @document) ->
 		this.log ">constructor"
 
 		# Shotenjin template class to generate content on the fly
 		@template_engine = new Shotenjin.Template
 		
-		# Context which is passed through when invoking the template engine
-		@context =  { }
-		
 		# html id of page element to recieve rendered template
-		@html_dest_id = '#content'
+		@form_content_id = 'content'
 		
 		# Index hash, contains mapping from each index in JSONPath
 		# variables, to the actual index selected
@@ -17,8 +14,7 @@ class DFCore
 		@index_hash = { }
 		
 		# Current section
-		# TODO - Parse from URL?
-		@current_section = @sections[0]
+		@current_section_id = this.get_starting_section()
 
 		this.log "<constructor"
 
@@ -30,14 +26,37 @@ class DFCore
 	dump: ->
 		this.log '>>> dump --------------------------------------'
 		this.log '>>> dump document: ' + JSON.stringify(@document)
-		this.log '>>> dump sections: ' + JSON.stringify(@sections)
-		this.log '>>> dump current_section: ' + JSON.stringify(@current_section)
+		this.log '>>> dump current_section: ' + JSON.stringify(@current_section_id)
 		this.log '>>> dump index_hash: ' + JSON.stringify(@index_hash)
+		this.log '>>> dump form: ' + JSON.stringify(@form)
 		this.log '>>> dump --------------------------------------'
+
+	# Get the section we should start from. 
+	# TODO - Could parse the URL?
+	get_starting_section: ->
+		@form.sections[0].id
+	
+	# Return the section navigation structure for the current section	
+	get_section_navigation: ->
+		for section in @form.sections
+			if section.id == @current_section_id
+				return section.section_navigation
+
+	# Make section_id the current section & render
+	navigate_to: (section_id) ->
+		this.log ">navigate_to #{section_id}"
+		@current_section_id = section_id
+		this.render()
 		
 	# Set the index for a particular value
 	index_for: (key, value) ->
 		@index_hash[key] = value
+	
+	# Return the values in the @document at json_path. Assumes that the path is unique &
+	# returns the 1st match
+	document_data: (json_path) ->
+		jsonPath(@document, json_path)[0]
+		
 		
 	# Given a JSONPath string replace any instances of indexes with
 	# the appropriate values eg: 
@@ -54,31 +73,42 @@ class DFCore
 		expression = json_path.replace /\$/gi, "this.document"	
 		eval "#{expression} = '#{new_value}'"
 		
-	# render the current section
-	render: ->
+	# render a template to the page
+	render_template: (template_id, destination_id, context) ->
 
-		this.log ">render. Current section #{@current_section}, to #{@html_dest_id}"
-		
+		this.log ">render_template '#{template_id}' to '#{destination_id}'"
+		this.log "context " + JSON.stringify(context)
+
 		# Remove all existing bindings in the form
-		# TODO - content id should be a parameter
-		$(@html_dest_id).unbind
+		$('#' + destination_id).unbind
 
 		# Get template str ...
-		template =  $('#' + @current_section).html()
-		#this.log "template: #{template}"
+		template =  $('#' + template_id).html()
 
 		# ... convert template
 		@template_engine.convert(template)
 
 		# ... render it
-		output = @template_engine.render(@context)
+		output = @template_engine.render(context)
 		#this.log "output: #{output}"
 		
 		# ... put rendering on the page
-		$(@html_dest_id).html(output);
+		$('#' + destination_id).html(output);
+		
+		this.log "<render_template"
+			
+		
+	# render the current section
+	render: ->
+
+		this.log ">render. Current section #{@current_section_id}, to #{@form_content_id}"
+
+		# Render the form
+		form_context = { }
+		this.render_template @current_section_id, @form_content_id, form_context 
 		
 		# .. bind each element which has custom attribute 'df_jsonpath'
-		$('#content [df_jsonpath]').each (index, element)  =>
+		$('#' + @form_content_id + '  [df_jsonpath]').each (index, element)  =>
 			# get the JSONPath....
 			json_path = $(element).attr('df_jsonpath')
 			# .. replace any indexes
@@ -94,30 +124,8 @@ class DFCore
 			$(element).bind 'change', json_path, (event) =>
 				this.update_document event.data, event.target.value
 
+		# Render the navigation
+		section_context = { section:  this.get_section_navigation() }
+		this.render_template 'df_navigation', 'footer',  section_context
+
 		this.log "<render"
-		
-###		
-		# replace indexes in JSONPaths
-		output = getTemplate.render(context)
-		
-		
-		render_and_replace(get_template(current_section_id),
-		                   peek_doc_ptr(),
-		                   '#content');
-
-		// Bind changes on the form fields to specific values on the data object
-		$('#content [df_bindto]').each(function() {
-			var bindTo = $(this).attr('df_bindto');
-			log('Apply binding from id:' + this.id + ' to path:' + bindTo);
-			$(this).val(get_value(bindTo));
-			$(this).bind('change', bindTo , value_changed);
-
-		});
-
-		// Render the navigation controls
-		render_and_replace(get_template('df_navigation'),
-		                   { },
-		                   '#footer');
-
-	    log('render_current_section ' + current_section_id);
-###	    

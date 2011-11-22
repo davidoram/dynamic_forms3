@@ -12,10 +12,10 @@
     <script type="text/javascript">
 
     $(function() {
-        var sections = [];
-        <?rb for section in @df_form['sections'] ?>
-          sections.push("#{section['id']}");
-        <?rb end ?>
+        /* Define the form in JSON format */
+        var df_form = #{@df_form.to_json};
+        
+        /* TODO - Get this from teh server */
         var df_document = {
           name: 'Dave',
           kids: 5,
@@ -26,8 +26,9 @@
           ]
         };
         
-        df = new DFCore( sections, df_document );
-     		df.render();
+        /* df is a global variable */
+        window.df = new DFCore( df_form, df_document );
+     		window.df.render();
     });
     
     </script>
@@ -40,7 +41,7 @@
   <div id="header">
      <A HREF="/home"><IMG SRC="icons/home_24x24.png" ALT="Home"></A>
      <A HREF="/settings"><IMG SRC="icons/cog_alt_24x24.png" ALT="Settings"></A>
-     <IMG SRC="icons/eye_32x24.png" ALT="dump" onclick="df.dump();">
+     <IMG SRC="icons/eye_32x24.png" ALT="dump" onclick="window.df.dump();">
      <div class="search">
        <form>
          <input name="q" type="search">
@@ -61,19 +62,25 @@
   
   <!-- Standard Templates -->
 
+  <!-- 
+    df_navigation template are provided the following context when they are rendered at runtime:
+    
+    section { 'up': 'section_id', 'down': 'section_id', 'left': 'section_id' }
+    
+    Note that each of the entries is optonal - if it is missing there will be no navigation button in that
+    direction 
+  -->
    <script type="text/html" id="df_navigation">
      <div class="navigation">
-     <?js log('Rendering df_navigation'); > 
-     <?js var section = get_section_nav(); > 
-       <?js if (section.up) { >
-         <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="navigate_to('#{@js}section.up#{@jse}');">
-       <?js } >
-       <?js if (section.down) { >
-         <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="navigate_to('#{@js}section.down#{@jse}');">
-       <?js } >
-       <?js if (section.left) { >
-         <IMG SRC="icons/arrow_left_32x32.png" ALT="left" onclick="pop_doc_ptr(); navigate_to('#{@js}section.left#{@jse}');">
-       <?js } >
+     <?js if (section.up !== undefined ) { >
+       <IMG SRC="icons/arrow_up_32x32.png" ALT="up" onclick="window.df.navigate_to('#{@js}section.up#{@jse}');">
+     <?js } >
+     <?js if (section.down !== undefined ) { >
+       <IMG SRC="icons/arrow_down_32x32.png" ALT="down" onclick="window.df.navigate_to('#{@js}section.down#{@jse}');">
+     <?js } >
+     <?js if (section.left !== undefined ) { >
+       <IMG SRC="icons/arrow_up_32x32.png" ALT="left" onclick="window.df.navigate_to('#{@js}section.left#{@jse}');">
+     <?js } >
      </div>
    </script>
 
