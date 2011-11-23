@@ -42,6 +42,16 @@ class DFCore
 			if section.id == @current_section_id
 				return section.section_navigation
 
+	# Add a new row in the document at json_path and return its index
+	new_row_at: (json_path) ->
+		this.log ">new_row_at #{json_path}"
+		json_path = this.resolve_index_for json_path
+		expression = json_path.replace /\$/gi, "this.document"	
+		array = eval "#{expression}"
+		array.push { }
+		this.log " array length now #{array.length}"
+		array.length - 1
+		
 	# Make section_id the current section & render
 	navigate_to: (section_id) ->
 		this.log ">navigate_to #{section_id}"
