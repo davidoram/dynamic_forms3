@@ -2,8 +2,9 @@ class DFCore
 	constructor: (@form, @document) ->
 		this.log ">constructor"
 
-		# Shotenjin template class to generate content on the fly
-		@template_engine = new Shotenjin.Template
+		# Shotenjin template class cache, 
+		# one per template section_id 
+		@template_engine_cache = { }
 		
 		# html id of page element to recieve rendered template
 		@form_content_id = 'content'
@@ -83,6 +84,25 @@ class DFCore
 		expression = json_path.replace /\$/gi, "this.document"	
 		eval "#{expression} = '#{new_value}'"
 		
+	# retrieve a template engine from the cache
+	template_engine_for: (template_id) ->
+		this.log ">template_engine_for '#{template_id}'"
+		if ! @template_engine_cache.hasOwnProperty( template_id )
+			this.log " not cached"
+			
+			# Create a new engine instance
+			@template_engine_cache[template_id] = new Shotenjin.Template
+
+			# Get template str ...
+			template =  $('#' + template_id).html()
+			
+			# Compile it
+			@template_engine_cache[template_id].convert(template)
+		
+		# Return it
+		this.log "<template_engine_for"
+		@template_engine_cache[template_id]
+		
 	# render a template to the page
 	render_template: (template_id, destination_id, context) ->
 
@@ -92,14 +112,8 @@ class DFCore
 		# Remove all existing bindings in the form
 		$('#' + destination_id).unbind
 
-		# Get template str ...
-		template =  $('#' + template_id).html()
-
-		# ... convert template
-		@template_engine.convert(template)
-
 		# ... render it
-		output = @template_engine.render(context)
+		output = this.template_engine_for(template_id).render(context)
 		#this.log "output: #{output}"
 		
 		# ... put rendering on the page
