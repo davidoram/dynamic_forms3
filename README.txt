@@ -38,6 +38,11 @@ Clients run JavaScript enabled browsers.
   +---------+               +-----------+               +---------+
   | Browser |    <------>   | Webserver |    <------>   | CouchDB |
   +---------+               +-----------+               +---------+
+                                 |
+                                 |
+                                 v
+                               Static files, generated files
+                                     
 
 Documents
 ~~~~~~~~~
@@ -220,6 +225,17 @@ When the user navigates to the 'child' form, the form template is constructed as
 
 child_index is replaced with the value in the df_index['child_index'], in this case 0, so will resolve
 to the correctly selected childs name eg: 'Tom'
+
+This sample also adds the ability to manipulate lists better.  When the section inside a df_form
+has a type of "list", then the contents are rendered as an HTML table with a button to "Add" a new
+row. When the button is clicked a new row is added to the array of data as identified in the "json_path"
+and the user is taken to the child form, bound to the data in the new row. Note that there is no need to 
+fill the new row with default data.
+
+No validation occurs in this sample  
+
+Work is complete on this sample and the work appears in the sample2 directory.  To build the samples
+run sample2/bin/compile.sh and open the output/df_form1.html files in your browser
 
 
 Data Structures

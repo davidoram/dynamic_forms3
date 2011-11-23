@@ -582,7 +582,11 @@ Document instances that conform to the layout and structure dictated in the Form
 <div class="content">
 <pre><tt>+---------+               +-----------+               +---------+
 | Browser |    &lt;------&gt;   | Webserver |    &lt;------&gt;   | CouchDB |
-+---------+               +-----------+               +---------+</tt></pre>
++---------+               +-----------+               +---------+
+                               |
+                               |
+                               v
+                             Static files, generated files</tt></pre>
 </div></div>
 <h3 id="_documents">Documents</h3><div style="clear:left"></div>
 <div class="paragraph"><p>Each Document instance is represented by a JSON document, which in turn is stored in CouchDB. The process of editing a Document
@@ -698,10 +702,91 @@ Publish the Form
 </li>
 <li>
 <p>
-Create a Document against the Form
+Create a Document instance using the Form
 </p>
 </li>
 </ol></div>
+<div class="paragraph"><p>If we break the steps down as follows:</p></div>
+<div class="paragraph"><p>Design the form
+This involes the user designing the data elements to be captured on the form, along with their
+data types and so forth. The result is a <a href="#df_form">[df_form]</a> document.</p></div>
+<div class="paragraph" id="publish_the_form"><p>Publish the form
+At this stage the <a href="#df_form">[df_form]</a> is passed through the <a href="#compiler">[compiler]</a> module, and the compiled HTML pages
+stored.  Any errors during compilation will result in further form design being necessary.</p></div>
+<div class="paragraph" id="create_doc_using_form"><p>Create a Document instance using the Form.
+The user selects from a list of published forms, choosing the one which fulfills their needs closest,
+and is presented with an (initially) empty <a href="#df_document">[df_document]</a> which they edit through the HTML pages
+created when the form was published.</p></div>
+</div>
+<h2 id="_samples">Samples</h2>
+<div class="sectionbody">
+<h3 id="sample">Sample</h3><div style="clear:left"></div>
+<div class="paragraph"><p>This directory contains a hand crafted HTML + Javascript sample that allows the user to edit a df_document
+in place.</p></div>
+<div class="paragraph"><p>It validates the use of runtime templates being used to edit a df_document maintained in a single
+HTML file.  As the user navigates to different sections, the form is updated to on the fly
+with a template that represents that particular section.  The data form the df_document is bound to the
+form &amp; then any changes are reflected back in the df_document instance.</p></div>
+<div class="paragraph"><p>Uses js templating library shotenjin.js from <a href="http://kuwata-lab.com/">http://kuwata-lab.com/</a></p></div>
+<div class="paragraph"><p>Work is complete on this sample, and it confirms the approach in <a href="#create_doc_using_form">[create_doc_using_form]</a></p></div>
+<h3 id="sample2">Sample2</h3><div style="clear:left"></div>
+<div class="paragraph"><p>This directory contains an example that seeks to validate the process of generating HTML and javascript
+templates for a specific df_form</p></div>
+<div class="paragraph"><p>Executing the shell scripts will generate the equivalent hand crafted portions of <a href="#sample">[sample]</a>,
+using the tenjin templating library from <a href="http://kuwata-lab.com/">http://kuwata-lab.com/</a></p></div>
+<div class="paragraph"><p>This proves that the approch used to <a href="#publish_the_form">[publish_the_form]</a> will work.</p></div>
+<div class="paragraph"><p>Two stages of templating occur:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Compiling the <a href="#df_form">[df_form]</a> structure to HTML - uses rbtenjin on the server
+</p>
+</li>
+<li>
+<p>
+At runtime combining the templates generated with df_data - uses jstenjin in the browser
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>A new data structure is employed in this prototype.</p></div>
+<div class="paragraph"><p>Each form represents a section, and each field is bound to the underlying data to be displayed
+in that field by attaching a JSONPath to that field eg:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>&lt;input df_jsonpath="$.name" type="text"&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p>At runtime the df_jsonpath attribute is extracted, and resolved against the df_data document
+to retrieve the approriate data value and place that value into the &lt;input&gt;.</p></div>
+<div class="paragraph"><p>Some forms represent lists of values within the df_data document. When the user selects a particular
+value from the list, this will set a value in the df_index hash eg: If the user selected was presented
+with a list of children:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>Tom
+Jack</tt></pre>
+</div></div>
+<div class="paragraph"><p>and the user selected <em>Tom</em> then the df_index hash will be populated as follows:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>df_index {
+  "child_index" : 0
+}</tt></pre>
+</div></div>
+<div class="paragraph"><p>When the user navigates to the <em>child</em> form, the form template is constructed as follows:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>&lt;input df_jsonpath="$.children[child_index].name" type="text"&gt;</tt></pre>
+</div></div>
+<div class="paragraph"><p>child_index is replaced with the value in the df_index[<em>child_index</em>], in this case 0, so will resolve
+to the correctly selected childs name eg: <em>Tom</em></p></div>
+<div class="paragraph"><p>This sample also adds the ability to manipulate lists better.  When the section inside a df_form
+has a type of "list", then the contents are rendered as an HTML table with a button to "Add" a new
+row. When the button is clicked a new row is added to the array of data as identified in the "json_path"
+and the user is taken to the child form, bound to the data in the new row. Note that there is no need to
+fill the new row with default data.</p></div>
+<div class="paragraph"><p>No validation occurs in this sample</p></div>
+<div class="paragraph"><p>Work is complete on this sample and the work appears in the sample2 directory.  To build the samples
+run sample2/bin/compile.sh and open the output/df_form1.html files in your browser</p></div>
 <h3 id="_data_structures">Data Structures</h3><div style="clear:left"></div>
 <div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
 It is persisted to and from the permanent document store.</p></div>
@@ -803,7 +888,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-11-01 17:33:16 NZDT
+Last updated 2011-11-24 07:13:31 NZDT
 </div>
 </div>
 </body>
