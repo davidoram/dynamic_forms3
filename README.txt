@@ -12,6 +12,8 @@ The design of dynamic_forms3 (df3)  has been preceded by the authors thought int
 designing, implementing maintaining and enhancing procurement systems, along with the considerable
 influence of colleagues at the MSI.
 
+Part 1 - Overview
+=================
 
 Approach
 --------
@@ -161,8 +163,109 @@ The user selects from a list of published forms, choosing the one which fulfills
 and is presented with an (initially) empty <<df_document>> which they edit through the HTML pages
 created when the form was published.  
 
-Samples
--------
+
+Part 2 - Detailed Design
+========================
+
+[[data_structures]]
+Data Structures
+---------------
+
+[[df_document]]
+df_document stores the document instance data, in JSON format. 
+It is persisted to and from the permanent document store.
+
+  df_document = {
+    _id: 1,
+    name: 'Dave',
+    kids: '3',
+    comment: 'Developer',
+    employees: [
+      { name: 'Sue', dob: '1970-01-01' },
+      { name: 'Bob', dob: '1972-11-03' }
+    ]
+  }
+
+[[df_form]]
+df_form stores the presentation layout of the forms:
+
+  {
+  	"id": "form1",
+  	"sections": [ 
+  		{
+  			"id": "section_1",
+  			"heading": "Personal details",
+  			"type": "form",
+  			"fields":  [
+  				{ "label": "Name", "json_path": "$.name", "type": "string" },
+  		        { "label": "Num kids", "json_path": "$.kids",  "type": "integer" },				 		
+  		        { "label": "Comment", "json_path": "$.comment",  "type": "text" }				 		
+  			],
+  			"section_navigation": { "down": "section_2" }
+  		},
+  		{
+  			"id": "section_2",
+  			"heading": "Employee List",
+  			"type": "list",
+  			"index":"employees_index",
+  			"json_path": "$.employees",
+  			"child_section_id": "section_3",
+  			"columns":  [
+  				{ "label": "Name", "json_path": "name", "type": "string" },
+  		        { "label": "Date of birth", "json_path": "dob",  "type": "date" }
+  			],
+  			"section_navigation": { "up" : "section_1" }
+  		},
+  		{
+  			"id": "section_3",
+  			"heading": "Employee",
+  			"type": "form",
+  			"fields":  [
+  		    	{ "json_path": "$.employees[employees_index].name", "type": "string" },
+  		        { "json_path": "$.employees[employees_index].dob", "type": "date" }
+  			],
+  			"section_navigation": { "left": "section_2" }
+  		}
+  	] 
+  }
+
+When the page is rendered the user is presented with a rendering of the initial section.
+Each section renders data within the document at a specific position, gathering all of its data
+from the information at that point.
+
+The df_document stores information in a containment hierarchy, so the 'root' document contains
+fields 'name', 'kids', 'comment' and a list of 'employees'.  Each employee is contained within a specific position
+within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.
+
+Each section knows the 'path' to its data, but in the case of rendering data that can be one of
+many from an array (eg: a specific employee), it uses the index_cache.  When navigating into a collection, 
+the system records in the index_cache the index that is currently being views for each collection 
+
+  index_cache {
+    "employee_index": "2"
+  }
+
+Whenever a section is rendered, and the data (or its parents) comes from a collection, the system
+recolves the collection indices using the index_cache, thus 'employees[employee_index].name' becomes
+'employees[2].name'
+
+Each section knows about its surrounding sections, for displaying navigation controls.
+
+[[workflow_module]]
+Workflow Module
+---------------
+Used to define the steps that the form data travels through, etc 
+
+
+
+Part 3 - Samples
+================
+
+Introduction
+------------
+
+The samples serve to prove the concepts behind df3 will work. They are not a part of the system, but 
+serve as background material
 
 [[sample]]
 Sample
@@ -237,97 +340,6 @@ No validation occurs in this sample
 Work is complete on this sample and the work appears in the sample2 directory.  To build the samples
 run sample2/bin/compile.sh and open the output/df_form1.html files in your browser
 
-
-Data Structures
-~~~~~~~~~~~~~~~
-
-[[df_document]]
-df_document stores the document instance data, in JSON format. 
-It is persisted to and from the permanent document store.
-
-  df_document = {
-    _id: 1,
-    name: 'Dave',
-    dob: '1969-10-22',
-    employees: [
-      { name: 'Sue', dob: '1970-01-01' },
-      { name: 'Bob', dob: '1972-11-03' }
-    ]
-  }
-
-[[df_form]]
-df_form stores the presentation layout of the forms:
-
-  df_form {
-    sections[
-      {
-        heading: 'Personal details',
-        fields: [
-          { field: 'name', type: 'string' },
-          { field: 'dob', type: 'date'},
-        ],
-        navigation: {
-          down: 'Employee List',
-        }
-      },
-      {
-        heading: 'Employee List',
-        fields: [
-          { field: 'employees[]', type: 'list' },
-        ]
-        navigation: {
-          up: 'Personal details',
-        }
-      }
-      {
-        heading: 'Employee',
-        fields: [
-          { field: 'employees[].name', type: 'string' },
-          { field: 'employees[].dob', type: 'date'},
-        ]
-        navigation: {
-          left: 'Employee list',
-        }
-      }
-    ]
-  }
-
-
-When the page is rendered the user is presented with a rendering of the initial section.
-Each section renders data within the document at a specific position, gathering all of its data
-from the information at that point.
-
-The df_document stores information in a containment hierarchy, so the 'root' document contains
-fields 'name', 'dob' and a list of 'employees'.  Each employee is contained within a specific position
-within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.
-
-When rendering any section the system keeps track of where it is within the hierarchy of the df_document
-so that the page knows where to get its data from.  A stack of pointers into the df_document is
-maintained in the variable df_document_ptr_stack. The df_document_ptr_stack is initialised with a pointer to the
-df_document (root), and if the user navigates to a section that represents a child record, then a
-pointer to that specific data item eg: employee[1], is pushed on the df_document_ptr_stack.
-
-Whenever a section is rendered, it is passed the top value in the df_document_ptr_stack as its data context, 
-that it uses to retrieves its data from.  
-
-The page renderer also evaluates the df_document_ptr stack, and will display a navigation button
-( <- ) to return the user from a child record, to the section that displays the list of child records.
-
-The section displaying the list of child records participates, by pushing the correct data context onto
-the df_document_ptr_stack when the user navigates to a child record.
-
-The stack will start empty ie: 
-  df_document_ptr_stack = [']
-which indicates that we are looking at the root of df_document
-
-If I have: 
-  df_document_ptr_stack = ['employees[0]']
-then I will be working on the first employee child record
-
-[[workflow_module]]
-Workflow Module
----------------
-Used to define the steps that the form data travels through, etc 
 
 
 

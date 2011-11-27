@@ -563,6 +563,7 @@ footnotes: function () {
 designing, implementing maintaining and enhancing procurement systems, along with the considerable
 influence of colleagues at the MSI.</p></div>
 </div>
+<h1 id="_part_1_overview">Part 1 - Overview</h1>
 <h2 id="_approach">Approach</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
@@ -718,8 +719,96 @@ The user selects from a list of published forms, choosing the one which fulfills
 and is presented with an (initially) empty <a href="#df_document">[df_document]</a> which they edit through the HTML pages
 created when the form was published.</p></div>
 </div>
-<h2 id="_samples">Samples</h2>
+<h1 id="_part_2_detailed_design">Part 2 - Detailed Design</h1>
+<h2 id="data_structures">Data Structures</h2>
 <div class="sectionbody">
+<div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
+It is persisted to and from the permanent document store.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>df_document = {
+  _id: 1,
+  name: 'Dave',
+  kids: '3',
+  comment: 'Developer',
+  employees: [
+    { name: 'Sue', dob: '1970-01-01' },
+    { name: 'Bob', dob: '1972-11-03' }
+  ]
+}</tt></pre>
+</div></div>
+<div class="paragraph" id="df_form"><p>df_form stores the presentation layout of the forms:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>{
+      "id": "form1",
+      "sections": [
+              {
+                      "id": "section_1",
+                      "heading": "Personal details",
+                      "type": "form",
+                      "fields":  [
+                              { "label": "Name", "json_path": "$.name", "type": "string" },
+                      { "label": "Num kids", "json_path": "$.kids",  "type": "integer" },
+                      { "label": "Comment", "json_path": "$.comment",  "type": "text" }
+                      ],
+                      "section_navigation": { "down": "section_2" }
+              },
+              {
+                      "id": "section_2",
+                      "heading": "Employee List",
+                      "type": "list",
+                      "index":"employees_index",
+                      "json_path": "$.employees",
+                      "child_section_id": "section_3",
+                      "columns":  [
+                              { "label": "Name", "json_path": "name", "type": "string" },
+                      { "label": "Date of birth", "json_path": "dob",  "type": "date" }
+                      ],
+                      "section_navigation": { "up" : "section_1" }
+              },
+              {
+                      "id": "section_3",
+                      "heading": "Employee",
+                      "type": "form",
+                      "fields":  [
+                      { "json_path": "$.employees[employees_index].name", "type": "string" },
+                      { "json_path": "$.employees[employees_index].dob", "type": "date" }
+                      ],
+                      "section_navigation": { "left": "section_2" }
+              }
+      ]
+}</tt></pre>
+</div></div>
+<div class="paragraph"><p>When the page is rendered the user is presented with a rendering of the initial section.
+Each section renders data within the document at a specific position, gathering all of its data
+from the information at that point.</p></div>
+<div class="paragraph"><p>The df_document stores information in a containment hierarchy, so the <em>root</em> document contains
+fields <em>name</em>, <em>kids</em>, <em>comment</em> and a list of <em>employees</em>.  Each employee is contained within a specific position
+within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.</p></div>
+<div class="paragraph"><p>Each section knows the <em>path</em> to its data, but in the case of rendering data that can be one of
+many from an array (eg: a specific employee), it uses the index_cache.  When navigating into a collection,
+the system records in the index_cache the index that is currently being views for each collection</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>index_cache {
+  "employee_index": "2"
+}</tt></pre>
+</div></div>
+<div class="paragraph"><p>Whenever a section is rendered, and the data (or its parents) comes from a collection, the system
+recolves the collection indices using the index_cache, thus <em>employees[employee_index].name</em> becomes
+<em>employees[2].name</em></p></div>
+<div class="paragraph"><p>Each section knows about its surrounding sections, for displaying navigation controls.</p></div>
+</div>
+<h2 id="workflow_module">Workflow Module</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Used to define the steps that the form data travels through, etc</p></div>
+</div>
+<h1 id="_part_3_samples">Part 3 - Samples</h1>
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The samples serve to prove the concepts behind df3 will work. They are not a part of the system, but
+serve as background material</p></div>
 <h3 id="sample">Sample</h3><div style="clear:left"></div>
 <div class="paragraph"><p>This directory contains a hand crafted HTML + Javascript sample that allows the user to edit a df_document
 in place.</p></div>
@@ -787,85 +876,6 @@ fill the new row with default data.</p></div>
 <div class="paragraph"><p>No validation occurs in this sample</p></div>
 <div class="paragraph"><p>Work is complete on this sample and the work appears in the sample2 directory.  To build the samples
 run sample2/bin/compile.sh and open the output/df_form1.html files in your browser</p></div>
-<h3 id="_data_structures">Data Structures</h3><div style="clear:left"></div>
-<div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
-It is persisted to and from the permanent document store.</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>df_document = {
-  _id: 1,
-  name: 'Dave',
-  dob: '1969-10-22',
-  employees: [
-    { name: 'Sue', dob: '1970-01-01' },
-    { name: 'Bob', dob: '1972-11-03' }
-  ]
-}</tt></pre>
-</div></div>
-<div class="paragraph" id="df_form"><p>df_form stores the presentation layout of the forms:</p></div>
-<div class="literalblock">
-<div class="content">
-<pre><tt>df_form {
-  sections[
-    {
-      heading: 'Personal details',
-      fields: [
-        { field: 'name', type: 'string' },
-        { field: 'dob', type: 'date'},
-      ],
-      navigation: {
-        down: 'Employee List',
-      }
-    },
-    {
-      heading: 'Employee List',
-      fields: [
-        { field: 'employees[]', type: 'list' },
-      ]
-      navigation: {
-        up: 'Personal details',
-      }
-    }
-    {
-      heading: 'Employee',
-      fields: [
-        { field: 'employees[].name', type: 'string' },
-        { field: 'employees[].dob', type: 'date'},
-      ]
-      navigation: {
-        left: 'Employee list',
-      }
-    }
-  ]
-}</tt></pre>
-</div></div>
-<div class="paragraph"><p>When the page is rendered the user is presented with a rendering of the initial section.
-Each section renders data within the document at a specific position, gathering all of its data
-from the information at that point.</p></div>
-<div class="paragraph"><p>The df_document stores information in a containment hierarchy, so the <em>root</em> document contains
-fields <em>name</em>, <em>dob</em> and a list of <em>employees</em>.  Each employee is contained within a specific position
-within the employees list, ie: employee[0] is Sue, and employee[1] is Bob.</p></div>
-<div class="paragraph"><p>When rendering any section the system keeps track of where it is within the hierarchy of the df_document
-so that the page knows where to get its data from.  A stack of pointers into the df_document is
-maintained in the variable df_document_ptr_stack. The df_document_ptr_stack is initialised with a pointer to the
-df_document (root), and if the user navigates to a section that represents a child record, then a
-pointer to that specific data item eg: employee[1], is pushed on the df_document_ptr_stack.</p></div>
-<div class="paragraph"><p>Whenever a section is rendered, it is passed the top value in the df_document_ptr_stack as its data context,
-that it uses to retrieves its data from.</p></div>
-<div class="paragraph"><p>The page renderer also evaluates the df_document_ptr stack, and will display a navigation button
-( &#8592; ) to return the user from a child record, to the section that displays the list of child records.</p></div>
-<div class="paragraph"><p>The section displaying the list of child records participates, by pushing the correct data context onto
-the df_document_ptr_stack when the user navigates to a child record.</p></div>
-<div class="paragraph"><p>The stack will start empty ie:
-  df_document_ptr_stack = [']
-which indicates that we are looking at the root of df_document</p></div>
-<div class="paragraph"><p>If I have:
-  df_document_ptr_stack = [<em>employees[0]</em>]
-then I will be working on the first employee child record</p></div>
-</div>
-<h2 id="workflow_module">Workflow Module</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Used to define the steps that the form data travels through, etc</p></div>
 </div>
 <h2 id="_glossary">Glossary</h2>
 <div class="sectionbody">
@@ -888,7 +898,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-11-24 07:13:31 NZDT
+Last updated 2011-11-28 07:08:30 NZDT
 </div>
 </div>
 </body>
