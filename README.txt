@@ -4,6 +4,7 @@ David Oram
 v1.0, 2011-09
 :doctype: book
 
+:toc:
 
 [preface]
 Preface
@@ -340,7 +341,61 @@ No validation occurs in this sample
 Work is complete on this sample and the work appears in the sample2 directory.  To build the samples
 run sample2/bin/compile.sh and open the output/df_form1.html files in your browser
 
+[[sample3]]
+Sample3
+~~~~~~~
+The purpose of this sample is to explore the design and implementation of a REST api to be used by clients.
 
+The following API is implemented by the server:
+
+Note that the 'Type' column refers to the concept as described in "The REST API design Book, Mark Masse"
+
+.sample3 URLs
+[width="60%",options="header"]
+|=================================================================
+| URL                             | Type    | Description
+| http:/host/documents         |Collection | List of all documents
+| http:/host/documents/1       |Document | Access an individual document
+| http:/host/documents/delete-all  |Controller | Delete all documents
+|=================================================================
+
+The client from sample 2 is enhanced to interact with the server, initially to get the list of documents,
+and then to retrieve a specific document instance, edit it and save.
+
+The server component is built using 'Zappa', the coffescript wrapper around 'Express' for node.js.
+
+Source
+ \server                  - server components
+    \node_modules         - node modules (not commiited to GIT) 
+       \connect
+       \express
+       \jasmine-node
+       \underscore
+       \zappa
+
+Installation
+^^^^^^^^^^^^
+- Install coffescript
+- Install rbtenjin
+- Install node
+- Install npm
+- cd sample3/server
+- npm install <module>  (for each of the modules listed above)
+
+Execution
+^^^^^^^^^
+- bin/run-server
+
+[appendix]
+Part 4 - Appendix
+=================
+
+[[issues]]
+Issues
+------
+- In the samples, it was obvious that the runtime generation of templates was very slow.
+  Can potentially speed up the generation of templates at runtime by pre-compiling them & storing the
+  precompiled form either on the browser or server.
 
 
 [glossary]
