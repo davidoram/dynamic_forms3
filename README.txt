@@ -366,7 +366,7 @@ The server component is built using 'Zappa', the coffescript wrapper around 'Exp
 
 Source
  \server                  - server components
-    \node_modules         - node modules (not commiited to GIT) 
+    \node_modules         - node modules 
        \connect
        \express
        \jasmine-node
@@ -380,7 +380,6 @@ Installation
 - Install node
 - Install npm
 - cd sample3/server
-- npm install <module>  (for each of the modules listed above)
 
 Execution
 ^^^^^^^^^
