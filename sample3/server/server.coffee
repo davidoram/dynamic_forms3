@@ -6,15 +6,15 @@ db = nano.use(db_name)
 app = require('zappa') ->
 
 	@get '/test': ->
-		db_status = 'unknown'
-		db.get '', (error, body, headers) ->
+		db.get '', (error, body, headers) =>
 			if error
-				console.log ' got error!'
-				db_status = 'error'
+				console.log 'couch - error'
+				console.log body
+				@response.local 'couchStatus', 'error'
 			else
-				db_status = 'ok'
-		"Zappa version #{app.zappa.version}<br>" +
-		"CouchDB: #{db_status}<br>"
+				console.log 'couch - ok'
+				@response.local 'couchStatus', 'ok'
+			@response.send "Zappa version #{app.zappa.version}<br>Couch #{@response.local 'couchStatus'}"
 
 	# Ping the server, & return its status regarding connectivity
 	# to couchdb etc
