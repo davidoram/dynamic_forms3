@@ -5,22 +5,17 @@ db = nano.use(db_name)
 
 app = require('zappa') ->
 
-	@get '/test': ->
-		db.get '', (error, body, headers) =>
-			if error
-				console.log 'couch - error'
-				console.log body
-				@response.local 'couchStatus', 'error'
-			else
-				console.log 'couch - ok'
-				@response.local 'couchStatus', 'ok'
-			@response.send "Zappa version #{app.zappa.version}<br>Couch #{@response.local 'couchStatus'}"
-
 	# Ping the server, & return its status regarding connectivity
 	# to couchdb etc
-	@get '/': '''
-		Sample3 server ok
-		'''
+	@get '/': ->
+		@response.write "Zappa #{app.zappa.version} - ok\n"
+		db.get '', (error, body, headers) =>
+			if error
+				@response.write "Couch db #{db_name} - error.\n"
+				@response.write "Type: 'curl -X PUT http://127.0.0.1:5984/#{db_name}' to create db\n"
+			else
+				@response.write "Couch db #{db_name} - ok\n"
+			@response.end "Done\n"
 
 	# Return a collection of Documents
 	#
