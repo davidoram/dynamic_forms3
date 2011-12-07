@@ -1,0 +1,14 @@
+{
+  "_id" : "_design/documents",
+  "views" : {
+    "all" : {
+      "map" : "   function(doc) {
+                    var type, key;
+                    if (doc.key && doc.type && doc.type === 'document') {
+                    	emit(key);
+                    }
+                  }"
+    
+    }
+  }
+}
