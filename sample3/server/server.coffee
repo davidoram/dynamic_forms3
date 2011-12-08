@@ -4,6 +4,10 @@ db_name = 'sample3'
 db = nano.use(db_name)
 
 app = require('zappa') ->
+	
+	# Server static files in 'public' dir
+	# eg http://localhost:3000/test_static.html 
+	@use @app.router, static: __dirname + '/public'
 
 	# Ping the server, & return its status regarding connectivity
 	# to couchdb etc
