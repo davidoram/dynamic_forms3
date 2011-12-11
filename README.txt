@@ -364,14 +364,52 @@ and then to retrieve a specific document instance, edit it and save.
 
 The server component is built using 'Zappa', the coffescript wrapper around 'Express' for node.js.
 
+--------------------------------------------------
 Source
- \server                  - server components
-    \node_modules         - node modules 
-       \connect
-       \express
-       \jasmine-node
-       \underscore
-       \zappa
+ /server                  - server components
+    /node_modules         - node modules 
+       /connect
+       /express
+       /jasmine-node
+       /underscore
+       /zappa
+    /public               - static files served form here
+--------------------------------------------------
+
+Execution
+^^^^^^^^^
+The process that occurs is as follows:
+Note that 'sample3' is the name of the CouchDB database
+
+|=================================================================
+| Browser|Node|CouchDB
+| open http://localhost:3000/index.html |Render & return template for document_list page | 
+|onDOMReady||
+||get /documents|
+|||get /sample3/_design/documents/_view/all
+|||Returns a list of document <uuids>
+|replace contents of <div> with list ||
+|||
+|click 'add' a new document||
+||post /documents (no data)|
+||inject an empty document into df_form.html as df_document|
+|edit and click save||
+||post /documents (with data)|
+|||post /sample3/documents
+|||returns new document <uuid>
+|||get /sample3/<uuid>
+||inject document data into df_form1.html as df_document|
+|||
+|click link to 'edit' a document ||
+||get /documents/<uuid>|
+|||get /sample3/<uuid>
+||inject document data into df_form1.html as df_document|
+|edit and click save||
+||put /documents/<uuid>|
+|||put /sample3/<uuid>
+|=================================================================
+
+
 
 Installation
 ^^^^^^^^^^^^
@@ -383,7 +421,12 @@ Installation
 
 Execution
 ^^^^^^^^^
-- bin/run-server
+. Start couchdb
+  .. as per http://couchdb.apache.org/
+. Setup db
+  .. bin/migrate
+. Run the app server
+  .. bin/run-server
 
 [appendix]
 Part 4 - Appendix
