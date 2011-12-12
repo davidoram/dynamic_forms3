@@ -363,6 +363,8 @@ The client from sample 2 is enhanced to interact with the server, initially to g
 and then to retrieve a specific document instance, edit it and save.
 
 The server component is built using 'Zappa', the coffescript wrapper around 'Express' for node.js.
+The server returns the same data in different formats based on the contents of the HTTP Header
+value 'Content-Type'
 
 --------------------------------------------------
 Source

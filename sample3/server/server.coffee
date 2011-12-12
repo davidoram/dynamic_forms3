@@ -12,14 +12,16 @@ app = require('zappa') ->
 	# Ping the server, & return its status regarding connectivity
 	# to couchdb etc
 	@get '/': ->
-		@response.write "Zappa #{app.zappa.version} - ok\n"
+		
+		@response.write "<html><body>Zappa #{app.zappa.version} - ok<br>"
 		db.get '', (error, body, headers) =>
 			if error
-				@response.write "Couch db #{db_name} - error.\n"
-				@response.write "Type: 'curl -X PUT http://127.0.0.1:5984/#{db_name}' to create db\n"
+				@response.write "Couch db #{db_name} - error.<br>"
+				@response.write "Execute ./bin/migrate to create db and views etc<br>"
 			else
-				@response.write "Couch db #{db_name} - ok\n"
-			@response.end "Done\n"
+				@response.write "Couch db #{db_name} - ok<br>"
+				@response.write "<a href='/documents'>Documents</a><br>"
+			@response.end "Done</body></html>"
 
 	# Return a collection of Documents
 	#
@@ -28,15 +30,24 @@ app = require('zappa') ->
 	# - pageStartIndex - 0 based index of 1st row to return
 	#
 	# Request Headers
-	# - Content-Type - the only acceptable value is 'application/json'
+	# - Content-Type - the acceptable values are 'application/json', or 'text/html'
 	# 
 	# Response Headers
-	# - Content-Type is 'application/json'
+	# - Content-Type is 'application/json' or 'text/html'
 	# - Last-Modified will contain a Timestamp indicating the last time when this resource changed ie:"now"
 	# - ETag will contain an opaque string that identifies the version of the response entity
-	@get '/documents': '''
-		TODO - Return a list of documents
-		'''
+	#
+	# To test: curl --header "Content-Type:application/json" http://localhost:3000/documents
+	#
+	@get '/documents': ->
+		if @request.is('html')
+			"html"
+		else if @request.is('json')
+			"json"
+		else
+			@response.send "Not Acceptable,'Content-Type' header value: '#{@request.header('Content-Type', '')}' not acceptable, try 'application/json', or 'text/html'", 
+			               406
+		
 	# Create a new Document
 	@post '/documents': '''
 		TODO - create new doc, Return document id
