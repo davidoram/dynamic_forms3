@@ -5,6 +5,9 @@ db = nano.use(db_name)
 
 app = require('zappa') ->
 	
+	# HTML output will use the default coffekup layout
+	@enable 'default layout'
+	
 	# Server static files in 'public' dir
 	# eg http://localhost:3000/test_static.html 
 	@use @app.router, static: __dirname + '/public'
@@ -30,22 +33,29 @@ app = require('zappa') ->
 	# - pageStartIndex - 0 based index of 1st row to return
 	#
 	# Request Headers
-	# - Content-Type - the acceptable values are 'application/json', or 'text/html'
+	# - Accept - the acceptable values are 'application/json', or 'text/html'
 	# 
 	# Response Headers
-	# - Content-Type is 'application/json' or 'text/html'
+	# - Accept is 'application/json' or 'text/html'
 	# - Last-Modified will contain a Timestamp indicating the last time when this resource changed ie:"now"
 	# - ETag will contain an opaque string that identifies the version of the response entity
 	#
-	# To test: curl --header "Content-Type:application/json" http://localhost:3000/documents
+	# To test: 
+	#   curl --header "Accept:application/json" http://localhost:3000/documents to see JSON
+	#   or run from broswer to see HTML
 	#
 	@get '/documents': ->
-		if @request.is('html')
-			"html"
-		else if @request.is('json')
-			"json"
-		else
-			@response.send "Not Acceptable,'Content-Type' header value: '#{@request.header('Content-Type', '')}' not acceptable, try 'application/json', or 'text/html'", 
+		# TODO - Add appropriate user rights etc here to the query
+		db.view 'documents', 'all', (error, body, headers) =>
+			if error
+				@response.send { error: 'Error retrieving documents ' + error}, 504 
+			else
+				if @request.accepts('html')
+					@render documents: { data: body }
+				else if @request.accepts('json')
+					@response.send "TODO - json"
+				else
+					@response.send "Unable to generate content to match the 'Accept' header: '#{@request.header('Accept', '')}', try 'application/json', or 'text/html'", 
 			               406
 		
 	# Create a new Document
