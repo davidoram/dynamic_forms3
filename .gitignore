@@ -15,3 +15,11 @@ sample2/coffee/df_core.coffee
 sample2/output/df_form1.html
 
 sample3/server/node_modules/connect/lib/http.js
+
+sample2/.DS_Store
+
+sample3/.DS_Store
+
+sample3/server/.DS_Store
+
+.DS_Store

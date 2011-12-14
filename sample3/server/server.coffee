@@ -51,7 +51,7 @@ app = require('zappa') ->
 				@response.send { error: 'Error retrieving documents ' + error}, 504 
 			else
 				if @request.accepts('html')
-					@render documents: { data: body }
+					@render documents: { data: body, scripts: [ 'jquery-1.6.2'] }
 				else if @request.accepts('json')
 					@response.send "TODO - json"
 				else
