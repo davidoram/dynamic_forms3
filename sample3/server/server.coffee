@@ -40,6 +40,36 @@ app = require('zappa') ->
 	# - Last-Modified will contain a Timestamp indicating the last time when this resource changed ie:"now"
 	# - ETag will contain an opaque string that identifies the version of the response entity
 	#
+	#
+	# Response Body
+	#	{
+	#		"search-results": [
+	#			"name":		"Application to fund medical research"
+	#			{
+	#				"href"	:	"http://api.host.com/documents/87",
+	#				"rel"	:	"edit"	
+	#			},
+	#			{
+	#				"href"	:	"http://api.host.com/documents/1887",
+	#				"rel"	:	"edit"	
+	#			},
+	#		] 
+	#		"links" : {
+	#			"self" :  { 
+	#				"href" :	"http://api.host.com/documents?pageSize=10&pageStartIndex=3"
+	#				"rel"  :	"self" 
+	#			}, 
+	#			"next" :  { 
+	#				"href" :	"http://api.host.com/documents?pageSize=10&pageStartIndex=4"
+	#				"rel"  :	"next" 
+	#			}, 
+	#			"prev" :  { 
+	#				"href" :	"http://api.host.com/documents?pageSize=10&pageStartIndex=2"
+	#				"rel"  :	"prev" 
+	#			},
+	#		}
+	#	}
+	# For rel values see http://www.iana.org/assignments/link-relations/link-relations.xml#link-relations-2
 	# To test: 
 	#   curl --header "Accept:application/json" http://localhost:3000/documents to see JSON
 	#   or run from broswer to see HTML
@@ -53,13 +83,30 @@ app = require('zappa') ->
 				if @request.accepts('html')
 					@render documents: { data: body, scripts: [ 'jquery-1.6.2'] }
 				else if @request.accepts('json')
-					@response.send "TODO - json"
+					@response.send body
 				else
 					@response.send "Unable to generate content to match the 'Accept' header: '#{@request.header('Accept', '')}', try 'application/json', or 'text/html'", 
 			               406
 		
-	# Create a new Document
-	@post '/documents': '''
+	# Create a new Document, that has the appropriate default fields etc 
+	# but is not yet saved to the database
+	#
+	# Query parameters:
+	# - n/a
+	#
+	# Request Headers
+	# - Accept - the acceptable values are 'application/json', or 'text/html'
+	# 
+	# Response Headers
+	# - Accept is 'application/json' or 'text/html'
+	# - Last-Modified will contain a Timestamp indicating the last time when this resource changed ie:"now"
+	# - ETag will contain an opaque string that identifies the version of the response entity
+	#
+	# To test: 
+	#   curl --header "Accept:application/json" http://localhost:3000/documents to see JSON
+	#   or run from broswer to see HTML
+	#
+	@get '/documents/generate': '''
 		TODO - create new doc, Return document id
 		'''
 		
