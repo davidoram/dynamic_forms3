@@ -10,11 +10,60 @@ v1.0, 2011-09
 Preface
 -------
 The design of dynamic_forms3 (df3)  has been preceded by the authors thought into the attendant problems of
-designing, implementing maintaining and enhancing procurement systems, along with the considerable
-influence of colleagues at the MSI.
+designing, implementing maintaining and enhancing procurement systems.
 
-Part 1 - Overview
+Part 1 - Business Case
+======================
+
+Introduction
+------------
+
+What makes df3 different?
+
+Df3 is not a form designer, or a procurement system per se. Df3 is positioned as a system that helps
+helps organisations who seek to run 'organised competitions' that provide 'funds, awards, or prizes' 
+to their own customers.
+
+One example of this is an organisation like the 'Royal Society' that regularly supports scientists,
+by awarding funds, awards and pries in recognition of their effort.
+
+Different awards are offered, and each goes through a process of:
+
+. design - deciding what information should be captured, for this award.
+. collection - opening the award up for public submissions, during which time the scientists will apply 
+to the award.
+. evaluation - during this period the various submissions are graded or scored, and a decision is made to 
+award or not
+. success - For those applications whom the decision is made to award, they enter this phase when extra 
+business processes may be applied eg: contracts signed, payments made,monitoring occurs etc
+. failure - For those applications that are not awarded. Some business process may be applied post this 
+happening such as follow up correspondence.
+    
+
+At a higher level, there are often procedures and regulations that must be adhered to when running awards.
+For example any system must answer the following questions must :
+
+. Compliance with regulations. eg: auditing of decisions 
+. Compilance with procedures eg: tracking of correspondence
+. Audit requirements. eg: Reporting monies awarded
+   
+
+Df3 addresses all of these concerns by allowing the 'wants' to be easily addressed, and making the 'musts'
+be done automatically.
+
+How:
+
+. By providing vertical market solutions - targeting the market needs.
+. Allowing for hosted and cloud solutions - satisfying smaller scale solutions that look for hosting, 
+ alongside those who wish to 'own' their own data
+. Minimizing the time to 'set up' awards - by using templates and pre-built processes, thus reducing setup costs
+. Simplifying the process of applying. - allowing web access, thus reducing compliance costs
+
+
+Part 2 - Overview
 =================
+
+   
 
 Approach
 --------
@@ -165,7 +214,7 @@ and is presented with an (initially) empty <<df_document>> which they edit throu
 created when the form was published.  
 
 
-Part 2 - Detailed Design
+Part 3 - Detailed Design
 ========================
 
 [[data_structures]]
@@ -411,6 +460,7 @@ Note that 'sample3' is the name of the CouchDB database
 |||put /sample3/<uuid>
 |=================================================================
 
+The work on this sample has been abandoned while a re-think of the fundamental ideas behind the system occurs.
 
 
 Installation

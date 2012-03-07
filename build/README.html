@@ -564,10 +564,96 @@ footnotes: function () {
 <h2 id="_preface">Preface</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The design of dynamic_forms3 (df3)  has been preceded by the authors thought into the attendant problems of
-designing, implementing maintaining and enhancing procurement systems, along with the considerable
-influence of colleagues at the MSI.</p></div>
+designing, implementing maintaining and enhancing procurement systems.</p></div>
 </div>
-<h1 id="_part_1_overview">Part 1 - Overview</h1>
+<h1 id="_part_1_business_case">Part 1 - Business Case</h1>
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>What makes df3 different?</p></div>
+<div class="paragraph"><p>Df3 is not a form designer, or a procurement system per se. Df3 is positioned as a system that helps
+helps organisations who seek to run <em>organised competitions</em> that provide <em>funds, awards, or prizes</em>
+to their own customers.</p></div>
+<div class="paragraph"><p>One example of this is an organisation like the <em>Royal Society</em> that regularly supports scientists,
+by awarding funds, awards and pries in recognition of their effort.</p></div>
+<div class="paragraph"><p>Different awards are offered, and each goes through a process of:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+design - deciding what information should be captured, for this award.
+</p>
+</li>
+<li>
+<p>
+collection - opening the award up for public submissions, during which time the scientists will apply
+to the award.
+</p>
+</li>
+<li>
+<p>
+evaluation - during this period the various submissions are graded or scored, and a decision is made to
+award or not
+</p>
+</li>
+<li>
+<p>
+success - For those applications whom the decision is made to award, they enter this phase when extra
+business processes may be applied eg: contracts signed, payments made,monitoring occurs etc
+</p>
+</li>
+<li>
+<p>
+failure - For those applications that are not awarded. Some business process may be applied post this
+happening such as follow up correspondence.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>At a higher level, there are often procedures and regulations that must be adhered to when running awards.
+For example any system must answer the following questions must :</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Compliance with regulations. eg: auditing of decisions
+</p>
+</li>
+<li>
+<p>
+Compilance with procedures eg: tracking of correspondence
+</p>
+</li>
+<li>
+<p>
+Audit requirements. eg: Reporting monies awarded
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Df3 addresses all of these concerns by allowing the <em>wants</em> to be easily addressed, and making the <em>musts</em>
+be done automatically.</p></div>
+<div class="paragraph"><p>How:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+By providing vertical market solutions - targeting the market needs.
+</p>
+</li>
+<li>
+<p>
+Allowing for hosted and cloud solutions - satisfying smaller scale solutions that look for hosting,
+ alongside those who wish to <em>own</em> their own data
+</p>
+</li>
+<li>
+<p>
+Minimizing the time to <em>set up</em> awards - by using templates and pre-built processes, thus reducing setup costs
+</p>
+</li>
+<li>
+<p>
+Simplifying the process of applying. - allowing web access, thus reducing compliance costs
+</p>
+</li>
+</ol></div>
+</div>
+<h1 id="_part_2_overview">Part 2 - Overview</h1>
 <h2 id="_approach">Approach</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
@@ -723,7 +809,7 @@ The user selects from a list of published forms, choosing the one which fulfills
 and is presented with an (initially) empty <a href="#df_document">[df_document]</a> which they edit through the HTML pages
 created when the form was published.</p></div>
 </div>
-<h1 id="_part_2_detailed_design">Part 2 - Detailed Design</h1>
+<h1 id="_part_3_detailed_design">Part 3 - Detailed Design</h1>
 <h2 id="data_structures">Data Structures</h2>
 <div class="sectionbody">
 <div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
@@ -809,7 +895,7 @@ recolves the collection indices using the index_cache, thus <em>employees[employ
 <div class="paragraph"><p>Used to define the steps that the form data travels through, etc</p></div>
 </div>
 <h1 id="_part_3_samples">Part 3 - Samples</h1>
-<h2 id="_introduction">Introduction</h2>
+<h2 id="_introduction_2">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The samples serve to prove the concepts behind df3 will work. They are not a part of the system, but
 serve as background material</p></div>
@@ -921,7 +1007,9 @@ cellspacing="0" cellpadding="4">
 </div>
 <div class="paragraph"><p>The client from sample 2 is enhanced to interact with the server, initially to get the list of documents,
 and then to retrieve a specific document instance, edit it and save.</p></div>
-<div class="paragraph"><p>The server component is built using <em>Zappa</em>, the coffescript wrapper around <em>Express</em> for node.js.</p></div>
+<div class="paragraph"><p>The server component is built using <em>Zappa</em>, the coffescript wrapper around <em>Express</em> for node.js.
+The server returns the same data in different formats based on the contents of the HTTP Header
+value <em>Content-Type</em></p></div>
 <div class="listingblock">
 <div class="content">
 <pre><tt>Source
@@ -1074,6 +1162,7 @@ cellspacing="0" cellpadding="4">
 </tbody>
 </table>
 </div>
+<div class="paragraph"><p>The work on this sample has been abandoned while a re-think of the fundamental ideas behind the system occurs.</p></div>
 <h4 id="_installation">Installation</h4>
 <div class="ulist"><ul>
 <li>
@@ -1178,7 +1267,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2011-12-12 07:13:15 NZDT
+Last updated 2012-03-07 17:15:46 NZDT
 </div>
 </div>
 </body>
