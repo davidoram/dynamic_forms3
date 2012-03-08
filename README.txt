@@ -266,15 +266,6 @@ It is persisted to and from the permanent document store.
 
 [[df_schema]]
 df_schema stores the data representation:
-It is persisted to and from the document store, and is used both in the process of designing forms
-and also in reporting across the entire set of df_documents.  When reporting, common data elements can be
-identified across multiple schemas and then incorporated into reports. This provides flexibility when
-designing the schemas for example two schemas could both have a field with id 'classification-code', in
-schema 1 it might be at the root level of the schema and thus captured at 0..1 times, however in schema 2
-it might be inside a 'list' of repeating fields, and therefore might be captured 0..N times. A report
-over 'classification-code' wouldn't care if where it was stored, but would extract it in the appropriate way
-for each document instance. 
-
 
  {
   "id": "schema1",
@@ -314,6 +305,18 @@ for each document instance.
     	},
     ]	
   }
+
+It is persisted to and from the document store, and is used both in the process of designing forms
+and also in reporting across the entire set of df_documents.  
+
+When reporting, common data elements can be
+identified across multiple schemas and then incorporated into reports. This provides flexibility when
+designing the schemas for example two schemas could both have a field with id 'classification-code', in
+schema 1 it might be at the root level of the schema and thus captured at 0..1 times, however in schema 2
+it might be inside a 'list' of repeating fields, and therefore might be captured 0..N times. A report
+over 'classification-code' wouldn't care if where it was stored, but would extract it in the appropriate way
+for each document instance. 
+
 
 [[df_form]]
 df_form stores the presentation layout of the forms:
