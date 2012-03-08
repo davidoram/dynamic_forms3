@@ -887,44 +887,47 @@ schema 1 it might be at the root level of the schema and thus captured at 0..1 t
 it might be inside a <em>list</em> of repeating fields, and therefore might be captured 0..N times. A report
 over <em>classification-code</em> wouldn&#8217;t care if where it was stored, but would extract it in the appropriate way
 for each document instance.</p></div>
-<div class="paragraph"><p>{
-  "id": "schema1",
-  "version": "1",
-        "fields": [
-        {
-          "label": "Name",
-          "id": "name",
-          "type": "string"
-        },
-        {
-          "label": "Num kids",
-          "id": "kids",
-          "type": "integer"
-        },
-        {
-          "label": "Comment",
-          "id": "comment",
-          "type": "text"
-        },
-        {
-          "label": "Employee List",
-          "id": "employee_list",
-          "type": "list"
-          "fields": [
-            {
-              "label": "Name",
-              "id": "name",
-              "type": "string"
-            },
-            {
-              "label": "Date of Birth",
-              "id": "dob",
-              "type": "date"
-            }
-          ]
-        },
-    ]
-  }</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>{
+ "id": "schema1",
+ "version": "1",
+       "fields": [
+       {
+         "label": "Name",
+         "id": "name",
+         "type": "string"
+       },
+       {
+         "label": "Num kids",
+         "id": "kids",
+         "type": "integer"
+       },
+       {
+         "label": "Comment",
+         "id": "comment",
+         "type": "text"
+       },
+       {
+         "label": "Employee List",
+         "id": "employee_list",
+         "type": "list"
+         "fields": [
+           {
+             "label": "Name",
+             "id": "name",
+             "type": "string"
+           },
+           {
+             "label": "Date of Birth",
+             "id": "dob",
+             "type": "date"
+           }
+         ]
+       },
+   ]
+ }</tt></pre>
+</div></div>
 <div class="paragraph" id="df_form"><p>df_form stores the presentation layout of the forms:</p></div>
 <div class="literalblock">
 <div class="content">
@@ -1365,7 +1368,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-03-08 17:07:02 NZDT
+Last updated 2012-03-08 17:08:03 NZDT
 </div>
 </div>
 </body>

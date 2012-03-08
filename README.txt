@@ -276,7 +276,7 @@ over 'classification-code' wouldn't care if where it was stored, but would extra
 for each document instance. 
 
 
-{
+ {
   "id": "schema1",
   "version": "1",
 	"fields": [ 
