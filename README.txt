@@ -172,7 +172,7 @@ The system is modular with independent modules being responsible for different p
 
 [[schema_builder_module]]
 Schema Designer Module
----------------------
+----------------------
 The Schema design captures the type data that will be stored. The result is a <<df_schema>>  data structure.
 
 Schemas capture the data elements, including the hierarchical structure. 
@@ -198,7 +198,8 @@ See <<df_schema>
 
 [[form_builder_module]]
 Form Builder Module
---------------
+-------------------
+
 The builder provides the components to build forms interactively or using an API.
 
 The result of building forms is a  <<df_form>> data structure
@@ -207,8 +208,8 @@ The result of building forms is a  <<df_form>> data structure
 [[compiler_module]]
 Compiler Module
 ---------------
-Takes the form as built in the <<form_builder_module>> & turns it into a different representation such as HTML and javascript 
-or static PDF 
+Takes the <<df_form>> data as built in the <<form_builder_module>>, & turns it into a different 
+representation such as HTML and javascript or static PDF 
 
 [[runtime_module]]
 Runtime Module
@@ -220,15 +221,20 @@ Process
 ~~~~~~~
 The steps required to allow users to enter data on forms is as follows:
 
-. Design the Form
+. Design the schema
+. Build a Form
 . Publish the Form
 . Create a Document instance using the Form
 
 If we break the steps down as follows:
 
-Design the form
-This involes the user designing the data elements to be captured on the form, along with their
-data types and so forth. The result is a <<df_form>> document.
+[[design_the_schema]]
+The user decides on the data elements to be captured, along with their
+data types and so forth. The result is a <<df_schema>> document.
+
+[[build_a_form]]
+The user creates a form, from the data elements on a <<df_schema>> document. 
+The result is a <<df_form>> document.
 
 [[publish_the_form]]
 Publish the form
