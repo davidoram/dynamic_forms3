@@ -87,9 +87,9 @@ Permanent Data is stored in CouchDB.
 
 Clients run JavaScript enabled browsers.
 
-  +---------+               +-----------+               +---------+
-  | Browser |    <------>   | Webserver |    <------>   | CouchDB |
-  +---------+               +-----------+               +---------+
+  +---------+               +-----------+               +-------------+
+  | Browser |    <------>   | Webserver |    <------>   | Document DB |
+  +---------+               +-----------+               +-------------+
                                  |
                                  |
                                  v
@@ -98,7 +98,8 @@ Clients run JavaScript enabled browsers.
 
 Documents
 ~~~~~~~~~
-Each Document instance is represented by a JSON document, which in turn is stored in CouchDB. The process of editing a Document 
+Each Document instance is represented by a JSON document, which in turn is stored in a document db (CouchDB). 
+The process of editing a Document 
 involves retrieving the Document, and Form from CouchDB, then rendering the Document through the Form and updating changes
 to the Document instance on the browser, and finally sending the edited Document back to stored in CouchDB.
 
@@ -158,7 +159,8 @@ The system is modular with independent modules being responsible for different p
 [width="60%",options="header"]
 |==============================================
 | Module          | Description
-| builder         | Form design
+| schema          | Schema design
+| form            | Form design
 | compiler        | Compiles the form design, into a static representation that uses the runtime
 | runtime         | Renders forms with their data, retrieving and saving data back to the datastore
 | workflow        | Defines the steps that the information moves through
@@ -168,18 +170,44 @@ The system is modular with independent modules being responsible for different p
 
 
 
-[[builder_module]]
-Builder Module
+[[schema_builder_module]]
+Schema Designer Module
+---------------------
+The Schema design captures the type data that will be stored. The result is a <<df_schema>>  data structure.
+
+Schemas capture the data elements, including the hierarchical structure. 
+
+Data elements on the schema can be Lists or Basic data types.
+
+Basic data types include:
+
+. Integer
+. Money
+. Date
+. Time
+. String
+. Text 
+
+Lists are ordered collections of other data elements
+
+Schemas are versioned. 
+
+Forms are built based on a specific schema. 
+
+See <<df_schema>
+
+[[form_builder_module]]
+Form Builder Module
 --------------
 The builder provides the components to build forms interactively or using an API.
 
-The result of building forms is a <<df_form>> data structure
+The result of building forms is a  <<df_form>> data structure
 
 
 [[compiler_module]]
 Compiler Module
 ---------------
-Takes the form as built in the <<builder_module>> & turns it into a different representation such as HTML and javascript 
+Takes the form as built in the <<form_builder_module>> & turns it into a different representation such as HTML and javascript 
 or static PDF 
 
 [[runtime_module]]
@@ -234,6 +262,57 @@ It is persisted to and from the permanent document store.
       { name: 'Sue', dob: '1970-01-01' },
       { name: 'Bob', dob: '1972-11-03' }
     ]
+  }
+
+[[df_schema]]
+df_schema stores the data representation:
+It is persisted to and from the document store, and is used both in the process of designing forms
+and also in reporting across the entire set of df_documents.  When reporting, common data elements can be
+identified across multiple schemas and then incorporated into reports. This provides flexibility when
+designing the schemas for example two schemas could both have a field with id 'classification-code', in
+schema 1 it might be at the root level of the schema and thus captured at 0..1 times, however in schema 2
+it might be inside a 'list' of repeating fields, and therefore might be captured 0..N times. A report
+over 'classification-code' wouldn't care if where it was stored, but would extract it in the appropriate way
+for each document instance. 
+
+
+{
+  "id": "schema1",
+  "version": "1",
+	"fields": [ 
+    	{ 
+    	  "label": "Name",
+    	  "id": "name",
+    	  "type": "string"
+    	},
+    	{ 
+    	  "label": "Num kids",
+    	  "id": "kids",
+    	  "type": "integer"
+    	},
+    	{ 
+    	  "label": "Comment",
+    	  "id": "comment",
+    	  "type": "text"
+    	},
+    	{ 
+    	  "label": "Employee List",
+    	  "id": "employee_list",
+    	  "type": "list"
+    	  "fields": [
+    	    {
+    	      "label": "Name",
+    	      "id": "name",
+    	      "type": "string"
+    	    },
+    	    {
+    	      "label": "Date of Birth",
+    	      "id": "dob",
+    	      "type": "date"
+    	    }
+    	  ]
+    	},
+    ]	
   }
 
 [[df_form]]

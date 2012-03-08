@@ -671,16 +671,17 @@ Document instances that conform to the layout and structure dictated in the Form
 <div class="paragraph"><p>Clients run JavaScript enabled browsers.</p></div>
 <div class="literalblock">
 <div class="content">
-<pre><tt>+---------+               +-----------+               +---------+
-| Browser |    &lt;------&gt;   | Webserver |    &lt;------&gt;   | CouchDB |
-+---------+               +-----------+               +---------+
+<pre><tt>+---------+               +-----------+               +-------------+
+| Browser |    &lt;------&gt;   | Webserver |    &lt;------&gt;   | Document DB |
++---------+               +-----------+               +-------------+
                                |
                                |
                                v
                              Static files, generated files</tt></pre>
 </div></div>
 <h3 id="_documents">Documents</h3><div style="clear:left"></div>
-<div class="paragraph"><p>Each Document instance is represented by a JSON document, which in turn is stored in CouchDB. The process of editing a Document
+<div class="paragraph"><p>Each Document instance is represented by a JSON document, which in turn is stored in a document db (CouchDB).
+The process of editing a Document
 involves retrieving the Document, and Form from CouchDB, then rendering the Document through the Form and updating changes
 to the Document instance on the browser, and finally sending the edited Document back to stored in CouchDB.</p></div>
 <h3 id="_forms">Forms</h3><div style="clear:left"></div>
@@ -741,7 +742,11 @@ cellspacing="0" cellpadding="4">
 </thead>
 <tbody>
 <tr>
-<td align="left" valign="top"><p class="table">builder</p></td>
+<td align="left" valign="top"><p class="table">schema</p></td>
+<td align="left" valign="top"><p class="table">Schema design</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">form</p></td>
 <td align="left" valign="top"><p class="table">Form design</p></td>
 </tr>
 <tr>
@@ -764,14 +769,60 @@ cellspacing="0" cellpadding="4">
 </table>
 </div>
 </div>
-<h2 id="builder_module">Builder Module</h2>
+<h2 id="schema_builder_module">Schema Designer Module</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The builder provides the components to build forms interactively or using an API.</p></div>
-<div class="paragraph"><p>The result of building forms is a <a href="#df_form">[df_form]</a> data structure</p></div>
-</div>
-<h2 id="compiler_module">Compiler Module</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Takes the form as built in the <a href="#builder_module">[builder_module]</a> &amp; turns it into a different representation such as HTML and javascript
+<div class="paragraph"><p>The Schema design captures the type data that will be stored. The result is a <a href="#df_schema">[df_schema]</a>  data structure.</p></div>
+<div class="paragraph"><p>Schemas capture the data elements, including the hierarchical structure.</p></div>
+<div class="paragraph"><p>Data elements on the schema can be Lists or Basic data types.</p></div>
+<div class="paragraph"><p>Basic data types include:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Integer
+</p>
+</li>
+<li>
+<p>
+Money
+</p>
+</li>
+<li>
+<p>
+Date
+</p>
+</li>
+<li>
+<p>
+Time
+</p>
+</li>
+<li>
+<p>
+String
+</p>
+</li>
+<li>
+<p>
+Text
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Lists are ordered collections of other data elements</p></div>
+<div class="paragraph"><p>Schemas are versioned.</p></div>
+<div class="paragraph"><p>Forms are built based on a specific schema.</p></div>
+<div class="paragraph"><p>See &lt;&lt;df_schema&gt;</p></div>
+<div class="paragraph" id="form_builder_module"><p>Form Builder Module</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>The builder provides the components to build forms interactively or using an API.
+
+The result of building forms is a  &lt;&lt;df_form&gt;&gt; data structure
+
+
+[[compiler_module]]
+Compiler Module</tt></pre>
+</div></div>
+<div class="paragraph"><p>Takes the form as built in the <a href="#form_builder_module">[form_builder_module]</a> &amp; turns it into a different representation such as HTML and javascript
 or static PDF</p></div>
 </div>
 <h2 id="runtime_module">Runtime Module</h2>
@@ -827,6 +878,53 @@ It is persisted to and from the permanent document store.</p></div>
   ]
 }</tt></pre>
 </div></div>
+<div class="paragraph" id="df_schema"><p>df_schema stores the data representation:
+It is persisted to and from the document store, and is used both in the process of designing forms
+and also in reporting across the entire set of df_documents.  When reporting, common data elements can be
+identified across multiple schemas and then incorporated into reports. This provides flexibility when
+designing the schemas for example two schemas could both have a field with id <em>classification-code</em>, in
+schema 1 it might be at the root level of the schema and thus captured at 0..1 times, however in schema 2
+it might be inside a <em>list</em> of repeating fields, and therefore might be captured 0..N times. A report
+over <em>classification-code</em> wouldn&#8217;t care if where it was stored, but would extract it in the appropriate way
+for each document instance.</p></div>
+<div class="paragraph"><p>{
+  "id": "schema1",
+  "version": "1",
+        "fields": [
+        {
+          "label": "Name",
+          "id": "name",
+          "type": "string"
+        },
+        {
+          "label": "Num kids",
+          "id": "kids",
+          "type": "integer"
+        },
+        {
+          "label": "Comment",
+          "id": "comment",
+          "type": "text"
+        },
+        {
+          "label": "Employee List",
+          "id": "employee_list",
+          "type": "list"
+          "fields": [
+            {
+              "label": "Name",
+              "id": "name",
+              "type": "string"
+            },
+            {
+              "label": "Date of Birth",
+              "id": "dob",
+              "type": "date"
+            }
+          ]
+        },
+    ]
+  }</p></div>
 <div class="paragraph" id="df_form"><p>df_form stores the presentation layout of the forms:</p></div>
 <div class="literalblock">
 <div class="content">
@@ -1267,7 +1365,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-03-07 17:15:46 NZDT
+Last updated 2012-03-08 17:07:02 NZDT
 </div>
 </div>
 </body>
