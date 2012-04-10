@@ -1337,15 +1337,47 @@ bin/run-server
 </ol></div>
 <h3 id="sample4">Sample4</h3><div style="clear:left"></div>
 <div class="paragraph"><p>The purpose of this sample is to explore the design and implementation of a design that uses the concept
-of progressive enhancement. The idea being that making the system with the following layers
-- HTML - content
-- CSS - presentation
-- JavaScript - client side scripting</p></div>
-<div class="paragraph"><p>But being able to have the site work with just HTML, or HTML and CSS will help to
-- Keep the content, presentation and scripting separate
-- Enable search engine traversal
-- Enhance accessibility on a wider range of devices and to screen readers etc
-- Ease scripted testing</p></div>
+of progressive enhancement. The idea being that making the system with the following layers:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+HTML - content
+</p>
+</li>
+<li>
+<p>
+CSS - presentation
+</p>
+</li>
+<li>
+<p>
+JavaScript - client side scripting
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>But being able to have the site work with just HTML, or HTML and CSS will help to:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Keep the content, presentation and scripting separate
+</p>
+</li>
+<li>
+<p>
+Enable search engine traversal
+</p>
+</li>
+<li>
+<p>
+Enhance accessibility on a wider range of devices and to screen readers etc
+</p>
+</li>
+<li>
+<p>
+Ease scripted testing
+</p>
+</li>
+</ul></div>
 </div>
 <h2 id="_approach_2">Approach</h2>
 <div class="sectionbody">
@@ -1360,20 +1392,62 @@ Content
 Navigation controls
 Footer</tt></pre>
 </div></div>
-<div class="paragraph"><p>The URL will reflect the position within the document eg:
-- <a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;/path/&lt;data path&gt;/sections/&lt;section id&gt;/</p></div>
-<div class="paragraph"><p>Where:
-- &lt;doc id&gt; identifies the document eg: 123
-- &lt;data path&gt; provides the full path of traversal required to reach the data eg: employee_list/0
-- &lt;section id&gt; lists the section to be displayed eg: section_3</p></div>
-<div class="paragraph"><p>When the server recieves a request it works as follows:
-- Parse the URL &#8658; doc_id, data_path, section_id
-- Retrieve the document with doc_id
-- Does template for the that section? No? - generate template for that section
-- Retrieve template for that section
-- Create a rendering context with the data from the data_path - containing all the data from the data path
+<div class="paragraph"><p>The URL will reflect the position within the document eg:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;/path/&lt;data path&gt;/sections/&lt;section id&gt;/
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Where:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+&lt;doc id&gt; identifies the document eg: 123
+</p>
+</li>
+<li>
+<p>
+&lt;data path&gt; provides the full path of traversal required to reach the data eg: employee_list/0
+</p>
+</li>
+<li>
+<p>
+&lt;section id&gt; lists the section to be displayed eg: section_3
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>When the server recieves a request it works as follows:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Parse the URL &#8658; doc_id, data_path, section_id
+</p>
+</li>
+<li>
+<p>
+Retrieve the document with doc_id
+</p>
+</li>
+<li>
+<p>
+Does template for the that section? No? - generate template for that section
+</p>
+</li>
+<li>
+<p>
+Retrieve template for that section
+</p>
+</li>
+<li>
+<p>
+Create a rendering context with the data from the data_path - containing all the data from the data path
   and all of the data up the tree to the root - where keys dont clash.
-  To make all of the data unambiguously keyed, construct keys as follows:</p></div>
+  To make all of the data unambiguously keyed, construct keys as follows:
+</p>
+</li>
+</ul></div>
 <div class="tableblock">
 <table rules="all"
 width="100%"
@@ -1443,7 +1517,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-04-10 17:12:21 NZDT
+Last updated 2012-04-11 06:59:52 NZDT
 </div>
 </div>
 </body>

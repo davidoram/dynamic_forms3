@@ -573,12 +573,14 @@ Execution
 Sample4
 ~~~~~~~
 The purpose of this sample is to explore the design and implementation of a design that uses the concept
-of progressive enhancement. The idea being that making the system with the following layers
+of progressive enhancement. The idea being that making the system with the following layers:
+
 - HTML - content
 - CSS - presentation
 - JavaScript - client side scripting
 
-But being able to have the site work with just HTML, or HTML and CSS will help to
+But being able to have the site work with just HTML, or HTML and CSS will help to:
+
 - Keep the content, presentation and scripting separate 
 - Enable search engine traversal
 - Enhance accessibility on a wider range of devices and to screen readers etc
@@ -599,14 +601,17 @@ The page is layed out as follows:
  Footer
 
 The URL will reflect the position within the document eg:
+
 - http://localhost/documents/<doc id>/path/<data path>/sections/<section id>/
 
 Where:
+
 - <doc id> identifies the document eg: 123
 - <data path> provides the full path of traversal required to reach the data eg: employee_list/0
 - <section id> lists the section to be displayed eg: section_3
 
 When the server recieves a request it works as follows:
+
 - Parse the URL => doc_id, data_path, section_id
 - Retrieve the document with doc_id
 - Does template for the that section? No? - generate template for that section 
