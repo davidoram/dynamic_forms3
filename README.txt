@@ -568,6 +568,62 @@ Execution
 . Run the app server
   .. bin/run-server
 
+
+[[sample4]]
+Sample4
+~~~~~~~
+The purpose of this sample is to explore the design and implementation of a design that uses the concept
+of progressive enhancement. The idea being that making the system with the following layers
+- HTML - content
+- CSS - presentation
+- JavaScript - client side scripting
+
+But being able to have the site work with just HTML, or HTML and CSS will help to
+- Keep the content, presentation and scripting separate 
+- Enable search engine traversal
+- Enhance accessibility on a wider range of devices and to screen readers etc
+- Ease scripted testing
+
+Approach
+--------
+
+Client requests will be page based, so when the user traverses from the a list of items, into
+a specific instance, that will require a new request
+
+The page is layed out as follows:
+
+ Header
+ Navigation controls
+ Content
+ Navigation controls
+ Footer
+
+The URL will reflect the position within the document eg:
+- http://localhost/documents/<doc id>/path/<data path>/sections/<section id>/
+
+Where:
+- <doc id> identifies the document eg: 123
+- <data path> provides the full path of traversal required to reach the data eg: employee_list/0
+- <section id> lists the section to be displayed eg: section_3
+
+When the server recieves a request it works as follows:
+- Parse the URL => doc_id, data_path, section_id
+- Retrieve the document with doc_id
+- Does template for the that section? No? - generate template for that section 
+- Retrieve template for that section
+- Create a rendering context with the data from the data_path - containing all the data from the data path
+  and all of the data up the tree to the root - where keys dont clash.
+  To make all of the data unambiguously keyed, construct keys as follows:
+
+|===============================
+|identifier|example|description
+|<primitive data type>|name|a primitive data type element at the root of the df_schema
+|<list element>|employee_list[0].name|a primitive element that sits at the 1st element of the employee_list array
+||employee_list[0].[children[3].dob|A more complex example
+|===============================
+  
+   
+
 [appendix]
 Part 4 - Appendix
 =================
