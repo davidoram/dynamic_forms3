@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# Run 'db' migrations into couchdb
+THIS_DIR=`dirname $0`
+
+URL=http://127.0.0.1:5984
+DB=sample4
+
+# Where design documents live
+DESIGN_DOC=${THIS_DIR}
+
+# Del existing db
+curl -X DELETE ${URL}/${DB}
+
+# Create db
+curl -X PUT ${URL}/${DB}
+
+# Load view for all 'Documents'
+curl -X PUT ${URL}/${DB}/_design/documents -d @${DESIGN_DOC}/documents.json
+
+echo "Test view - all Documents"
+curl ${URL}/${DB}/_design/documents/_view/all
+
+# Load view for all 'Schemas'
+curl -X PUT ${URL}/${DB}/_design/schemas -d @${DESIGN_DOC}/schemas.json
+
+echo "Test view - all Schemas"
+curl ${URL}/${DB}/_design/schemas/_view/all

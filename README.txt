@@ -255,26 +255,35 @@ Part 3 - Detailed Design
 Data Structures
 ---------------
 
+
 [[df_document]]
+df_document
+~~~~~~~~~~~
+
 df_document stores the document instance data, in JSON format. 
 It is persisted to and from the permanent document store.
 
-  df_document = {
-    _id: 1,
-    name: 'Dave',
-    kids: '3',
-    comment: 'Developer',
-    employees: [
-      { name: 'Sue', dob: '1970-01-01' },
-      { name: 'Bob', dob: '1972-11-03' }
+  {
+    "_id": "1",
+    "df_type": "document",
+    "name": "Dave",
+    "kids": "3",
+    "comment": "Developer",
+    "employees": [
+      { "name": "Sue", "dob": "1970-01-01" },
+      { "name": "Bob", "dob": "1972-12-24" },
     ]
   }
 
 [[df_schema]]
+df_schema
+~~~~~~~~~
+
 df_schema stores the data representation:
 
  {
-  "id": "schema1",
+  "_id": "schema1",
+  "df_type", "schema"
   "version": "1",
 	"fields": [ 
     	{ 
@@ -325,10 +334,14 @@ for each document instance.
 
 
 [[df_form]]
+df_form
+~~~~~~~
+
 df_form stores the presentation layout of the forms:
 
   {
   	"id": "form1",
+    "df_type", "form"
   	"sections": [ 
   		{
   			"id": "section_1",

@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Run the server
+THIS_DIR=`dirname $0`
+# For development mode - use shotgun to reload with each request
+shotgun ${THIS_DIR}/sample4.rb
+#ruby ${THIS_DIR}/sample4.rb

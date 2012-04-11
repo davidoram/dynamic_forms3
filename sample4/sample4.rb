@@ -2,10 +2,15 @@
 require 'rubygems'
 require 'sinatra'
 require 'mustache'
+require 'pathname'
+this_dir = Pathname.new(File.dirname(__FILE__))
 
 helpers do
   def render(template, context = {})
-    Mustache.render_file("#{File.dirname($0)}/templates/#{template}", context)
+    this_dir = Pathname.new(File.dirname(__FILE__))
+    m = Mustache.new
+    m.template_file = "#{this_dir}/templates/#{template}.mustache"
+    m.render(context)
   end
 end
 

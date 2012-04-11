@@ -866,26 +866,30 @@ created when the form was published.</p></div>
 <h1 id="_part_3_detailed_design">Part 3 - Detailed Design</h1>
 <h2 id="data_structures">Data Structures</h2>
 <div class="sectionbody">
-<div class="paragraph" id="df_document"><p>df_document stores the document instance data, in JSON format.
+<h3 id="df_document">df_document</h3><div style="clear:left"></div>
+<div class="paragraph"><p>df_document stores the document instance data, in JSON format.
 It is persisted to and from the permanent document store.</p></div>
 <div class="literalblock">
 <div class="content">
-<pre><tt>df_document = {
-  _id: 1,
-  name: 'Dave',
-  kids: '3',
-  comment: 'Developer',
-  employees: [
-    { name: 'Sue', dob: '1970-01-01' },
-    { name: 'Bob', dob: '1972-11-03' }
+<pre><tt>{
+  "_id": "1",
+  "df_type": "document",
+  "name": "Dave",
+  "kids": "3",
+  "comment": "Developer",
+  "employees": [
+    { "name": "Sue", "dob": "1970-01-01" },
+    { "name": "Bob", "dob": "1972-12-24" },
   ]
 }</tt></pre>
 </div></div>
-<div class="paragraph" id="df_schema"><p>df_schema stores the data representation:</p></div>
+<h3 id="df_schema">df_schema</h3><div style="clear:left"></div>
+<div class="paragraph"><p>df_schema stores the data representation:</p></div>
 <div class="literalblock">
 <div class="content">
 <pre><tt>{
- "id": "schema1",
+ "_id": "schema1",
+ "df_type", "schema"
  "version": "1",
        "fields": [
        {
@@ -932,11 +936,13 @@ schema 1 it might be at the root level of the schema and thus captured at 0..1 t
 it might be inside a <em>list</em> of repeating fields, and therefore might be captured 0..N times. A report
 over <em>classification-code</em> wouldn&#8217;t care if where it was stored, but would extract it in the appropriate way
 for each document instance.</p></div>
-<div class="paragraph" id="df_form"><p>df_form stores the presentation layout of the forms:</p></div>
+<h3 id="df_form">df_form</h3><div style="clear:left"></div>
+<div class="paragraph"><p>df_form stores the presentation layout of the forms:</p></div>
 <div class="literalblock">
 <div class="content">
 <pre><tt>{
       "id": "form1",
+  "df_type", "form"
       "sections": [
               {
                       "id": "section_1",
@@ -1517,7 +1523,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-04-11 06:59:52 NZDT
+Last updated 2012-04-12 07:14:42 NZDT
 </div>
 </div>
 </body>
