@@ -1,4 +1,4 @@
-"fields": [ 
+[ 
    	{ 
    	  "label": "Name",
    	  "id": "name",
@@ -17,7 +17,7 @@
    	{ 
    	  "label": "Employee List",
    	  "id": "employee_list",
-   	  "type": "list"
+   	  "type": "list",
    	  "fields": [
    	    {
    	      "label": "Name",
@@ -30,5 +30,5 @@
    	      "type": "date"
    	    }
    	  ]
-   	},
+   	}
 ]	
