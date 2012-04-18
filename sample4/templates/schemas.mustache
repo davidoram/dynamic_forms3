@@ -1,0 +1,16 @@
+<html>
+<body>
+<h1>Schemas</h1>
+<ul>
+  {{# schemas}}
+  <li><a href="/schemas/{{.}}">{{.}}</a>
+    <form action="/schemas/{{.}}" method="post">
+      <input type="hidden" name="_method" value="DELETE">
+      <button name="submit">Delete</button>
+    </form>
+  </li>
+  {{/ schemas}}
+</ul>
+<a href="/schemas/add">Add</a>
+</body>
+</html>

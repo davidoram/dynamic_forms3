@@ -304,7 +304,7 @@ df_schema stores the data representation:
     	{ 
     	  "label": "Employee List",
     	  "id": "employee_list",
-    	  "type": "list"
+    	  "type": "list",
     	  "fields": [
     	    {
     	      "label": "Name",
@@ -317,7 +317,7 @@ df_schema stores the data representation:
     	      "type": "date"
     	    }
     	  ]
-    	},
+    	}
     ]	
   }
 

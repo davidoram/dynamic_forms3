@@ -2,6 +2,9 @@
 #
 # Run the server
 THIS_DIR=`dirname $0`
+
+# Needs Ruby 1.9
+
 # For development mode - use shotgun to reload with each request
-shotgun ${THIS_DIR}/sample4.rb
-#ruby ${THIS_DIR}/sample4.rb
+shotgun ${THIS_DIR}/../sample4.rb
+#macruby ${THIS_DIR}/../sample4.rb

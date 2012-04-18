@@ -1,0 +1,34 @@
+"fields": [ 
+   	{ 
+   	  "label": "Name",
+   	  "id": "name",
+   	  "type": "string"
+   	},
+   	{ 
+   	  "label": "Num kids",
+   	  "id": "kids",
+   	  "type": "integer"
+   	},
+   	{ 
+   	  "label": "Comment",
+   	  "id": "comment",
+   	  "type": "text"
+   	},
+   	{ 
+   	  "label": "Employee List",
+   	  "id": "employee_list",
+   	  "type": "list"
+   	  "fields": [
+   	    {
+   	      "label": "Name",
+   	      "id": "name",
+   	      "type": "string"
+   	    },
+   	    {
+   	      "label": "Date of Birth",
+   	      "id": "dob",
+   	      "type": "date"
+   	    }
+   	  ]
+   	},
+]	

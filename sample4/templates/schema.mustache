@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1>Schema Edit</h1>
+
+{{# errors}}
+<p style="color: red;">{{errors}}</p>
+{{/ errors}}
+
+<form method="post" action="/schemas">
+{<br/>
+  "df_id": "<input name="df_id" type="text" readonly value="{{df_id}}">"<br/>
+  "df_type": "<input name="df_type" type="text" readonly value="{{df_type}}">"<br/>
+  "df_fields:"<textarea  name="df_fields" rows="20" cols="60">{{df_fields}}</textarea><br/>
+}
+  <button type="submit">Save</button>
+</form>
+<a href="/schemas">Cancel</a>
+
+</body>
+</html>

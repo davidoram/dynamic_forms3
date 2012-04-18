@@ -1,0 +1,36 @@
+	"sections": [ 
+		{
+			"id": "section_1",
+			"heading": "Personal details",
+			"type": "form",
+			"fields":  [
+				{ "label": "Name", "json_path": "$.name", "type": "string" },
+		        { "label": "Num kids", "json_path": "$.kids",  "type": "integer" },				 		
+		        { "label": "Comment", "json_path": "$.comment",  "type": "text" }				 		
+			],
+			"section_navigation": { "down": "section_2" }
+		},
+		{
+			"id": "section_2",
+			"heading": "Employee List",
+			"type": "list",
+			"index":"employees_index",
+			"json_path": "$.employees",
+			"child_section_id": "section_3",
+			"columns":  [
+				{ "label": "Name", "json_path": "name", "type": "string" },
+		        { "label": "Date of birth", "json_path": "dob",  "type": "date" }
+			],
+			"section_navigation": { "up" : "section_1" }
+		},
+		{
+			"id": "section_3",
+			"heading": "Employee",
+			"type": "form",
+			"fields":  [
+		    	{ "json_path": "$.employees[employees_index].name", "type": "string" },
+		        { "json_path": "$.employees[employees_index].dob", "type": "date" }
+			],
+			"section_navigation": { "left": "section_2" }
+		}
+	] 
