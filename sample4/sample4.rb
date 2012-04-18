@@ -11,6 +11,7 @@ db = TestDatabase.new('/tmp/sample4_data')
 
 configure do
   # Allow _method=DELETE magic to allow PUT or DELETE in forms
+  # Put a hidden field callled _method with value DELETE or PUT
   enable :method_override
 end
 
@@ -49,7 +50,7 @@ end
 #
 
 
-# Retrive list of schemas
+# Retrive list 
 get '/schemas' do
   keys = db.list 'schema' #get_list_of('schema')
   pp keys
@@ -58,7 +59,8 @@ get '/schemas' do
     }
 end
 
-# Add or update a schema
+# Add or update 
+# TODO - Should get df_id from URL for update
 post '/schemas' do
   if is_valid_json? @params['df_fields']
     id = db.create_or_update( {
@@ -77,16 +79,16 @@ post '/schemas' do
   end
 end
 
-# Retrieve the form required to add a schema
+# Form to add
 get '/schemas/add' do
   render 'schema', { 
       :df_id => '', 
       :df_type => 'schema',
-      :df_fields => {}  
+      :df_fields => nil 
     }
 end
 
-# View an existng schema
+# View 
 get '/schemas/:id' do
   doc = db.get(params[:id])
   render 'schema', { 
@@ -96,7 +98,7 @@ get '/schemas/:id' do
     }
 end
 
-# Delete a schema
+# Delete
 delete '/schemas/:id' do
   db.delete(params[:id])
   redirect to('/schemas')
@@ -107,10 +109,63 @@ end
 # Form related URLS
 #
 
-
+# Retrive list 
 get '/forms' do
-  'TODO - get documents'
+  keys = db.list 'form'
+  pp keys
+  render 'forms', { 
+      :forms => keys  
+    }
 end
+
+# Add or update
+post '/forms' do
+  if is_valid_json? @params['df_sections']
+    id = db.create_or_update( {
+        'df_id' => @params['df_id'],
+        'df_type' => @params['df_type'],
+        'df_sections' => JSON.parse(@params['df_sections'])
+    })
+    redirect to('/forms')
+  else
+    render 'form', {
+        :df_id => @params['df_id'], 
+        :df_type => @params['df_type'], 
+        :df_sections => @params['df_sections'],
+        :errors => ["Invalid JSON"]  
+      }
+  end
+end
+
+# Form to add new
+get '/forms/add' do
+  render 'form', { 
+      :df_id => '', 
+      :df_type => 'form',
+      :df_sections => nil  
+    }
+end
+
+# View existng
+get '/forms/:id' do
+  doc = db.get(params[:id])
+  render 'form', { 
+      :df_id => doc['df_id'], 
+      :df_type => doc['df_type'], 
+      :df_sections => JSON.pretty_generate(doc['df_sections'])
+    }
+end
+
+# Delete 
+delete '/forms/:id' do
+  db.delete(params[:id])
+  redirect to('/forms')
+end
+
+
+
+# ------------------------------
+
 
 get '/documents' do
   'TODO - get documents'
