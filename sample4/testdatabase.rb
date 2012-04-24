@@ -79,5 +79,18 @@ class TestDatabase
     end
     list
   end
+  
+  def get_form_for_schema(df_schema_id, df_path = [])
+    pp "get_form_for_schema #{df_schema}, #{df_path}"
+    
+    # Get the forms that could be used for our schema
+    forms = []
+    list('forms').each do |form_id|
+      form = get(form_id)
+      forms << form if form[:df_schema_id] == df_schema_id
+    end
+      
+    # Retrieve the form with the closest path
+  end
 
 end

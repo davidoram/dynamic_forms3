@@ -4,10 +4,11 @@ require 'sinatra'
 require 'mustache'
 require 'pathname'
 require 'pp'
-require_relative 'testdatabase'
+require_relative 'schema'
+require_relative 'builder'
 
-this_dir = Pathname.new(File.dirname(__FILE__))
-db = TestDatabase.new('/tmp/sample4_data')
+# For building html
+builder = Builder.new
 
 configure do
   # Allow _method=DELETE magic to allow PUT or DELETE in forms
@@ -23,15 +24,6 @@ helpers do
     m.render(context)
   end
   
-  def is_valid_json?(document)
-    begin
-      JSON.parse(document)
-      true
-    rescue JSON::ParserError => ex
-      pp ex
-      false
-    end
-  end
 end
 
 #----------------------------------------------------------------
@@ -44,6 +36,42 @@ get '/' do
   render 'index', { :name => 'bob' }
 end
 
+# ------------------------------
+#
+# Document related URLs
+#
+
+get '/documents' do
+  docs = Documents.find(:all)
+  render 'documents', { 
+      :documents => docs
+    }
+end
+
+# Form to add
+post '/documents/add' do
+  schema = Schema.find(params[:df_schema])
+  path = []
+  section = Form.get_form_for_schema(params[:df_schema])
+  document = {}
+  builder.render(schema, section, path, document)
+end
+
+# Retrieve a  document for editing
+# :id - documents df_id
+# :path - URL encoding of the path to navgate within the data document to provide the correct
+#         data context eg: '/employees/0'
+# :section - identifier of the section to render with
+get '/documents/:id/path/:path/section/:section' do
+  'TODO - get data for section'
+end
+
+# Update a document
+post '/documents/:id/path/:path/section/:section' do
+  'TODO - update doc'
+end
+
+
 #----------------------------------------------------------------
 #
 # Schema related URLS
@@ -52,55 +80,58 @@ end
 
 # Retrive list 
 get '/schemas' do
-  keys = db.list 'schema' #get_list_of('schema')
-  pp keys
+  keys = Schema.find(:all)
   render 'schemas', { 
       :schemas => keys  
     }
 end
 
-# Add or update 
-# TODO - Should get df_id from URL for update
-post '/schemas' do
-  if is_valid_json? @params['df_fields']
-    id = db.create_or_update( {
-        'df_id' => @params['df_id'],
-        'df_type' => @params['df_type'],
-        'df_fields' => JSON.parse(@params['df_fields'])
-    })
+# Add
+post '/schemas/' do
+  schema = Schema.new({
+      :df_fields => @params['df_fields'] })
+  if schema.save
     redirect to('/schemas')
   else
-    render 'schema', {
-        :df_id => @params['df_id'], 
-        :df_type => @params['df_type'], 
-        :df_fields => @params['df_fields'],
-        :errors => ["Invalid JSON"]  
-      }
+    render 'edit_schema', {
+      :df_fields => @params['df_fields'],
+      :errors    => schema.errors.values
+    }
   end
 end
 
+# Update
+post '/schemas/:id' do
+  schema = Schema.find(params[:id])
+  schema.df_fields = @params['df_fields']
+  if schema.save
+    redirect to('/schemas')
+  else
+    render 'edit_schema', {
+      :id        => params[:id], 
+      :df_fields => @params['df_fields'],
+      :errors    => schema.errors.values
+    }
+  end
+end
+
+
 # Form to add
 get '/schemas/add' do
-  render 'schema', { 
-      :df_id => '', 
-      :df_type => 'schema',
-      :df_fields => nil 
-    }
+  render 'edit_schema', { }
 end
 
 # View 
 get '/schemas/:id' do
-  doc = db.get(params[:id])
-  render 'schema', { 
-      :df_id => doc['df_id'], 
-      :df_type => doc['df_type'], 
-      :df_fields => JSON.pretty_generate(doc['df_fields'])
-    }
+  pp "Get schema #{params[:id]}"
+  doc = Schema.find(params[:id])
+  pp doc
+  render 'edit_schema', doc.attributes
 end
 
 # Delete
 delete '/schemas/:id' do
-  db.delete(params[:id])
+  Schema.delete(params[:id])
   redirect to('/schemas')
 end
 
@@ -111,26 +142,28 @@ end
 
 # Retrive list 
 get '/forms' do
-  keys = db.list 'form'
-  pp keys
+  forms = Form.find(:all)
   render 'forms', { 
-      :forms => keys  
+      :forms => forms  
     }
 end
 
 # Add or update
 post '/forms' do
-  if is_valid_json? @params['df_sections']
+  #if is_valid_json? @params['df_sections']
+  begin
     id = db.create_or_update( {
         'df_id' => @params['df_id'],
         'df_type' => @params['df_type'],
+        'df_schema_id' => @params['df_schema_id'],
         'df_sections' => JSON.parse(@params['df_sections'])
     })
     redirect to('/forms')
-  else
+  rescue RecordInvalid => error
     render 'form', {
         :df_id => @params['df_id'], 
         :df_type => @params['df_type'], 
+        :df_schema_id => @params['df_schema_id'],
         :df_sections => @params['df_sections'],
         :errors => ["Invalid JSON"]  
       }
@@ -148,25 +181,20 @@ end
 
 # View existng
 get '/forms/:id' do
-  doc = db.get(params[:id])
+  doc = Form.find(params[:id])
   render 'form', { 
       :df_id => doc['df_id'], 
       :df_type => doc['df_type'], 
+      :df_schema_id => doc['df_schema_id'],
       :df_sections => JSON.pretty_generate(doc['df_sections'])
     }
 end
 
 # Delete 
 delete '/forms/:id' do
-  db.delete(params[:id])
+  Form.delete(params[:id])
   redirect to('/forms')
 end
 
 
 
-# ------------------------------
-
-
-get '/documents' do
-  'TODO - get documents'
-end

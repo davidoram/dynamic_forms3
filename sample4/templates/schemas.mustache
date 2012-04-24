@@ -3,8 +3,8 @@
 <h1>Schemas</h1>
 <ul>
   {{# schemas}}
-  <li><a href="/schemas/{{.}}">{{.}}</a>
-    <form action="/schemas/{{.}}" method="post">
+  <li><a href="/schemas/{{id}}">{{id}}</a>
+    <form action="/schemas/{{id}}" method="post">
       <input type="hidden" name="_method" value="DELETE">
       <button name="submit">Delete</button>
     </form>

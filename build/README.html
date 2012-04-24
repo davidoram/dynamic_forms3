@@ -1398,29 +1398,35 @@ Content
 Navigation controls
 Footer</tt></pre>
 </div></div>
-<div class="paragraph"><p>The URL will reflect the position within the document eg:</p></div>
+<div class="paragraph"><p>Key problem:
+- Associating document &#8594; view &#8594; schema</p></div>
+<div class="paragraph"><p>Given that the focus of the system is the document, it drives everything.</p></div>
+<div class="paragraph"><p>The document is the resource identified primarily within the URL.</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-<a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;/path/&lt;data path&gt;/sections/&lt;section id&gt;/
+<a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Where:</p></div>
+<div class="paragraph"><p>A path to data is provided by an optional &lt;data path&gt; element in the URL. This takes on
+secondary importance to the document id.</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-&lt;doc id&gt; identifies the document eg: 123
+<a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;/&lt;data path&gt;
 </p>
 </li>
+</ul></div>
+<div class="paragraph"><p>The view is determined by the users permissions to the data.
+A mapping is prepared from schema &#8594; sections
+Each section has within it access rights to the data that can be viewed &amp; the user roles that can
+have access to that view.  If the user needs a specific view onto the data that can be transmitted as a
+query parameter in the URL eg:</p></div>
+<div class="ulist"><ul>
 <li>
 <p>
-&lt;data path&gt; provides the full path of traversal required to reach the data eg: employee_list/0
-</p>
-</li>
-<li>
-<p>
-&lt;section id&gt; lists the section to be displayed eg: section_3
+<a href="http://localhost/documents/&lt;doc">http://localhost/documents/&lt;doc</a> id&gt;/&lt;data path&gt;?view=&lt;view id&gt;
 </p>
 </li>
 </ul></div>
@@ -1428,7 +1434,7 @@ Footer</tt></pre>
 <div class="ulist"><ul>
 <li>
 <p>
-Parse the URL &#8658; doc_id, data_path, section_id
+Parse the URL &#8658; doc_id (mandatory), data_path (optional)
 </p>
 </li>
 <li>
@@ -1438,54 +1444,35 @@ Retrieve the document with doc_id
 </li>
 <li>
 <p>
-Does template for the that section? No? - generate template for that section
+Retrieve the schema for the document
 </p>
 </li>
 <li>
 <p>
-Retrieve template for that section
+Query the database for all the sections for that schema
 </p>
 </li>
 <li>
 <p>
-Create a rendering context with the data from the data_path - containing all the data from the data path
-  and all of the data up the tree to the root - where keys dont clash.
-  To make all of the data unambiguously keyed, construct keys as follows:
+Find the best template that matches, based on data_path &amp; user permissions
+</p>
+</li>
+<li>
+<p>
+No Match - 404
+</p>
+</li>
+<li>
+<p>
+Retrieve template
+</p>
+</li>
+<li>
+<p>
+Render the page&#8201;&#8212;&#8201;Correct subset of data from the document at the data_path&#8201;&#8212;&#8201;Get/build the template for section&#8201;&#8212;&#8201;Render the data into the template &amp; return HTML&#8201;&#8212;&#8201;Fields named to match schema id names
 </p>
 </li>
 </ul></div>
-<div class="tableblock">
-<table rules="all"
-width="100%"
-frame="border"
-cellspacing="0" cellpadding="4">
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-<tbody>
-<tr>
-<td align="left" valign="top"><p class="table">identifier</p></td>
-<td align="left" valign="top"><p class="table">example</p></td>
-<td align="left" valign="top"><p class="table">description</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">&lt;primitive data type&gt;</p></td>
-<td align="left" valign="top"><p class="table">name</p></td>
-<td align="left" valign="top"><p class="table">a primitive data type element at the root of the df_schema</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table">&lt;list element&gt;</p></td>
-<td align="left" valign="top"><p class="table">employee_list[0].name</p></td>
-<td align="left" valign="top"><p class="table">a primitive element that sits at the 1st element of the employee_list array</p></td>
-</tr>
-<tr>
-<td align="left" valign="top"><p class="table"></p></td>
-<td align="left" valign="top"><p class="table">employee_list[0].[children[3].dob</p></td>
-<td align="left" valign="top"><p class="table">A more complex example</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 <h2 id="_part_4_appendix">Appendix A: Part 4 - Appendix</h2>
 <div class="sectionbody">
@@ -1523,7 +1510,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-04-18 06:58:57 NZDT
+Last updated 2012-04-19 17:14:37 NZDT
 </div>
 </div>
 </body>

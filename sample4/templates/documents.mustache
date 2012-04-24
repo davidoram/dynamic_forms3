@@ -1,0 +1,28 @@
+<html>
+<body>
+<h1>Documents</h1>
+<ul>
+  {{# documents}}
+  <li><a href="/documents/{{.}}/path">{{.}}</a>
+    <form action="/documents/{{.}}" method="post">
+      <input type="hidden" name="_method" value="DELETE">
+      <button name="submit">Delete</button>
+    </form>
+  </li>
+  {{/ documents}}
+  
+  {{^ documents}}
+  <li>None</li>
+  {{/ documents}}
+</ul>
+<form action="/documents/add" method="post">
+  <select name="df_schema">
+    <option value =''>Select...</option>
+    {{# schemas }}
+    <option value="{{.}}">{{.}}</option>
+    {{/ schemas }}
+  </select>
+  <button name="submit">Add</button>
+</form>
+</body>
+</html>

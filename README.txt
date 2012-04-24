@@ -613,33 +613,44 @@ The page is layed out as follows:
  Navigation controls
  Footer
 
-The URL will reflect the position within the document eg:
+Key problem:
+- Associating document -> view -> schema
 
-- http://localhost/documents/<doc id>/path/<data path>/sections/<section id>/
+Given that the focus of the system is the document, it drives everything.
 
-Where:
+The document is the resource identified primarily within the URL.
 
-- <doc id> identifies the document eg: 123
-- <data path> provides the full path of traversal required to reach the data eg: employee_list/0
-- <section id> lists the section to be displayed eg: section_3
+- http://localhost/documents/<doc id>
+
+A path to data is provided by an optional <data path> element in the URL. This takes on
+secondary importance to the document id.
+
+- http://localhost/documents/<doc id>/<data path>
+
+The view is determined by the users permissions to the data.
+A mapping is prepared from schema -> sections
+Each section has within it access rights to the data that can be viewed & the user roles that can
+have access to that view.  If the user needs a specific view onto the data that can be transmitted as a
+query parameter in the URL eg:
+
+- http://localhost/documents/<doc id>/<data path>?view=<view id>
+
 
 When the server recieves a request it works as follows:
 
-- Parse the URL => doc_id, data_path, section_id
+- Parse the URL => doc_id (mandatory), data_path (optional)
 - Retrieve the document with doc_id
-- Does template for the that section? No? - generate template for that section 
-- Retrieve template for that section
-- Create a rendering context with the data from the data_path - containing all the data from the data path
-  and all of the data up the tree to the root - where keys dont clash.
-  To make all of the data unambiguously keyed, construct keys as follows:
+- Retrieve the schema for the document
+- Query the database for all the sections for that schema 
+- Find the best template that matches, based on data_path & user permissions
+- No Match - 404
+- Retrieve template
+- Render the page
+-- Correct subset of data from the document at the data_path
+-- Get/build the template for section
+-- Render the data into the template & return HTML
+-- Fields named to match schema id names
 
-|===============================
-|identifier|example|description
-|<primitive data type>|name|a primitive data type element at the root of the df_schema
-|<list element>|employee_list[0].name|a primitive element that sits at the 1st element of the employee_list array
-||employee_list[0].[children[3].dob|A more complex example
-|===============================
-  
    
 
 [appendix]
