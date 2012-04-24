@@ -13,7 +13,7 @@ ActiveRecord::Schema.define do
   end
 
   create_table :forms do |table|
-     table.column :df_section, :text
+     table.column :df_sections, :text
   end
 
   # Relationship table

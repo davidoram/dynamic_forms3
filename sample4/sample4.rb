@@ -142,55 +142,57 @@ end
 
 # Retrive list 
 get '/forms' do
-  forms = Form.find(:all)
+  keys = Form.find(:all)
+  pp keys
   render 'forms', { 
-      :forms => forms  
+      :forms => keys  
     }
 end
 
-# Add or update
-post '/forms' do
-  #if is_valid_json? @params['df_sections']
-  begin
-    id = db.create_or_update( {
-        'df_id' => @params['df_id'],
-        'df_type' => @params['df_type'],
-        'df_schema_id' => @params['df_schema_id'],
-        'df_sections' => JSON.parse(@params['df_sections'])
-    })
+# Add
+post '/forms/' do
+  form = Form.new({
+      :df_sections => @params['df_sections'] })
+  if form.save
     redirect to('/forms')
-  rescue RecordInvalid => error
-    render 'form', {
-        :df_id => @params['df_id'], 
-        :df_type => @params['df_type'], 
-        :df_schema_id => @params['df_schema_id'],
-        :df_sections => @params['df_sections'],
-        :errors => ["Invalid JSON"]  
-      }
+  else
+    render 'edit_form', {
+      :df_sections => @params['df_sections'],
+      :errors    => form.errors.values
+    }
   end
 end
 
-# Form to add new
+# Update
+post '/forms/:id' do
+  form = Form.find(params[:id])
+  form.df_sections = @params['df_sections']
+  if form.save
+    redirect to('/forms')
+  else
+    render 'edit_form', {
+      :id        => params[:id], 
+      :df_sections => @params['df_sections'],
+      :errors    => form.errors.values
+    }
+  end
+end
+
+
+# Form to add
 get '/forms/add' do
-  render 'form', { 
-      :df_id => '', 
-      :df_type => 'form',
-      :df_sections => nil  
-    }
+  render 'edit_form', { }
 end
 
-# View existng
+# View 
 get '/forms/:id' do
+  pp "Get form #{params[:id]}"
   doc = Form.find(params[:id])
-  render 'form', { 
-      :df_id => doc['df_id'], 
-      :df_type => doc['df_type'], 
-      :df_schema_id => doc['df_schema_id'],
-      :df_sections => JSON.pretty_generate(doc['df_sections'])
-    }
+  pp doc
+  render 'edit_form', doc.attributes
 end
 
-# Delete 
+# Delete
 delete '/forms/:id' do
   Form.delete(params[:id])
   redirect to('/forms')

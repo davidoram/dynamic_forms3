@@ -3,8 +3,8 @@
 <h1>Forms</h1>
 <ul>
   {{# forms}}
-  <li><a href="/forms/{{.}}">{{.}}</a>
-    <form action="/forms/{{.}}" method="post">
+  <li><a href="/forms/{{id}}">{{id}}</a>
+    <form action="/forms/{{id}}" method="post">
       <input type="hidden" name="_method" value="DELETE">
       <button name="submit">Delete</button>
     </form>

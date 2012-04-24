@@ -1,0 +1,24 @@
+<html>
+<body>
+{{# id}}
+<h1>Form Edit {{id}}</h1>
+{{/ id}}
+{{^ id}}
+<h1>Form Add</h1>
+{{/ id}}
+
+
+{{# errors}}
+<p style="color: red;">{{.}}</p>
+{{/ errors}}
+
+<form method="post" action="/forms/{{id}}">
+{<br/>
+  "df_sections:"<textarea  name="df_sections" rows="20" cols="60">{{df_sections}}</textarea><br/>
+}
+  <button type="submit">Save</button>
+</form>
+<a href="/schemas">Cancel</a>
+
+</body>
+</html>
