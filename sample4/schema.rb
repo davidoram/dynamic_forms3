@@ -24,6 +24,10 @@ class Form < ActiveRecord::Base
   serialize :df_sections
   validate :valid_sections?
 
+  def can_use_for(schema)
+    schemas << schema
+  end
+  
 private
 
   def valid_sections?

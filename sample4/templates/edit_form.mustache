@@ -1,4 +1,6 @@
 <html>
+<head>
+</head>
 <body>
 {{# id}}
 <h1>Form Edit {{id}}</h1>
@@ -16,6 +18,19 @@
 {<br/>
   "df_sections:"<textarea  name="df_sections" rows="20" cols="60">{{df_sections}}</textarea><br/>
 }
+
+{{# id}}
+  <h2>Is associated with these Schemas:</h2>
+  <ul>
+  {{# associated_with_schemas}}
+    <li><a href="/schemas/{{schema_id}}">{{schema_id}}</a> 
+        <input name="associated_with_schemas[{{schema_id}}]" type=checkbox value="{{is_associated}}" {{# is_associated}}checked=true{{/ is_associated}}</input>
+    </li>
+  {{/ associated_with_schemas}}
+  </ul><br/>
+{{/ id}}
+
+
   <button type="submit">Save</button>
 </form>
 <a href="/schemas">Cancel</a>

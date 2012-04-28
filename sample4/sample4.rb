@@ -14,6 +14,9 @@ configure do
   # Allow _method=DELETE magic to allow PUT or DELETE in forms
   # Put a hidden field callled _method with value DELETE or PUT
   enable :method_override
+  
+  # Serve static files from /public
+  set :public_folder, File.dirname(__FILE__) + '/public'
 end
 
 helpers do
@@ -158,7 +161,8 @@ post '/forms/' do
   else
     render 'edit_form', {
       :df_sections => @params['df_sections'],
-      :errors    => form.errors.values
+      :schemas     => @params['schemas'],
+      :errors      => form.errors.values
     }
   end
 end
@@ -167,13 +171,22 @@ end
 post '/forms/:id' do
   form = Form.find(params[:id])
   form.df_sections = @params['df_sections']
+  pp @params
+  form.schemas = []
+  @params['associated_with_schemas'] = {} unless @params.has_key? 'associated_with_schemas'
+  new_schema_ids = @params['associated_with_schemas'].keys
+  new_schema_ids.each do |schema_id|
+    form.can_use_for(Schema.find(schema_id))
+  end
+  
   if form.save
     redirect to('/forms')
   else
     render 'edit_form', {
-      :id        => params[:id], 
+      :id          => params[:id], 
       :df_sections => @params['df_sections'],
-      :errors    => form.errors.values
+      :schemas     => @params['schemas'],
+      :errors      => form.errors.values
     }
   end
 end
@@ -188,8 +201,16 @@ end
 get '/forms/:id' do
   pp "Get form #{params[:id]}"
   doc = Form.find(params[:id])
-  pp doc
-  render 'edit_form', doc.attributes
+  all_schemas = Schema.find(:all)
+  associated_with_schemas = []
+  all_schemas.each do |schema|
+    associated_with_schemas << { 
+      :schema_id     => schema.id,
+      :is_associated => !doc.schemas.index(schema).nil?
+    }
+  end
+  pp associated_with_schemas
+  render 'edit_form', doc.attributes.merge( { :all_schemas => all_schemas, :associated_with_schemas => associated_with_schemas })
 end
 
 # Delete
