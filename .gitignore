@@ -23,3 +23,5 @@ sample3/.DS_Store
 sample3/server/.DS_Store
 
 .DS_Store
+
+sample4/db/development.sqlite3
