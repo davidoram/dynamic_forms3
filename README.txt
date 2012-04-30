@@ -651,6 +651,10 @@ When the server recieves a request it works as follows:
 -- Render the data into the template & return HTML
 -- Fields named to match schema id names
 
+To create a completly new document:
+
+- Go to /documents/add - where they chooose a schema
+- Creates a new document associated with the schema & redirects to /documents/<doc id>
    
 
 [appendix]

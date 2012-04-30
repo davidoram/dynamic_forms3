@@ -45,19 +45,38 @@ end
 #
 
 get '/documents' do
-  docs = Documents.find(:all)
   render 'documents', { 
-      :documents => docs
+      :documents => Document.find(:all),
+      :schemas   => Schema.find(:all)
     }
 end
 
 # Form to add
 post '/documents/add' do
+  pp "Add a new document"
   schema = Schema.find(params[:df_schema])
   path = []
-  section = Form.get_form_for_schema(params[:df_schema])
-  document = {}
-  builder.render(schema, section, path, document)
+  if schema.forms.count() == 0
+    render 'documents', { 
+        :documents => Document.find(:all),
+        :schemas   => Schema.find(:all),
+        :errors    => ["Schema has no associated form(s)"]
+      }
+  else
+    form = schema.forms[0]  # Take the 1st one as default - should get the appropriate form for the users role
+    document = Document.new()
+    document.df_data = "{}"
+    document.schema = schema
+    if document.save
+      redirect to("/documents/#{document.id}")
+    else
+      render 'documents', { 
+          :documents => Document.find(:all),
+          :schemas   => Schema.find(:all),
+          :errors    => document.errors.values
+      }
+    end
+  end
 end
 
 # Retrieve a  document for editing

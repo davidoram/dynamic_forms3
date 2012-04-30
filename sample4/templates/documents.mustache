@@ -1,10 +1,15 @@
 <html>
 <body>
 <h1>Documents</h1>
+
+{{# errors}}
+<p style="color: red;">{{.}}</p>
+{{/ errors}}
+
 <ul>
   {{# documents}}
-  <li><a href="/documents/{{.}}/path">{{.}}</a>
-    <form action="/documents/{{.}}" method="post">
+  <li><a href="/documents/{{id}}/path">{{id}}</a>
+    <form action="/documents/{{id}}" method="post">
       <input type="hidden" name="_method" value="DELETE">
       <button name="submit">Delete</button>
     </form>
@@ -16,13 +21,14 @@
   {{/ documents}}
 </ul>
 <form action="/documents/add" method="post">
+  Create a new document with schema:
   <select name="df_schema">
     <option value =''>Select...</option>
     {{# schemas }}
-    <option value="{{.}}">{{.}}</option>
+    <option value="{{id}}">{{id}}</option>
     {{/ schemas }}
   </select>
-  <button name="submit">Add</button>
+  <button name="submit">Go</button>
 </form>
 </body>
 </html>

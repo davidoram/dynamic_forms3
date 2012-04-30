@@ -10,7 +10,11 @@ private
   
   def valid_fields?
     begin
-      JSON.parse(df_fields)
+      if df_fields.empty?
+        errors.add(:df_fields, "Invalid JSON : Empty string not allowed")
+      else
+        JSON.parse(df_fields)
+      end
     rescue JSON::ParserError => ex
       pp ex
       errors.add(:df_fields, "Invalid JSON : #{ex.message}")
@@ -32,7 +36,11 @@ private
 
   def valid_sections?
     begin
-      JSON.parse(df_sections)
+      if df_sections.empty?
+        errors.add(:df_sections, "Invalid JSON : Empty string not allowed")
+      else
+        JSON.parse(df_sections)
+      end
     rescue JSON::ParserError => ex
       errors.add(:df_sections, "Invalid JSON : #{ex.message}")
     end
@@ -49,7 +57,11 @@ private
 
   def valid_data?
     begin
-      JSON.parse(df_data)
+      if df_data.nil? or df_data.empty?
+        errors.add(:df_data, "Invalid JSON : Empty string not allowed")
+      else
+        JSON.parse(df_data)
+      end
     rescue JSON::ParserError => ex
       errors.add(:df_data, "Invalid JSON : #{ex.message}")
     end

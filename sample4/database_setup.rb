@@ -24,7 +24,7 @@ ActiveRecord::Schema.define do
   
   create_table :documents do |table|
     table.column :schema_id, :integer
-     table.column :df_data, :text
+    table.column :df_data, :text
   end
 
 end
