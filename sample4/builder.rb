@@ -5,8 +5,15 @@
 #
 class Builder
   
-  def render(df_schema, df_section, df_path, df_document)
-    form_template = get_form(df_section)
+  def Builder.render(document, schema, form, path)
+    # Find the section that matches the path
+    schema_ptr = schema.df_fields
+    document_ptr = document.df_data
+    path_stack = path.reverse
+    while path_element = path_stack.pop
+      pp "evaluate path_element #{path_element}"
+      # Is this part of the stack a 
+    end 
   end
   
 end

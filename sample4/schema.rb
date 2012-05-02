@@ -6,6 +6,14 @@ class Schema < ActiveRecord::Base
   serialize :df_fields
   validate :valid_fields?
   
+  def has_default_form?
+    ! forms.empty?
+  end
+  
+  def default_form
+    forms[0]
+  end
+  
 private
   
   def valid_fields?
@@ -28,6 +36,12 @@ class Form < ActiveRecord::Base
   serialize :df_sections
   validate :valid_sections?
 
+  # Find the appropriate section for a given data path
+  def section_for_path(path)
+    
+  end
+
+  # Associate with a schema
   def can_use_for(schema)
     schemas << schema
   end

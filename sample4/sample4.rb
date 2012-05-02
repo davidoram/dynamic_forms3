@@ -6,6 +6,7 @@ require 'pathname'
 require 'pp'
 require_relative 'schema'
 require_relative 'builder'
+require_relative 'urlparser'
 
 # For building html
 builder = Builder.new
@@ -84,8 +85,17 @@ end
 # :path - URL encoding of the path to navgate within the data document to provide the correct
 #         data context eg: '/employees/0'
 # :section - identifier of the section to render with
-get '/documents/:id/path/:path/section/:section' do
-  'TODO - get data for section'
+get %r{/documents(/.*)} do
+  urlParams = UrlParser.parseDocumentUrl(params[:captures])
+  pp urlParams
+  document = Document.find(urlParams[:id])
+  schema = document.schema
+  if !schema.has_default_form?
+    "Missing default form for that Schema"
+  else
+    form = schema.default_form
+    Builder.render(document, schema, form, urlParams[:path])
+  end
 end
 
 # Update a document
