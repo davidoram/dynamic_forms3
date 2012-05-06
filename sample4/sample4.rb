@@ -66,7 +66,7 @@ post '/documents/add' do
   else
     form = schema.forms[0]  # Take the 1st one as default - should get the appropriate form for the users role
     document = Document.new()
-    document.df_data = "{}"
+    document.df_data = {}
     document.schema = schema
     if document.save
       redirect to("/documents/#{document.id}")
@@ -120,30 +120,47 @@ end
 
 # Add
 post '/schemas/' do
-  schema = Schema.new({
-      :df_fields => @params['df_fields'] })
-  if schema.save
-    redirect to('/schemas')
+  errors = nil
+  if @params['df_fields'].is_json?
+    schema = Schema.new({:df_fields => @params['df_fields'].to_json })
+    if !schema.save
+      errors = schema.errors.value
+    end
   else
+    errors = [:df_fields, 'Invalid JSON']
+  end
+  
+  if errors
     render 'edit_schema', {
       :df_fields => @params['df_fields'],
-      :errors    => schema.errors.values
+      :errors    => errors
     }
+  else
+    redirect to('/schemas')
   end
 end
 
 # Update
 post '/schemas/:id' do
+  errors = nil
   schema = Schema.find(params[:id])
-  schema.df_fields = @params['df_fields']
-  if schema.save
-    redirect to('/schemas')
+  if @params['df_fields'].is_json?
+    schema.df_fields = @params['df_fields'].to_json
+    if !schema.save
+      errors = schema.errors.value
+    end
   else
+    errors = [:df_fields, 'Invalid JSON']
+  end
+
+  if errors
     render 'edit_schema', {
       :id        => params[:id], 
       :df_fields => @params['df_fields'],
-      :errors    => schema.errors.values
+      :errors    => errors
     }
+  else
+    redirect to('/schemas')
   end
 end
 
@@ -153,12 +170,16 @@ get '/schemas/add' do
   render 'edit_schema', { }
 end
 
+
 # View 
 get '/schemas/:id' do
   pp "Get schema #{params[:id]}"
   doc = Schema.find(params[:id])
   pp doc
-  render 'edit_schema', doc.attributes
+  render 'edit_schema', {
+    :id         => doc.id,
+    :df_fields  => JSON.pretty_generate(doc.df_fields),
+  }
 end
 
 # Delete
@@ -181,44 +202,64 @@ get '/forms' do
     }
 end
 
+
 # Add
 post '/forms/' do
-  form = Form.new({
-      :df_sections => @params['df_sections'] })
-  if form.save
-    redirect to('/forms')
+  errors = nil
+  if @params['df_sections'].is_json?
+    form = Form.new({:df_sections => @params['df_sections'].to_json })
+    if !form.save
+      errors = form.errors.value
+    end
   else
+    errors = [:df_sections, 'Invalid JSON']
+  end
+  
+  if errors
     render 'edit_form', {
       :df_sections => @params['df_sections'],
       :schemas     => @params['schemas'],
-      :errors      => form.errors.values
+      :errors      => errors
     }
+  else
+    redirect to('/forms')
   end
 end
 
+
 # Update
 post '/forms/:id' do
+  errors = nil
   form = Form.find(params[:id])
-  form.df_sections = @params['df_sections']
-  pp @params
-  form.schemas = []
-  @params['associated_with_schemas'] = {} unless @params.has_key? 'associated_with_schemas'
-  new_schema_ids = @params['associated_with_schemas'].keys
-  new_schema_ids.each do |schema_id|
-    form.can_use_for(Schema.find(schema_id))
-  end
-  
-  if form.save
-    redirect to('/forms')
+  if @params['df_sections'].is_json?
+    form.df_sections = @params['df_sections'].to_json
+
+    # Associate with schemas
+    form.schemas = []
+    @params['associated_with_schemas'] = {} unless @params.has_key? 'associated_with_schemas'
+    new_schema_ids = @params['associated_with_schemas'].keys
+    new_schema_ids.each do |schema_id|
+      form.can_use_for(Schema.find(schema_id))
+    end
+
+    if !form.save
+      errors = form.errors.value
+    end
   else
+    errors = [:df_sections, 'Invalid JSON']
+  end
+
+  if errors
     render 'edit_form', {
-      :id          => params[:id], 
-      :df_sections => @params['df_sections'],
-      :schemas     => @params['schemas'],
-      :errors      => form.errors.values
+      :id           => params[:id], 
+      :df_sections  => @params['df_sections'],
+      :errors       => errors
     }
+  else
+    redirect to('/forms')
   end
 end
+
 
 
 # Form to add
@@ -239,7 +280,12 @@ get '/forms/:id' do
     }
   end
   pp associated_with_schemas
-  render 'edit_form', doc.attributes.merge( { :all_schemas => all_schemas, :associated_with_schemas => associated_with_schemas })
+  render 'edit_form', {
+      :id           => doc.id,
+      :df_sections  => JSON.pretty_generate(doc.df_sections),
+      :all_schemas  => all_schemas, 
+      :associated_with_schemas => associated_with_schemas 
+  }
 end
 
 # Delete
@@ -247,6 +293,7 @@ delete '/forms/:id' do
   Form.delete(params[:id])
   redirect to('/forms')
 end
+
 
 
 

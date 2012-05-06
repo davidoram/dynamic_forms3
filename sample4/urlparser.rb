@@ -2,6 +2,15 @@ class String
   def is_integer?    
     true if Integer(self) rescue false  
   end 
+  
+  def is_json?
+    true if JSON.parse(self) rescue false
+  end
+  
+  def to_json
+    JSON.parse(self)
+  end
+  
 end
 
 
