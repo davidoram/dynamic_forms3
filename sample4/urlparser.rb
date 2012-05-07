@@ -27,12 +27,13 @@ class UrlParser
   #   :path => [ 
   #     {
   #       :name => 'employees', 
-  #       :index => 5
+  #       :index => 5,
   #     },
   #     {
   #       :name => 'children', 
   #     },
-  #   ]
+  #   ],
+  #   :url => '16/employees/5/children'
   # } 
   def UrlParser.parseDocumentUrl(url)
     path = url[0].split('/').compact.slice(1..-1)
@@ -53,8 +54,9 @@ class UrlParser
       parray << element
     end
     return {
-      :id => Integer(path[0]),
-      :path => parray
+      :id   => Integer(path[0]),
+      :path => parray,
+      :url  => url[0]
     }
   end
   

@@ -22,9 +22,8 @@ class Form < ActiveRecord::Base
   # Find the appropriate section for a given data path
   def section_for_path(path)
     pp "section_for_path #{path}"
-    pp df_sections
     df_sections.each do |section|
-      return section if section.path == path
+      return section if section["path"] == path
     end
     nil
   end

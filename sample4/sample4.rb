@@ -57,6 +57,7 @@ post '/documents/add' do
   pp "Add a new document"
   schema = Schema.find(params[:df_schema])
   path = []
+  pp "Using schema #{schema.id}"
   if schema.forms.count() == 0
     render 'documents', { 
         :documents => Document.find(:all),
@@ -86,15 +87,15 @@ end
 #         data context eg: '/employees/0'
 # :section - identifier of the section to render with
 get %r{/documents(/.*)} do
-  urlParams = UrlParser.parseDocumentUrl(params[:captures])
-  pp urlParams
-  document = Document.find(urlParams[:id])
+  url_parsed = UrlParser.parseDocumentUrl(params[:captures])
+  pp url_parsed
+  document = Document.find(url_parsed[:id])
   schema = document.schema
   if !schema.has_default_form?
     "Missing default form for that Schema"
   else
     form = schema.default_form
-    Builder.render(document, schema, form, urlParams[:path])
+    Builder.render(document, schema, form, url_parsed)
   end
 end
 
