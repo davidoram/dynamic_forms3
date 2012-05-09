@@ -1,7 +1,6 @@
 # sample4.rb
 require 'rubygems'
 require 'sinatra'
-require 'mustache'
 require 'pathname'
 require 'pp'
 require_relative 'schema'
@@ -21,12 +20,6 @@ configure do
 end
 
 helpers do
-  def render(template, context = {})
-    this_dir = Pathname.new(File.dirname(__FILE__))
-    m = Mustache.new
-    m.template_file = "#{this_dir}/templates/#{template}.mustache"
-    m.render(context)
-  end
   
 end
 
@@ -37,7 +30,7 @@ end
 
 
 get '/' do
-  render 'index', { :name => 'bob' }
+  Builder.render_file 'index', { :name => 'bob' }
 end
 
 # ------------------------------
@@ -46,7 +39,7 @@ end
 #
 
 get '/documents' do
-  render 'documents', { 
+  Builder.render_file 'documents', { 
       :documents => Document.find(:all),
       :schemas   => Schema.find(:all)
     }
@@ -59,7 +52,7 @@ post '/documents/add' do
   path = []
   pp "Using schema #{schema.id}"
   if schema.forms.count() == 0
-    render 'documents', { 
+    Builder.render_file 'documents', { 
         :documents => Document.find(:all),
         :schemas   => Schema.find(:all),
         :errors    => ["Schema has no associated form(s)"]
@@ -72,7 +65,7 @@ post '/documents/add' do
     if document.save
       redirect to("/documents/#{document.id}")
     else
-      render 'documents', { 
+      Builder.render_file 'documents', { 
           :documents => Document.find(:all),
           :schemas   => Schema.find(:all),
           :errors    => document.errors.values
@@ -95,7 +88,7 @@ get %r{/documents(/.*)} do
     "Missing default form for that Schema"
   else
     form = schema.default_form
-    Builder.render(document, schema, form, url_parsed)
+    Builder.render_document(document, schema, form, url_parsed)
   end
 end
 
@@ -114,7 +107,7 @@ end
 # Retrive list 
 get '/schemas' do
   keys = Schema.find(:all)
-  render 'schemas', { 
+  Builder.render_file 'schemas', { 
       :schemas => keys  
     }
 end
@@ -132,7 +125,7 @@ post '/schemas/' do
   end
   
   if errors
-    render 'edit_schema', {
+    Builder.render_file 'edit_schema', {
       :df_fields => @params['df_fields'],
       :errors    => errors
     }
@@ -155,7 +148,7 @@ post '/schemas/:id' do
   end
 
   if errors
-    render 'edit_schema', {
+    Builder.render_file 'edit_schema', {
       :id        => params[:id], 
       :df_fields => @params['df_fields'],
       :errors    => errors
@@ -168,7 +161,7 @@ end
 
 # Form to add
 get '/schemas/add' do
-  render 'edit_schema', { }
+  Builder.render_file 'edit_schema', { }
 end
 
 
@@ -177,7 +170,7 @@ get '/schemas/:id' do
   pp "Get schema #{params[:id]}"
   doc = Schema.find(params[:id])
   pp doc
-  render 'edit_schema', {
+  Builder.render_file 'edit_schema', {
     :id         => doc.id,
     :df_fields  => JSON.pretty_generate(doc.df_fields),
   }
@@ -198,7 +191,7 @@ end
 get '/forms' do
   keys = Form.find(:all)
   pp keys
-  render 'forms', { 
+  Builder.render_file 'forms', { 
       :forms => keys  
     }
 end
@@ -217,7 +210,7 @@ post '/forms/' do
   end
   
   if errors
-    render 'edit_form', {
+    Builder.render_file 'edit_form', {
       :df_sections => @params['df_sections'],
       :schemas     => @params['schemas'],
       :errors      => errors
@@ -251,7 +244,7 @@ post '/forms/:id' do
   end
 
   if errors
-    render 'edit_form', {
+    Builder.render_file 'edit_form', {
       :id           => params[:id], 
       :df_sections  => @params['df_sections'],
       :errors       => errors
@@ -265,7 +258,7 @@ end
 
 # Form to add
 get '/forms/add' do
-  render 'edit_form', { }
+  Builder.render_file 'edit_form', { }
 end
 
 # View 
@@ -281,7 +274,7 @@ get '/forms/:id' do
     }
   end
   pp associated_with_schemas
-  render 'edit_form', {
+  Builder.render_file 'edit_form', {
       :id           => doc.id,
       :df_sections  => JSON.pretty_generate(doc.df_sections),
       :all_schemas  => all_schemas, 
