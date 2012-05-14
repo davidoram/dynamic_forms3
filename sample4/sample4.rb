@@ -93,8 +93,14 @@ get %r{/documents(/.*)} do
 end
 
 # Update a document
-post '/documents/:id/path/:path/section/:section' do
-  'TODO - update doc'
+post %r{/documents(/.*)} do
+  pp "post document"
+  url_parsed = UrlParser.parseDocumentUrl(params[:captures])
+  pp url_parsed
+  document = Document.find(url_parsed[:id])
+  schema = document.schema
+  form = @params[:form]
+  "TODO - process #{form}"  
 end
 
 

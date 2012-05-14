@@ -68,6 +68,7 @@ private
     <p style="color: red;">{{.}}</p>
     {{/ errors}}
 
+
     <form method="post" action="/documents{{url_parsed.url}}">
     END_OF_STRING
 
@@ -76,7 +77,6 @@ private
     end
 
     footer = <<-END_OF_STRING
-    <p>TODO</p>
       <button type="submit">Save</button>
     </form>
     <a href="/">Cancel</a>
