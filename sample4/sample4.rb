@@ -99,6 +99,12 @@ post %r{/documents(/.*)} do
   "TODO - process #{form}"  
 end
 
+# Delete
+delete '/documents/:id' do
+  Document.delete(params[:id])
+  redirect to('/documents')
+end
+
 
 #----------------------------------------------------------------
 #
