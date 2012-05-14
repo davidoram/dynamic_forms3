@@ -84,12 +84,8 @@ get %r{/documents(/.*)} do
   pp url_parsed
   document = Document.find(url_parsed[:id])
   schema = document.schema
-  if !schema.has_default_form?
-    "Missing default form for that Schema"
-  else
-    form = schema.default_form
-    Builder.render_document(document, schema, form, url_parsed)
-  end
+  form = schema.form_for 'Current user TODO' # TODO - Use current users role to decide on the form
+  Builder.render_document(document, schema, form, url_parsed)
 end
 
 # Update a document

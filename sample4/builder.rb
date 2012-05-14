@@ -33,11 +33,12 @@ class Builder
     # Find the section that matches the path
     schema_ptr = schema.df_fields
     document_ptr = document.df_data
-    section = form.section_for_path([]);
+    section = form.section_for(url_parsed[:section_path]);
     path_stack = url_parsed[:path].reverse
     while path_element = path_stack.pop
       pp "evaluate path_element #{path_element}"
-      # Is this part of the stack a 
+      # Navigate the data document here to get to the appropriate content
+      # TODO 
     end 
     
     # Add any missing data elements at this part of the schema to the document?

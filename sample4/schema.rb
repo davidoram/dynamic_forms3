@@ -5,11 +5,8 @@ class Schema < ActiveRecord::Base
   has_many :documents
   serialize :df_fields
   
-  def has_default_form?
-    ! forms.empty?
-  end
-  
-  def default_form
+  def form_for(user)
+    # todo - get form for teh users role
     forms[0]
   end
   
@@ -20,10 +17,11 @@ class Form < ActiveRecord::Base
   serialize :df_sections
 
   # Find the appropriate section for a given data path
-  def section_for_path(path)
-    pp "section_for_path #{path}"
+  def section_for(section_path)
+    pp "section_for #{section_path}"
+    pp df_sections
     df_sections.each do |section|
-      return section if section["path"] == path
+      return section if section["path"] == section_path
     end
     nil
   end

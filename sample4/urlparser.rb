@@ -32,6 +32,7 @@ class UrlParser
   #     {
   #       :name => 'children', 
   #     },
+  #   :section_path = ['employees', '$employee_index', 'children']
   #   ],
   #   :url => '16/employees/5/children'
   # } 
@@ -40,6 +41,7 @@ class UrlParser
     raise "Error at #{path[idx]}, document id not an identifier" unless path[0].is_integer? 
     idx = 1
     parray = []
+    sparray = []
     
     while idx < path.length
       element = {} 
@@ -52,10 +54,13 @@ class UrlParser
         idx = idx + 1
       end
       parray << element
+      sparray << element[:name]
+      sparray << "$#{element[:name]}" if element.has_key?(:index)
     end
     return {
       :id   => Integer(path[0]),
       :path => parray,
+      :section_path => sparray,
       :url  => url[0]
     }
   end
