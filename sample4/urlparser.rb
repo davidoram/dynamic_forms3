@@ -19,6 +19,10 @@ end
 # Class to parse URLs
 #
 class UrlParser
+  
+  # Types
+  PRIMITIVE = 1
+  ARRAY_ELEMENT = 2
 
   # Parse the Document URL path, so we turn from 16/employees/5/children
   # into:
@@ -28,9 +32,11 @@ class UrlParser
   #     {
   #       :name => 'employees', 
   #       :index => 5,
+  #       :type => UrlParser::ARRAY_ELEMENT,
   #     },
   #     {
   #       :name => 'children', 
+  #       :type => UrlParser::PRIMITIVE
   #     },
   #   :section_path = ['employees', '$employee_index', 'children']
   #   ],
@@ -45,12 +51,14 @@ class UrlParser
     
     while idx < path.length
       element = {} 
+      element[:type] = UrlParser::PRIMITIVE
       raise "Error at #{path[idx]}, expected a path identifier not a number" if path[idx].is_integer? 
       element[:name] = path[idx]
       idx = idx + 1
       if idx < path.length
         raise "Error at #{path[idx]}, expected a path index not an identifier" unless path[idx].is_integer? 
         element[:index] = Integer(path[idx])
+        element[:type] = UrlParser::ARRAY_ELEMENT
         idx = idx + 1
       end
       parray << element

@@ -11,7 +11,7 @@ class Builder
   
   # Instances of these delimiters inside your Templates will be replaces with Mustache
   # deliminiters {{ }}, so you can have a Template which generates a Template etc
-  VARIABLE_DELIMITERS_REGEXPR = [ '[[', ']]']
+  VARIABLE_DELIMITERS_REGEXPR = [ '[^', '^]']
   MUSTACHE_DELIMITERS = [ '{{', '}}']
 
   def Builder.replace_variable_templates(string)
@@ -32,22 +32,14 @@ class Builder
   def Builder.render_document(document, schema, form, url_parsed)
     # Find the section that matches the path
     schema_ptr = schema.df_fields
-    document_ptr = document.df_data
+    data = document.navigate_to(url_parsed)
     section = form.section_for(url_parsed[:section_path]);
-    path_stack = url_parsed[:path].reverse
-    while path_element = path_stack.pop
-      pp "evaluate path_element #{path_element}"
-      # Navigate the data document here to get to the appropriate content
-      # TODO 
-    end 
-    
-    # Add any missing data elements at this part of the schema to the document?
-    
+
     # Create/retrieve a template representing this section
     template = Builder.template_for(section, url_parsed)
     
     # combine the template and document
-    Mustache.render(template, {:document    => document,
+    Mustache.render(template, {:data        => data,
                                :url_parsed  => url_parsed,
                                :errors      => [] })
   end
@@ -73,6 +65,7 @@ private
     <form method="post" action="/documents{{url_parsed.url}}">
     END_OF_STRING
 
+    # Each field passes in 'label', 'path' and 'type'
     section['fields'].each do |field|
       template << Builder.render_file("fields/#{field['type']}", field)
     end

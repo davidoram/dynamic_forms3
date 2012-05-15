@@ -15,12 +15,30 @@ configure do
   # Put a hidden field callled _method with value DELETE or PUT
   enable :method_override
   
+  # Sessions store user credentials
+  enable :sessions
+  
   # Serve static files from /public
   set :public_folder, File.dirname(__FILE__) + '/public'
 end
 
+#----------------------------------------------------------------
+#
+# Helper functions
+#
 helpers do
-  
+  def authenticate!
+    session[:user] = 'bob' unless session.has_key? :user
+  end
+end
+
+
+#----------------------------------------------------------------
+#
+# Filter functions
+#
+before do
+  authenticate!
 end
 
 #----------------------------------------------------------------
@@ -84,7 +102,7 @@ get %r{/documents(/.*)} do
   pp url_parsed
   document = Document.find(url_parsed[:id])
   schema = document.schema
-  form = schema.form_for 'Current user TODO' # TODO - Use current users role to decide on the form
+  form = schema.form_for session[:user]
   Builder.render_document(document, schema, form, url_parsed)
 end
 
@@ -92,11 +110,12 @@ end
 post %r{/documents(/.*)} do
   pp "post document"
   url_parsed = UrlParser.parseDocumentUrl(params[:captures])
-  pp url_parsed
   document = Document.find(url_parsed[:id])
   schema = document.schema
-  form = @params[:form]
-  "TODO - process #{form}"  
+  form = schema.form_for session[:user]
+  document.update_values(schema, form, url_parsed, @params[:form])
+  document.save!
+  'Saved ok'
 end
 
 # Delete
