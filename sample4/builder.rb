@@ -11,7 +11,7 @@ class Builder
   
   # Instances of these delimiters inside your Templates will be replaces with Mustache
   # deliminiters {{ }}, so you can have a Template which generates a Template etc
-  VARIABLE_DELIMITERS_REGEXPR = [ '[^', '^]']
+  VARIABLE_DELIMITERS_REGEXPR = [ '[[', ']]']
   MUSTACHE_DELIMITERS = [ '{{', '}}']
 
   def Builder.replace_variable_templates(string)
