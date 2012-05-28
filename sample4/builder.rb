@@ -33,10 +33,13 @@ class Builder
     # Find the section that matches the path
     schema_ptr = schema.df_fields
     data = document.navigate_to(url_parsed)
-    section = form.section_for(url_parsed[:section_path]);
-
+    section = form.section_for(url_parsed[:data_path]);
+    pp "----------------------------"
+    pp "section is #{section}"
+    pp '--'
+    
     # Create/retrieve a template representing this section
-    template = Builder.template_for(section, url_parsed)
+    template = Builder.template_for(section, url_parsed, form.all_sections)
     
     # combine the template and document
     Mustache.render(template, {:data        => data,
@@ -45,7 +48,7 @@ class Builder
   end
   
 private
-  def Builder.template_for(section, url_parsed)
+  def Builder.template_for(section, url_parsed, all_sections)
     # Template will take the following context:
     # doc => the document being edited
     # url_parsed => as returned by UrlParser.parseDocumentUrl
@@ -68,17 +71,28 @@ private
     # Each field passes in 'label', 'path' and 'type'
     section['fields'].each do |field|
       template << Builder.render_file("fields/#{field['type']}", field)
+      template << "<br/>"
     end
 
-    footer = <<-END_OF_STRING
+    template << <<-END_OF_STRING
       <button type="submit">Save</button>
     </form>
     <a href="/">Cancel</a>
+    END_OF_STRING
 
+    # Add the navigation section which contains links to other parts of the document
+    section['section_navigation'].each do |key, value|
+        template << Builder.render_file("navigation/link", { :all_sections => all_sections, 
+                                                             :name => key,
+                                                             :section_id => value,
+                                                             :url_parsed => url_parsed })
+        template << "<br/>"
+      end
+
+    template << <<-END_OF_STRING
     </body>
     </html>
     END_OF_STRING
-    template << footer
     template
   end
   

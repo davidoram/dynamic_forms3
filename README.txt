@@ -620,33 +620,26 @@ Given that the focus of the system is the document, it drives everything.
 
 The document is the resource identified primarily within the URL.
 
-- http://localhost/documents/<doc id>
+ http://localhost/documents/<doc-id>[/<data-path>][/section/<section-id>]
 
-A path to data is provided by an optional <data path> element in the URL. This takes on
-secondary importance to the document id.
+A path to data is provided by an optional <data-path> element in the URL. The data path is effectively the path
+within the document
 
-- http://localhost/documents/<doc id>/<data path>
 
-The view is determined by the users permissions to the data.
-A mapping is prepared from schema -> sections
-Each section has within it access rights to the data that can be viewed & the user roles that can
-have access to that view.  If the user needs a specific view onto the data that can be transmitted as a
-query parameter in the URL eg:
+The optional <section-id> determines the form or page that is presented.
 
-- http://localhost/documents/<doc id>/<data path>?view=<view id>
-
+User roles are applied at the section level and schema level to ensure access to the appropriate data for any given role
 
 When the server recieves a request it works as follows:
 
-- Parse the URL => doc_id (mandatory), data_path (optional)
-- Retrieve the document with doc_id
+- Parse the URL => doc-id (mandatory), data-path (optional)
+- Retrieve the document with doc-id
 - Retrieve the schema for the document
-- Query the database for all the sections for that schema 
-- Find the best template that matches, based on data_path & user permissions
+- Retrieve the section with matching <section-id> or default section
 - No Match - 404
 - Retrieve template
 - Render the page
--- Correct subset of data from the document at the data_path
+-- Correct subset of data from the document at the data-path
 -- Get/build the template for section
 -- Render the data into the template & return HTML
 -- Fields named to match schema id names
@@ -655,6 +648,11 @@ To create a completly new document:
 
 - Go to /documents/add - where they chooose a schema
 - Creates a new document associated with the schema & redirects to /documents/<doc id>
+
+
+
+Note: Sections have data paths - so when one creates a url to another section the data path is constructed using the
+path of the current url either expanded or contracted depending on if you are going up or down the data tree
    
 
 [appendix]

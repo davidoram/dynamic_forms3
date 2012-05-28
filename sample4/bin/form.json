@@ -15,12 +15,18 @@
 			"id": "section_2",
 			"heading": "Employee List",
 			"type": "list",
-			"index":"employees_index",
-			"path": ["employees"],
-			"child_section_id": "section_3",
-			"columns":  [
-				{ "label": "Name", "path": "name", "type": "string" },
-		        { "label": "Date of birth", "path": "dob",  "type": "date" }
+			"path": [ ],
+			"fields" : [
+				{ 	"label": "Employees", 
+					"path": "employees", 
+					"type": "list",
+					"index": "$employees_index",
+					"section_navigation": { "into" : "section_3" },
+					"columns":  [
+						{ "label": "Name", "path": "name", "type": "string" },
+				        { "label": "Date of birth", "path": "dob",  "type": "date" }
+					]
+				}
 			],
 			"section_navigation": { "up" : "section_1" }
 		},

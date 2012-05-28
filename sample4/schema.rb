@@ -16,11 +16,20 @@ class Form < ActiveRecord::Base
   has_and_belongs_to_many :schemas
   serialize :df_sections
 
-  # Find the appropriate section for a given data path
-  def section_for(section_path)
-    pp "section_for #{section_path}"
+  # Return section for matching data path
+  def section_for_data_path(data_path)
+    pp "section_for_data_path #{data_path}"
     df_sections.each do |section|
-      return section if section["path"] == section_path
+      return section if section["path"] == data_path
+    end
+    nil
+  end
+
+  # Return section with matching id
+  def section_by_id(section_id)
+    pp "section_by_id #{section_id}"
+    df_sections.each do |section|
+      return section if section["section_id"] == section_id
     end
     nil
   end
@@ -28,6 +37,15 @@ class Form < ActiveRecord::Base
   # Associate with a schema
   def can_use_for(schema)
     schemas << schema
+  end
+  
+  # Return a Hash of { id => path } for this Forms sections
+  def all_sections
+    id_paths = {}
+    df_sections.each do |section|
+      id_paths[section['id']] = section["path"]
+    end
+    id_paths
   end
   
 end

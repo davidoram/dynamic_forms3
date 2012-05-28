@@ -24,7 +24,13 @@ class UrlParser
   PRIMITIVE = 1
   ARRAY_ELEMENT = 2
 
-  # Parse the Document URL path, so we turn from 16/employees/5/children
+  def UrlParser.parseUrl(url)
+    entity = url.split('/')[1]
+    return parseDocumentUrl(url) if entity == 'documents'
+    raise "Unknown url '#{url}"
+  end
+
+  # Parse the Document URL path, so we turn from '/documents/16/employees/5/children/section/section-1'
   # into:
   # { 
   #   :id => 16,
@@ -38,18 +44,35 @@ class UrlParser
   #       :name => 'children', 
   #       :type => UrlParser::PRIMITIVE
   #     },
-  #   :section_path = ['employees', '$employee_index', 'children']
+  #   :data_path = ['employees', '$employee_index', 'children'],
+  #   :section_path = ['section-1']
   #   ],
-  #   :url => '16/employees/5/children'
+  #   :url => '/documents/16/employees/5/children/section/section-1'
+  #   :data_url => '/documents/16/employees/5/children'
+  #   :section_url => 'section/section-1'
   # } 
   def UrlParser.parseDocumentUrl(url)
-    path = url[0].split('/').compact.slice(1..-1)
+    root = 'documents'
+    raise "Not a document url '#{url}'" unless url.split('/')[1] == root  
+    # Path starts after '/documents'
+    path = url.split('/').compact.slice(2..-1)
     raise "Error at #{path[idx]}, document id not an identifier" unless path[0].is_integer? 
     idx = 1
-    parray = []
-    sparray = []
+    path_array = []
+    data_path = []
+    section_array = []
     
-    while idx < path.length
+    section_idx = path.index('section')
+    section_url = ''
+    data_url = url
+    if section_idx
+      data_url = path[0..(section_idx - 1)].join('/')
+      data_url = "#{root}/data_url"
+      section_array = path[section_idx + 1..-1]
+      section_url = path[section_idx..-1].join('/')
+    end
+    
+    while idx < path.length && path[idx] != 'section'
       element = {} 
       element[:type] = UrlParser::PRIMITIVE
       raise "Error at #{path[idx]}, expected a path identifier not a number" if path[idx].is_integer? 
@@ -61,15 +84,19 @@ class UrlParser
         element[:type] = UrlParser::ARRAY_ELEMENT
         idx = idx + 1
       end
-      parray << element
-      sparray << element[:name]
-      sparray << "$#{element[:name]}" if element.has_key?(:index)
+      path_array << element
+      data_path << element[:name]
+      data_path << "$#{element[:name]}" if element.has_key?(:index)
     end
+    
     return {
-      :id   => Integer(path[0]),
-      :path => parray,
-      :section_path => sparray,
-      :url  => url[0]
+      :id           => Integer(path[0]),
+      :path         => path_array,
+      :data_path    => data_path,
+      :section_path => section_array,
+      :url          => url,
+      :data_url     => data_url,
+      :section_url  => section_url,
     }
   end
   

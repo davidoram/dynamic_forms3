@@ -98,7 +98,8 @@ end
 #         data context eg: '/employees/0'
 # :section - identifier of the section to render with
 get %r{/documents(/.*)} do
-  url_parsed = UrlParser.parseDocumentUrl(params[:captures])
+  pp "request.path: #{request.path}"
+  url_parsed = UrlParser.parseUrl(request.path)
   pp url_parsed
   document = Document.find(url_parsed[:id])
   schema = document.schema
@@ -109,7 +110,7 @@ end
 # Update a document
 post %r{/documents(/.*)} do
   pp "post document"
-  url_parsed = UrlParser.parseDocumentUrl(params[:captures])
+  url_parsed = UrlParser.parseUrl(request.path)
   document = Document.find(url_parsed[:id])
   schema = document.schema
   form = schema.form_for session[:user]
