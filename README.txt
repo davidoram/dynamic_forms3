@@ -600,60 +600,76 @@ But being able to have the site work with just HTML, or HTML and CSS will help t
 - Ease scripted testing
 
 Approach
---------
+^^^^^^^^
 
 Client requests will be page based, so when the user traverses from the a list of items, into
 a specific instance, that will require a new request
 
-The page is layed out as follows:
+The information presented to the user is in the form of the following combination of information
 
- Header
- Navigation controls
- Content
- Navigation controls
- Footer
-
-Key problem:
-- Associating document -> view -> schema
-
-Given that the focus of the system is the document, it drives everything.
-
-The document is the resource identified primarily within the URL.
-
- http://localhost/documents/<doc-id>[/<data-path>][/section/<section-id>]
-
-A path to data is provided by an optional <data-path> element in the URL. The data path is effectively the path
-within the document
+  +------+              +-----+           +--------+        +----------+
+  | User |              | URL |           | Schema |        | Document |
+  +------+              +-----+           +--------+        +----------|
 
 
-The optional <section-id> determines the form or page that is presented.
+  +------+
+  | Role |
+  +------+
 
-User roles are applied at the section level and schema level to ensure access to the appropriate data for any given role
+Class User
+++++++++++
 
-When the server recieves a request it works as follows:
+* Represents a User that can login to the system
+* Responsibilities
+** Maintaining the set of Roles for a user
+* Collaborations
+** Session
+** Schema - to expose the data that the user can see via their Roles
 
-- Parse the URL => doc-id (mandatory), data-path (optional)
-- Retrieve the document with doc-id
-- Retrieve the schema for the document
-- Retrieve the section with matching <section-id> or default section
-- No Match - 404
-- Retrieve template
-- Render the page
--- Correct subset of data from the document at the data-path
--- Get/build the template for section
--- Render the data into the template & return HTML
--- Fields named to match schema id names
+Class Role
+++++++++++
 
-To create a completly new document:
+* Represents a logical role within the system
+* Responsibilities
+** Each role identifier is unique
+** Roles have specific business meanings
+* Collaborations
+** Users have Roles
+** Schemas expose data items to Roles
 
-- Go to /documents/add - where they chooose a schema
-- Creates a new document associated with the schema & redirects to /documents/<doc id>
+Class URL
++++++++++
+
+* Represents the URL used to access the system
+* Responsibilities
+** Specify the document identifier
+** Specify the path within the document
+* Collaborations
+** Schema - define valid paths in Documents
+** Documents - exist in DocumentStore, and have Schemas
+
+Class Document
+++++++++++++++
+
+* Container for the end user data
+* Responsibilities
+** Contain the end user data
+** Specify the unit of editing/locking
+** Have a Schema
+* Collaborations
+** Schema - define the specification for the Data in a Document
+
+Class Schema
+++++++++++++
+
+* Defines the specification for common Documents
+* Responsibilities
+** Defines data items, collections and heirarcies
+** Define access to data items based on Roles
+* Collaborations
+** Documents - Collections of Documents belong to a Schema
 
 
-
-Note: Sections have data paths - so when one creates a url to another section the data path is constructed using the
-path of the current url either expanded or contracted depending on if you are going up or down the data tree
-   
 
 [appendix]
 Part 4 - Appendix

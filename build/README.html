@@ -1384,81 +1384,220 @@ Ease scripted testing
 </p>
 </li>
 </ul></div>
-</div>
-<h2 id="_approach_2">Approach</h2>
-<div class="sectionbody">
+<h4 id="_approach_2">Approach</h4>
 <div class="paragraph"><p>Client requests will be page based, so when the user traverses from the a list of items, into
 a specific instance, that will require a new request</p></div>
-<div class="paragraph"><p>The page is layed out as follows:</p></div>
+<div class="paragraph"><p>The information presented to the user is in the form of the following combination of information</p></div>
 <div class="literalblock">
 <div class="content">
-<pre><tt>Header
-Navigation controls
-Content
-Navigation controls
-Footer</tt></pre>
+<pre><tt>+------+              +-----+           +--------+        +----------+
+| User |              | URL |           | Schema |        | Document |
++------+              +-----+           +--------+        +----------|</tt></pre>
 </div></div>
-<div class="paragraph"><p>Key problem:
-- Associating document &#8594; view &#8594; schema</p></div>
-<div class="paragraph"><p>Given that the focus of the system is the document, it drives everything.</p></div>
-<div class="paragraph"><p>The document is the resource identified primarily within the URL.</p></div>
 <div class="literalblock">
 <div class="content">
-<pre><tt>http://localhost/documents/&lt;doc-id&gt;[/&lt;data-path&gt;][/section/&lt;section-id&gt;]</tt></pre>
+<pre><tt>+------+
+| Role |
++------+</tt></pre>
 </div></div>
-<div class="paragraph"><p>A path to data is provided by an optional &lt;data-path&gt; element in the URL. The data path is effectively the path
-within the document</p></div>
-<div class="paragraph"><p>The optional &lt;section-id&gt; determines the form or page that is presented.</p></div>
-<div class="paragraph"><p>User roles are applied at the section level and schema level to ensure access to the appropriate data for any given role</p></div>
-<div class="paragraph"><p>When the server recieves a request it works as follows:</p></div>
+<h5 id="_class_user">Class User</h5>
 <div class="ulist"><ul>
 <li>
 <p>
-Parse the URL &#8658; doc-id (mandatory), data-path (optional)
+Represents a User that can login to the system
 </p>
 </li>
 <li>
 <p>
-Retrieve the document with doc-id
+Responsibilities
 </p>
-</li>
+<div class="ulist"><ul>
 <li>
 <p>
-Retrieve the schema for the document
-</p>
-</li>
-<li>
-<p>
-Retrieve the section with matching &lt;section-id&gt; or default section
-</p>
-</li>
-<li>
-<p>
-No Match - 404
-</p>
-</li>
-<li>
-<p>
-Retrieve template
-</p>
-</li>
-<li>
-<p>
-Render the page&#8201;&#8212;&#8201;Correct subset of data from the document at the data-path&#8201;&#8212;&#8201;Get/build the template for section&#8201;&#8212;&#8201;Render the data into the template &amp; return HTML&#8201;&#8212;&#8201;Fields named to match schema id names
+Maintaining the set of Roles for a user
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>To create a completly new document:</p></div>
+</li>
+<li>
+<p>
+Collaborations
+</p>
 <div class="ulist"><ul>
 <li>
 <p>
-Go to /documents/add - where they chooose a schema
+Session
 </p>
 </li>
 <li>
 <p>
-Creates a new document associated with the schema &amp; redirects to /documents/&lt;doc id&gt;
+Schema - to expose the data that the user can see via their Roles
 </p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<h5 id="_class_role">Class Role</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+Represents a logical role within the system
+</p>
+</li>
+<li>
+<p>
+Responsibilities
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Each role identifier is unique
+</p>
+</li>
+<li>
+<p>
+Roles have specific business meanings
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Collaborations
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Users have Roles
+</p>
+</li>
+<li>
+<p>
+Schemas expose data items to Roles
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<h5 id="_class_url">Class URL</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+Represents the URL used to access the system
+</p>
+</li>
+<li>
+<p>
+Responsibilities
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Specify the document identifier
+</p>
+</li>
+<li>
+<p>
+Specify the path within the document
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Collaborations
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Schema - define valid paths in Documents
+</p>
+</li>
+<li>
+<p>
+Documents - exist in DocumentStore, and have Schemas
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<h5 id="_class_document">Class Document</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+Container for the end user data
+</p>
+</li>
+<li>
+<p>
+Responsibilities
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Contain the end user data
+</p>
+</li>
+<li>
+<p>
+Specify the unit of editing/locking
+</p>
+</li>
+<li>
+<p>
+Have a Schema
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Collaborations
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Schema - define the specification for the Data in a Document
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<h5 id="_class_schema">Class Schema</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+Defines the specification for common Documents
+</p>
+</li>
+<li>
+<p>
+Responsibilities
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Defines data items, collections and heirarcies
+</p>
+</li>
+<li>
+<p>
+Define access to data items based on Roles
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Collaborations
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Documents - Collections of Documents belong to a Schema
+</p>
+</li>
+</ul></div>
 </li>
 </ul></div>
 </div>
@@ -1498,7 +1637,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-05-17 07:02:13 NZDT
+Last updated 2012-05-29 17:18:47 NZDT
 </div>
 </div>
 </body>
