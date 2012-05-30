@@ -43,7 +43,7 @@ class UrlParser
   #     {
   #       :name => 'children', 
   #       :type => UrlParser::PRIMITIVE
-  #     },
+  #     },`
   #   :data_path = ['employees', '$employee_index', 'children'],
   #   :section_path = ['section-1']
   #   ],

@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body>
+
+{{# errors}}
+<p style="color: red;">{{.}}</p>
+{{/ errors}}
+
+<form method="post" action="/session">
+  <p>
+    <label for="username">Username</label>
+    <input name="username" type="text">
+  </p>
+  <p>
+    <label for="password">Password</label>
+    <input name="password" type="password">
+  </p>
+
+  <button type="submit">Login</button>
+</form>
+
+</body>
+</html>

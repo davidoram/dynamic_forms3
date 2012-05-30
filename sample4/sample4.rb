@@ -3,7 +3,9 @@ require 'rubygems'
 require 'sinatra'
 require 'pathname'
 require 'pp'
-require_relative 'schema'
+require_relative 'models/document'
+require_relative 'models/schema'
+require_relative 'models/user'
 require_relative 'builder'
 require_relative 'urlparser'
 
@@ -27,9 +29,6 @@ end
 # Helper functions
 #
 helpers do
-  def authenticate!
-    session[:user] = 'bob' unless session.has_key? :user
-  end
 end
 
 
@@ -38,7 +37,14 @@ end
 # Filter functions
 #
 before do
-  authenticate!
+  pp "before filter: #{request.path_info}"
+  
+  # Skip authentication redirect if we are doing authentication
+  pass if ['/session', '/session/new'].include? request.path_info
+  
+  if ! session.has_key? :user
+    redirect '/session/new' 
+  end
 end
 
 #----------------------------------------------------------------
@@ -48,8 +54,34 @@ end
 
 
 get '/' do
-  Builder.render_file 'index', { :name => 'bob' }
+  redirect '/documents'
 end
+
+#----------------------------------------------------------------
+#
+# Session related URLS
+#
+# GET /session/new  - Presents a login form
+# POST /session     - Authenticate & create a session
+# DELETE /session   - Logout & redirect to login form
+
+get '/session/new' do
+  pp "new session"
+  Builder.render_file 'login'
+end
+
+post '/session' do
+  user = User.authenticate(params[:username], params[:password])
+  if user
+    pp "User in session: #{user.username} with roles #{user.roles}"
+    session[:user] = user
+    redirect '/documents'  
+  else
+    pp "Failed login for username: #{params[:username]}"
+    Builder.render_file 'login', {:errors => ['invalid username & password']}
+  end
+end
+
 
 # ------------------------------
 #
@@ -124,198 +156,5 @@ delete '/documents/:id' do
   Document.delete(params[:id])
   redirect to('/documents')
 end
-
-
-#----------------------------------------------------------------
-#
-# Schema related URLS
-#
-
-
-# Retrive list 
-get '/schemas' do
-  keys = Schema.find(:all)
-  Builder.render_file 'schemas', { 
-      :schemas => keys  
-    }
-end
-
-# Add
-post '/schemas/' do
-  errors = nil
-  if @params['df_fields'].is_json?
-    schema = Schema.new({:df_fields => @params['df_fields'].to_json })
-    if !schema.save
-      errors = schema.errors.value
-    end
-  else
-    errors = [:df_fields, 'Invalid JSON']
-  end
-  
-  if errors
-    Builder.render_file 'edit_schema', {
-      :df_fields => @params['df_fields'],
-      :errors    => errors
-    }
-  else
-    redirect to('/schemas')
-  end
-end
-
-# Update
-post '/schemas/:id' do
-  errors = nil
-  schema = Schema.find(params[:id])
-  if @params['df_fields'].is_json?
-    schema.df_fields = @params['df_fields'].to_json
-    if !schema.save
-      errors = schema.errors.value
-    end
-  else
-    errors = [:df_fields, 'Invalid JSON']
-  end
-
-  if errors
-    Builder.render_file 'edit_schema', {
-      :id        => params[:id], 
-      :df_fields => @params['df_fields'],
-      :errors    => errors
-    }
-  else
-    redirect to('/schemas')
-  end
-end
-
-
-# Form to add
-get '/schemas/add' do
-  Builder.render_file 'edit_schema', { }
-end
-
-
-# View 
-get '/schemas/:id' do
-  pp "Get schema #{params[:id]}"
-  doc = Schema.find(params[:id])
-  pp doc
-  Builder.render_file 'edit_schema', {
-    :id         => doc.id,
-    :df_fields  => JSON.pretty_generate(doc.df_fields),
-  }
-end
-
-# Delete
-delete '/schemas/:id' do
-  Schema.delete(params[:id])
-  redirect to('/schemas')
-end
-
-#----------------------------------------------------------------
-#
-# Form related URLS
-#
-
-# Retrive list 
-get '/forms' do
-  keys = Form.find(:all)
-  pp keys
-  Builder.render_file 'forms', { 
-      :forms => keys  
-    }
-end
-
-
-# Add
-post '/forms/' do
-  errors = nil
-  if @params['df_sections'].is_json?
-    form = Form.new({:df_sections => @params['df_sections'].to_json })
-    if !form.save
-      errors = form.errors.value
-    end
-  else
-    errors = [:df_sections, 'Invalid JSON']
-  end
-  
-  if errors
-    Builder.render_file 'edit_form', {
-      :df_sections => @params['df_sections'],
-      :schemas     => @params['schemas'],
-      :errors      => errors
-    }
-  else
-    redirect to('/forms')
-  end
-end
-
-
-# Update
-post '/forms/:id' do
-  errors = nil
-  form = Form.find(params[:id])
-  if @params['df_sections'].is_json?
-    form.df_sections = @params['df_sections'].to_json
-
-    # Associate with schemas
-    form.schemas = []
-    @params['associated_with_schemas'] = {} unless @params.has_key? 'associated_with_schemas'
-    new_schema_ids = @params['associated_with_schemas'].keys
-    new_schema_ids.each do |schema_id|
-      form.can_use_for(Schema.find(schema_id))
-    end
-
-    if !form.save
-      errors = form.errors.value
-    end
-  else
-    errors = [:df_sections, 'Invalid JSON']
-  end
-
-  if errors
-    Builder.render_file 'edit_form', {
-      :id           => params[:id], 
-      :df_sections  => @params['df_sections'],
-      :errors       => errors
-    }
-  else
-    redirect to('/forms')
-  end
-end
-
-
-
-# Form to add
-get '/forms/add' do
-  Builder.render_file 'edit_form', { }
-end
-
-# View 
-get '/forms/:id' do
-  pp "Get form #{params[:id]}"
-  doc = Form.find(params[:id])
-  all_schemas = Schema.find(:all)
-  associated_with_schemas = []
-  all_schemas.each do |schema|
-    associated_with_schemas << { 
-      :schema_id     => schema.id,
-      :is_associated => !doc.schemas.index(schema).nil?
-    }
-  end
-  pp associated_with_schemas
-  Builder.render_file 'edit_form', {
-      :id           => doc.id,
-      :df_sections  => JSON.pretty_generate(doc.df_sections),
-      :all_schemas  => all_schemas, 
-      :associated_with_schemas => associated_with_schemas 
-  }
-end
-
-# Delete
-delete '/forms/:id' do
-  Form.delete(params[:id])
-  redirect to('/forms')
-end
-
-
 
 
