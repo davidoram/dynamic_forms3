@@ -1,9 +1,11 @@
 require 'test/unit'
+require 'pp'
+require 'json'
 require_relative 'schema_compiler'
 
 class TestSchemaCompiler < Test::Unit::TestCase 
-  def test_context_create
-    compiler = DF3::SchemaCompiler.new(DF3::SchemaCompiler::UNIT_TEST)
+  
+  def test_compile_simple
     schema =<<JSON 
     {
       "id": 123,
@@ -16,6 +18,11 @@ class TestSchemaCompiler < Test::Unit::TestCase
        ]
     }
 JSON
-    x = compiler.compile(schema)
+    output = DF3::SchemaCompiler.render('UnitTest', schema, '')
+    #pp output
+    json = JSON.parse(output)
+    assert_equal(1, json.keys.length)
+    assert_equal("name", json.keys[0])
   end 
+
 end
