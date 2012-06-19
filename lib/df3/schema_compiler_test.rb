@@ -14,15 +14,19 @@ class TestSchemaCompiler < Test::Unit::TestCase
          	  "id":    "name",
          	  "label": "Name",
          	  "type":  "string"
+         	},
+         	{ 
+         	  "id":    "dob",
+         	  "label": "Date of birth",
+         	  "type":  "date"
          	}
        ]
     }
 JSON
     output = DF3::SchemaCompiler.render('UnitTest', schema, '')
-    #pp output
     json = JSON.parse(output)
-    assert_equal(1, json.keys.length)
-    assert_equal("name", json.keys[0])
+    assert_equal(%w{ dob name }, json.keys.sort)
+    pp json
   end 
 
 end

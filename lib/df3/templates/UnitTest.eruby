@@ -1,5 +1,8 @@
+<% size, i = fields.size, 0 %>
 {
   <% for field in fields %>
-    "<%= field["id"] =%>" : "" 
+    "<%= field["id"] =%>" : "<-% data['<%= field['id'] =%>'] %->"
+    <% i = i + 1 %>
+    <% if i < size %> , <% end %> 
   <% end %>
 }
