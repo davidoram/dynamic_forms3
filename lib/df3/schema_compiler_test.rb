@@ -13,35 +13,49 @@ class TestSchemaCompiler < Test::Unit::TestCase
       "fields": [ 
          	{ 
          	  "id":    "name",
-         	  "label": "Name",
          	  "type":  "string"
          	},
          	{ 
          	  "id":    "dob",
-         	  "label": "Date of birth",
          	  "type":  "date"
+         	},
+         	{ 
+         	  "id":    "pets",
+         	  "type":  "array",
+         	  "fields": [
+             	{ 
+             	  "id":    "name",
+             	  "type":  "string"
+             	}
+         	  ]
          	}
        ]
     }
 JSON
-    path = ''
+    path = []
     template_str = DF3::SchemaCompiler.render('UnitTest', schema, path)
-    template = JSON.parse(template_str)
-    assert_equal(%w{ dob name }, template.keys.sort)
-    
     data =<<JSON 
     {
       "id": 456,
       "name": "bob",
-      "dob": "2012-01-03" 
+      "dob": "2012-01-03",
+      "pets": [
+          {
+            "name": "rover"
+          },
+          {
+            "name": "molly" 
+          }
+      ]
     }
 JSON
     output_str = DF3::DataCompiler.render(template_str, data, path)
+    pp '----- Output ----'
+    pp output_str
     output = JSON.parse(output_str)
-    assert_equal(%w{ 2012-01-03 bob }, output.values.sort)
-    
-    
-    
+    assert_equal("2012-01-03", output['dob'])
+    assert_equal("bob", output['name'])
+    assert_equal(["molly", "rover"], output['pets'].sort)
   end 
 
 end

@@ -1,8 +1,31 @@
-<% size, i = fields.size, 0 %>
+<% size_i, i = fields.size, 0 %>
 {
   <% for field in fields %>
-    "<%= field["id"] =%>" : "<-%= data['<%= field['id'] =%>'] =%->"
+    <% if field["type"] == 'array' %>
+
+      "<%= field["id"] =%>" : [
+      
+        <-% data_arr = data['<%= field['id'] =%>']  %->
+        <-% size_j, j = data_arr.size, 0 %->
+      
+        <-% for obj in data_arr %->
+          {
+          <% arr_fields = field["fields"] %>
+          <% size_k, k = arr_fields.size, 0 %> 
+          <% for arr_field in arr_fields %>
+            
+            CONTINUE HERE
+          <% end %>
+          }
+        <-% end %->
+      
+      ]
+    
+    <% else %>
+      "<%= field["id"] =%>" : "<-%= data['<%= field['id'] =%>'] =%->"
+    <% end %>
+    
     <% i = i + 1 %>
-    <% if i < size %> , <% end %> 
+    <% if i < size_i %> , <% end %> 
   <% end %>
 }

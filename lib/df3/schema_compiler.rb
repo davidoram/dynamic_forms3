@@ -6,7 +6,7 @@ module DF3
   
     class SchemaCompiler
       
-      def SchemaCompiler.render(style, schema_str, path = '')
+      def SchemaCompiler.render(style, schema_str, path = [])
         template = File.read("#{File.dirname(__FILE__)}/templates/#{style}.eruby")
         
         schema = JSON.parse(schema_str)
@@ -18,7 +18,7 @@ module DF3
       private
       
       def SchemaCompiler.navigate_to(schema, path)
-        path.split('/').each do |path_el|
+        path.each do |path_el|
           schema = schema[path_el]
         end
         schema
