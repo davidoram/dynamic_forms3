@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'pp'
-require 'json'
+require 'set'
 require_relative 'templating'
 require_relative 'formatter'
 
@@ -49,12 +49,12 @@ class TestSchemaCompiler < Test::Unit::TestCase
 
     formatter = DF3::RubyFormatter.new
     output = DF3::Render.render(template, data, formatter)
-    pp '----- Output ----'
-    pp formatter.render
+    #pp '----- Output ----'
+    #pp formatter.render
     assert_equal("2012-01-03", output['dob'])
     assert_equal("bob", output['name'])
-    assert_equal([{ 'name' => "molly"}, { 'name' => "snuffles"}], 
-                 output['pets'])
+    assert_equal(Set.new([{ 'name' => "molly"}, { 'name' => "snuffles"}]), 
+                 Set.new(output['pets']))
   end 
 
 end

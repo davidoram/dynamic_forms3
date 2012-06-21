@@ -7,7 +7,7 @@ module DF3
     # Formats output as a Ruby data structure 
     class RubyFormatter
       
-      DEBUG = true
+      DEBUG = false
       
       def initialize
         # Stack of pointers to the current place where data is to be added
@@ -34,7 +34,7 @@ module DF3
       end
 
       def on_primitive(field, data)
-        pp "on_primitive field: #{field['id']}, data: #{data}"
+        pp "on_primitive field: #{field['id']}, data: #{data}" if DEBUG
         @data.last[field['id']] = data
       end
       
