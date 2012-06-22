@@ -7,7 +7,7 @@ module DF3
     DEBUG = false
       
     def Render.render(template, data, formatter)   
-      formatter.on_object_start
+      formatter.on_object_start(template, data)
       
       template['fields'].each do |field|
         pp "Field: #{field}" if DEBUG
@@ -26,9 +26,14 @@ module DF3
           end
           formatter.on_array_header_end(field, field_data)
           
-          field_data.each do |array_field|
+          field_data.each_index do |index|
+            
+            # Add the special metadata key holding the index, indicating 
+            # where the object is positioned in the array
+            field_data[index]['df_index'] = index
+            
             # Go recursive for the values in the array
-            render(field, array_field, formatter)
+            render(field, field_data[index], formatter)
           end
           formatter.on_array_end(field, field_data)
         else

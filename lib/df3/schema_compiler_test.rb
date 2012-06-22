@@ -53,7 +53,7 @@ class TestSchemaCompiler < Test::Unit::TestCase
     #pp formatter.render
     assert_equal("2012-01-03", output['dob'])
     assert_equal("bob", output['name'])
-    assert_equal(Set.new([{ 'name' => "molly"}, { 'name' => "snuffles"}]), 
+    assert_equal(Set.new([{ 'name' => "molly", 'df_index' => 1}, { 'name' => "snuffles", 'df_index' => 0}]), 
                  Set.new(output['pets']))
   end 
 
