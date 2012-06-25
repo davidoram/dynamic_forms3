@@ -5,7 +5,22 @@ module DF3
   module Render
     
     DEBUG = false
-      
+
+    # Navigate to the correct part of a template for rendering a URL
+    #
+    # @param [JSON] template defines the structure of the data being rendered, fields etc
+    # @param [URL] URL path
+    # @returns [JSON] template at the correct point that matches the URL
+    def navigate_template(template, url)
+      path = url.split('/')   
+
+
+    
+    # Render data into a view
+    #
+    # @param [JSON] template defines the structure of the data being rendered, fields etc
+    # @param [JSON] contains the data values to populate the fields with initially
+    # @param [DF3::Formatter] is called upon to render the view, through events being raised on it
     def Render.render(template, data, formatter)   
       formatter.on_object_start(template, data)
       
