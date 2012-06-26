@@ -51,20 +51,29 @@ class TestSchemaCompiler < Test::Unit::TestCase
     assert_equal('molly', molly['name'])
   end
   
-  def xxxtest_navigate_and_render
-    url = '/'
+  def test_navigate_and_render
     template = get_template_store()[123]
     data = get_data_store()[456]
-
-    url = DF3::URL.new(url)
+    url = DF3::URL.new('/')
     formatter = DF3::RubyFormatter.new
+    
     output = DF3::Render.navigate_and_render(template, data, formatter, url)
-    pp '----- Output ----'
-    spp formatter.render
+    #pp '----- Output ----'
+    #pp formatter.render
     assert_equal("2012-01-03", output['dob'])
     assert_equal("bob", output['name'])
     assert_equal(Set.new([{ 'name' => "molly", 'df_index' => 1}, { 'name' => "snuffles", 'df_index' => 0}]), 
                  Set.new(output['pets']))
+
+
+    url = DF3::URL.new('/pets/0')
+    output = DF3::Render.navigate_and_render(template, data, formatter, url)
+    assert_equal("snuffles", output['name'])
+
+    url = DF3::URL.new('/pets/1')
+    output = DF3::Render.navigate_and_render(template, data, formatter, url)
+    assert_equal("molly", output['name'])
+
   end 
   
 

@@ -14,6 +14,8 @@ module DF3
     # @param [DF3::URL] is used to determine the path to navigate to within the template & data
     def Render.navigate_and_render(template, data, formatter, url)
       template = navigate_template(template, url)
+      data = navigate_data(data, url)
+      render(template, data, formatter)
     end   
 
 
