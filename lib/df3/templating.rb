@@ -6,14 +6,51 @@ module DF3
     
     DEBUG = false
 
+    # Navigate to the correct place in the data & render that data into a view
+    #
+    # @param [JSON] template defines the structure of the data being rendered, fields etc
+    # @param [JSON] contains the data values to populate the fields with initially
+    # @param [DF3::Formatter] is called upon to render the view, through events being raised on it
+    # @param [DF3::URL] is used to determine the path to navigate to within the template & data
+    def Render.navigate_and_render(template, data, formatter, url)
+      template = navigate_template(template, url)
+    end   
+
+
     # Navigate to the correct part of a template for rendering a URL
     #
     # @param [JSON] template defines the structure of the data being rendered, fields etc
-    # @param [URL] URL path
+    # @param [DF3::URL] is used to determine the path to navigate to within the template & data
     # @returns [JSON] template at the correct point that matches the URL
-    def navigate_template(template, url)
-      path = url.split('/')   
+    def Render.navigate_template(template, url)
+      url.each_part do |part|
+        template['fields'].each do |field|
+          if field['id'] == part[:name]
+            template = field
+            break
+          end
+        end
+      end
+      template
+    end
 
+    # Navigate to the correct part of a data for rendering a URL
+    #
+    # @param [JSON] data to be rendered
+    # @param [DF3::URL] is used to determine the path to navigate to within the data
+    # @returns [JSON] data at the correct point that matches the URL
+    def Render.navigate_data(data, url)
+      url.each_part do |part|
+        if part[:type] == :array
+          data = data[part[:name]]
+        elsif part[:type] == :array_element
+          data = data[part[:name]][part[:index]]
+        else
+          raise "Error unknown type: #{part[:type]}"
+        end
+      end
+      data
+    end
 
     
     # Render data into a view

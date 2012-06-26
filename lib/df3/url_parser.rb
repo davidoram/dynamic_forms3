@@ -4,7 +4,7 @@ require_relative 'string'
 module DF3
   
   # Parse a URL into its constituent parts
-  class URLParser
+  class URL
   
     # Parse the Document URL path, so we turn from '/documents/16/employees/5/children'
     # to a list of elements each having a type of :array or :array_element
@@ -20,6 +20,12 @@ module DF3
     
     def size
       @path.size
+    end
+    
+    def each_part
+      @path.each do |path_element|
+        yield path_element
+      end
     end
     
     
