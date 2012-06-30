@@ -18,53 +18,160 @@ Part 1 - Business Case
 Introduction
 ------------
 
-What makes df3 different?
+DF3 is a system that allows users to create forms that populate document instances
 
-Df3 is not a form designer, or a procurement system per se. Df3 is positioned as a system that helps
-helps organisations who seek to run 'organised competitions' that provide 'funds, awards, or prizes' 
-to their own customers.
+Documents are grouped into Collections representing different entities.
 
-One example of this is an organisation like the 'Royal Society' that regularly supports scientists,
-by awarding funds, awards and pries in recognition of their effort.
+Users can design business rules to be checked.
 
-Different awards are offered, and each goes through a process of:
+A Workflow module provides moving documents through a business process.
 
-. design - deciding what information should be captured, for this award.
-. collection - opening the award up for public submissions, during which time the scientists will apply 
-to the award.
-. evaluation - during this period the various submissions are graded or scored, and a decision is made to 
-award or not
-. success - For those applications whom the decision is made to award, they enter this phase when extra 
-business processes may be applied eg: contracts signed, payments made,monitoring occurs etc
-. failure - For those applications that are not awarded. Some business process may be applied post this 
-happening such as follow up correspondence.
-    
-
-At a higher level, there are often procedures and regulations that must be adhered to when running awards.
-For example any system must answer the following questions must :
-
-. Compliance with regulations. eg: auditing of decisions 
-. Compilance with procedures eg: tracking of correspondence
-. Audit requirements. eg: Reporting monies awarded
-   
-
-Df3 addresses all of these concerns by allowing the 'wants' to be easily addressed, and making the 'musts'
-be done automatically.
-
-How:
-
-. By providing vertical market solutions - targeting the market needs.
-. Allowing for hosted and cloud solutions - satisfying smaller scale solutions that look for hosting, 
- alongside those who wish to 'own' their own data
-. Minimizing the time to 'set up' awards - by using templates and pre-built processes, thus reducing setup costs
-. Simplifying the process of applying. - allowing web access, thus reducing compliance costs
+Documents can be linked - for example to support a procurement system. There will be Documents that
+represent application forms, and separate Documents that capture the assessment of the applications, 
+and the two will be linked.
 
 
 Part 2 - Overview
 =================
 
-   
+URL space
+---------
 
+We divide the URL space into the following:
+
+. Root
+. Collections
+. Documents
+. Store
+. Controller
+
+Summary of Actions
+------------------
+
+[width="60%",options="header"]
+|==============================================================
+| HTTP Verb | Root | Collection | Document | Store | Controller
+| GET       | X | X | X | X | -
+| PUT       | - | - | X | X | -
+| POST      | - | X | - | - | X
+| DELETE    | - | - | X | X | -
+|==============================================================
+
+
+
+Root  
+~~~~
+
+The root is the default entry page for the system, and provides links to the other parts of the system.
+This page is hand-coded HTML.
+
+URL:
+ 
+ /
+
+HTTP Actions:
+
+. GET - Retrieves the entry page. Query parameters provide a unified search over all Collections
+
+Collections
+~~~~~~~~~~~
+
+Collections represent the different 'buckets' of information that the system holds. The buckets are defined 
+in a configuration step. All collections are presented using templated pages built on the fly.
+
+Examples:
+
+ /applications
+ /assessments
+ /users
+ /roles
+
+HTTP Actions:
+
+. GET - Returns a list of Documents in the collection. All collections supports the following query parameters:
+.. title=moo  This is a generic query parameter that will filter the results 
+.. pageSize=10  Pagination page size
+.. pageStartIndex=4  Pagination page start index
+. POST - Create a new Document in the Collection
+
+
+Documents
+~~~~~~~~~
+
+Documents represent the information that the user will be entering, and editing etc.
+
+Examples:
+
+ /applications/\{applicationId\}     
+ /applications/\{applicationId\}/phases
+ /assessments/\{assessmentId\}
+ /users/\{userId\}
+
+HTTP Actions:
+
+. GET - Returns a Document instance
+. DELETE - Delete a Document instance
+. PUT - Update an existing Document instance
+
+Store
+~~~~~
+
+Store values are controlled fully by clients 
+
+Examples:
+
+ /users/\{userId\}/bookmarks
+
+HTTP Actions:
+
+. GET - Retrieve a resource
+. DELETE - Remove a resource
+. PUT - Insert or Update a resource
+
+
+
+Controllers
+~~~~~~~~~~~
+
+Function oriented controller resources
+
+Examples:
+
+ /jobs/\{jobId\}/pause
+ 
+
+HTTP Actions:
+
+. GET - 
+. DELETE -
+. POST - Used to invoke a controller
+. PUT -
+
+
+Return codes
+~~~~~~~~~~~~
+
+Standard HTTP return codes are used:
+
+Success codes
+
+. 200 - generic success
+. 201 - resource created
+. 202 - accepted: start of async action
+. 204 - no content
+. 301 - Moved permanatly. New URL in 'Location' header
+. 304 - Not modified. But there is state
+
+Error codes
+
+. 400 - generic error
+. 401 - Unauthorized. Problem with client credentials ie: No username/pasword or mismatch
+. 403 - Forbidden. Client has insufficient access
+. 404 - not found
+. 405 - Method not allowed
+. 415 - Unsupported Media-Type. Content-Type unsupported
+. 500 - Generic error code (When an exception occurs)
+ 
 Approach
 --------
 

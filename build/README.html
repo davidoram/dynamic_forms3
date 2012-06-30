@@ -569,91 +569,319 @@ designing, implementing maintaining and enhancing procurement systems.</p></div>
 <h1 id="_part_1_business_case">Part 1 - Business Case</h1>
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>What makes df3 different?</p></div>
-<div class="paragraph"><p>Df3 is not a form designer, or a procurement system per se. Df3 is positioned as a system that helps
-helps organisations who seek to run <em>organised competitions</em> that provide <em>funds, awards, or prizes</em>
-to their own customers.</p></div>
-<div class="paragraph"><p>One example of this is an organisation like the <em>Royal Society</em> that regularly supports scientists,
-by awarding funds, awards and pries in recognition of their effort.</p></div>
-<div class="paragraph"><p>Different awards are offered, and each goes through a process of:</p></div>
+<div class="paragraph"><p>DF3 is a system that allows users to create forms that populate document instances</p></div>
+<div class="paragraph"><p>Documents are grouped into Collections representing different entities.</p></div>
+<div class="paragraph"><p>Users can design business rules to be checked.</p></div>
+<div class="paragraph"><p>A Workflow module provides moving documents through a business process.</p></div>
+<div class="paragraph"><p>Documents can be linked - for example to support a procurement system. There will be Documents that
+represent application forms, and separate Documents that capture the assessment of the applications,
+and the two will be linked.</p></div>
+</div>
+<h1 id="_part_2_overview">Part 2 - Overview</h1>
+<h2 id="_url_space">URL space</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We divide the URL space into the following:</p></div>
 <div class="olist arabic"><ol class="arabic">
 <li>
 <p>
-design - deciding what information should be captured, for this award.
+Root
 </p>
 </li>
 <li>
 <p>
-collection - opening the award up for public submissions, during which time the scientists will apply
-to the award.
+Collections
 </p>
 </li>
 <li>
 <p>
-evaluation - during this period the various submissions are graded or scored, and a decision is made to
-award or not
+Documents
 </p>
 </li>
 <li>
 <p>
-success - For those applications whom the decision is made to award, they enter this phase when extra
-business processes may be applied eg: contracts signed, payments made,monitoring occurs etc
+Store
 </p>
 </li>
 <li>
 <p>
-failure - For those applications that are not awarded. Some business process may be applied post this
-happening such as follow up correspondence.
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>At a higher level, there are often procedures and regulations that must be adhered to when running awards.
-For example any system must answer the following questions must :</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-Compliance with regulations. eg: auditing of decisions
-</p>
-</li>
-<li>
-<p>
-Compilance with procedures eg: tracking of correspondence
-</p>
-</li>
-<li>
-<p>
-Audit requirements. eg: Reporting monies awarded
-</p>
-</li>
-</ol></div>
-<div class="paragraph"><p>Df3 addresses all of these concerns by allowing the <em>wants</em> to be easily addressed, and making the <em>musts</em>
-be done automatically.</p></div>
-<div class="paragraph"><p>How:</p></div>
-<div class="olist arabic"><ol class="arabic">
-<li>
-<p>
-By providing vertical market solutions - targeting the market needs.
-</p>
-</li>
-<li>
-<p>
-Allowing for hosted and cloud solutions - satisfying smaller scale solutions that look for hosting,
- alongside those who wish to <em>own</em> their own data
-</p>
-</li>
-<li>
-<p>
-Minimizing the time to <em>set up</em> awards - by using templates and pre-built processes, thus reducing setup costs
-</p>
-</li>
-<li>
-<p>
-Simplifying the process of applying. - allowing web access, thus reducing compliance costs
+Controller
 </p>
 </li>
 </ol></div>
 </div>
-<h1 id="_part_2_overview">Part 2 - Overview</h1>
+<h2 id="_summary_of_actions">Summary of Actions</h2>
+<div class="sectionbody">
+<div class="tableblock">
+<table rules="all"
+width="60%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<thead>
+<tr>
+<th align="left" valign="top"> HTTP Verb </th>
+<th align="left" valign="top"> Root </th>
+<th align="left" valign="top"> Collection </th>
+<th align="left" valign="top"> Document </th>
+<th align="left" valign="top"> Store </th>
+<th align="left" valign="top"> Controller</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">GET</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">PUT</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">POST</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">DELETE</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="_root">Root</h3><div style="clear:left"></div>
+<div class="paragraph"><p>The root is the default entry page for the system, and provides links to the other parts of the system.
+This page is hand-coded HTML.</p></div>
+<div class="paragraph"><p>URL:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/</tt></pre>
+</div></div>
+<div class="paragraph"><p>HTTP Actions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+GET - Retrieves the entry page. Query parameters provide a unified search over all Collections
+</p>
+</li>
+</ol></div>
+<h3 id="_collections">Collections</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Collections represent the different <em>buckets</em> of information that the system holds. The buckets are defined
+in a configuration step. All collections are presented using templated pages built on the fly.</p></div>
+<div class="paragraph"><p>Examples:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/applications
+/assessments
+/users
+/roles</tt></pre>
+</div></div>
+<div class="paragraph"><p>HTTP Actions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+GET - Returns a list of Documents in the collection. All collections supports the following query parameters:
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+title=moo  This is a generic query parameter that will filter the results
+</p>
+</li>
+<li>
+<p>
+pageSize=10  Pagination page size
+</p>
+</li>
+<li>
+<p>
+pageStartIndex=4  Pagination page start index
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+POST - Create a new Document in the Collection
+</p>
+</li>
+</ol></div>
+<h3 id="_documents">Documents</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Documents represent the information that the user will be entering, and editing etc.</p></div>
+<div class="paragraph"><p>Examples:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/applications/\{applicationId\}
+/applications/\{applicationId\}/phases
+/assessments/\{assessmentId\}
+/users/\{userId\}</tt></pre>
+</div></div>
+<div class="paragraph"><p>HTTP Actions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+GET - Returns a Document instance
+</p>
+</li>
+<li>
+<p>
+DELETE - Delete a Document instance
+</p>
+</li>
+<li>
+<p>
+PUT - Update an existing Document instance
+</p>
+</li>
+</ol></div>
+<h3 id="_store">Store</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Store values are controlled fully by clients</p></div>
+<div class="paragraph"><p>Examples:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/users/\{userId\}/bookmarks</tt></pre>
+</div></div>
+<div class="paragraph"><p>HTTP Actions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+GET - Retrieve a resource
+</p>
+</li>
+<li>
+<p>
+DELETE - Remove a resource
+</p>
+</li>
+<li>
+<p>
+PUT - Insert or Update a resource
+</p>
+</li>
+</ol></div>
+<h3 id="_controllers">Controllers</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Function oriented controller resources</p></div>
+<div class="paragraph"><p>Examples:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/jobs/\{jobId\}/pause</tt></pre>
+</div></div>
+<div class="paragraph"><p>HTTP Actions:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+GET -
+</p>
+</li>
+<li>
+<p>
+DELETE -
+</p>
+</li>
+<li>
+<p>
+POST - Used to invoke a controller
+</p>
+</li>
+<li>
+<p>
+PUT -
+</p>
+</li>
+</ol></div>
+<h3 id="_return_codes">Return codes</h3><div style="clear:left"></div>
+<div class="paragraph"><p>Standard HTTP return codes are used:</p></div>
+<div class="paragraph"><p>Success codes</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+200 - generic success
+</p>
+</li>
+<li>
+<p>
+201 - resource created
+</p>
+</li>
+<li>
+<p>
+202 - accepted: start of async action
+</p>
+</li>
+<li>
+<p>
+204 - no content
+</p>
+</li>
+<li>
+<p>
+301 - Moved permanatly. New URL in <em>Location</em> header
+</p>
+</li>
+<li>
+<p>
+304 - Not modified. But there is state
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Error codes</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+400 - generic error
+</p>
+</li>
+<li>
+<p>
+401 - Unauthorized. Problem with client credentials ie: No username/pasword or mismatch
+</p>
+</li>
+<li>
+<p>
+403 - Forbidden. Client has insufficient access
+</p>
+</li>
+<li>
+<p>
+404 - not found
+</p>
+</li>
+<li>
+<p>
+405 - Method not allowed
+</p>
+</li>
+<li>
+<p>
+415 - Unsupported Media-Type. Content-Type unsupported
+</p>
+</li>
+<li>
+<p>
+500 - Generic error code (When an exception occurs)
+</p>
+</li>
+</ol></div>
+</div>
 <h2 id="_approach">Approach</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
@@ -679,7 +907,7 @@ Document instances that conform to the layout and structure dictated in the Form
                                v
                              Static files, generated files</tt></pre>
 </div></div>
-<h3 id="_documents">Documents</h3><div style="clear:left"></div>
+<h3 id="_documents_2">Documents</h3><div style="clear:left"></div>
 <div class="paragraph"><p>Each Document instance is represented by a JSON document, which in turn is stored in a document db (CouchDB).
 The process of editing a Document
 involves retrieving the Document, and Form from CouchDB, then rendering the Document through the Form and updating changes
@@ -1637,7 +1865,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-05-29 17:18:47 NZDT
+Last updated 2012-07-01 09:40:58 NZDT
 </div>
 </div>
 </body>
