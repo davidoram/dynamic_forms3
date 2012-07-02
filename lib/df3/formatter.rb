@@ -25,7 +25,7 @@ module DF3
         
         obj = {}
         
-        # Pull in index of this object if we are part of an array
+        # Pull in index of this obhe if we are part of an array
         obj['df_index'] = data['df_index'] if data.has_key? 'df_index'
         
         @root = obj if @data.empty?

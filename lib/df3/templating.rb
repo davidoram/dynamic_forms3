@@ -43,9 +43,9 @@ module DF3
     # @returns [JSON] data at the correct point that matches the URL
     def Render.navigate_data(data, url)
       url.each_part do |part|
-        if part[:type] == :array
+        if part[:type] == :collection
           data = data[part[:name]]
-        elsif part[:type] == :array_element
+        elsif part[:type] == :document
           data = data[part[:name]][part[:index]]
         else
           raise "Error unknown type: #{part[:type]}"
