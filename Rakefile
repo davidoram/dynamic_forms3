@@ -4,11 +4,16 @@ require 'fileutils'
 require 'rake/testtask'
 require 'json'
 
-desc "Build the documentation page"
-task :doc do
-  exec "asciidoc -d book -b xhtml11 -a toc -o build/README.html README.txt "
+desc "Run the server, in developer mode that will reload pages when you change the source"
+task :dev do
+  exec "shotgun -I lib"
 end
 
+desc "Build the documentation page to build/README.html"
+task :doc do
+  remove_file "build/README.html", true
+  exec "asciidoc -d book -b xhtml11 -a toc -o build/README.html README.txt"
+end
 
 Rake::TestTask.new do |t|
   t.libs << "lib"
