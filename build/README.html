@@ -882,6 +882,87 @@ PUT -
 </li>
 </ol></div>
 </div>
+<h2 id="_database_design">Database design</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The system uses Riak <a href="http://bashio.com/products/riak">http://bashio.com/products/riak</a> as its backend data store.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Key/Value store.
+</p>
+</li>
+<li>
+<p>
+Links
+</p>
+</li>
+<li>
+<p>
+Full text search
+</p>
+</li>
+<li>
+<p>
+Distributed
+</p>
+</li>
+<li>
+<p>
+Horizontally scaleable
+</p>
+</li>
+<li>
+<p>
+Fault tolerant
+</p>
+</li>
+<li>
+<p>
+Highly available
+</p>
+</li>
+<li>
+<p>
+Web standards compilant
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Riak data model</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+All data is referenced by key
+</p>
+</li>
+<li>
+<p>
+Keys grouped into buckets
+</p>
+</li>
+<li>
+<p>
+Operations get,put,delete
+</p>
+</li>
+<li>
+<p>
+Data is composed of
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+Metadata
+</p>
+</li>
+<li>
+<p>
+Value
+</p>
+</li>
+</ol></div>
+</li>
+</ol></div>
+</div>
 <h2 id="_approach">Approach</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>df3 takes the approach of separating the tasks of designing a form processing system, which provides forms
@@ -1865,7 +1946,7 @@ Workflow
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br />
-Last updated 2012-07-01 09:40:58 NZDT
+Last updated 2012-07-05 17:09:17 NZDT
 </div>
 </div>
 </body>

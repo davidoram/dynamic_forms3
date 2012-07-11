@@ -171,6 +171,63 @@ Error codes
 . 405 - Method not allowed
 . 415 - Unsupported Media-Type. Content-Type unsupported
 . 500 - Generic error code (When an exception occurs)
+
+Database design
+---------------
+
+The system uses Riak http://bashio.com/products/riak as its backend data store.
+
+Riak features
+~~~~~~~~~~~~~
+
+. Key/Value store.
+. Links
+. Full text search
+. Distributed
+. Horizontally scaleable
+. Fault tolerant
+. Highly available
+. Web standards compilant
+. Map/Reduce
+
+
+Riak data model
+~~~~~~~~~~~~~~~
+
+. All data is referenced by key
+. Keys grouped into buckets
+. Operations get,put,delete
+. Data is composed of
+.. Metadata
+.. Links are composed as HTTP Headers:
+ Link: </riak/bucket/key>; riaktag="tag"
+ Link: </riak/users/fred>; riaktag="owner"
+.. Thereafter can link walk to retrieve
+ GET /riak/documents/my-doc/_,owner,1
+.. Value
+. Lucene/Full text search is enabled for a bucket
+.. data encoded with header 'Content-type: application/json' can be parsed & automatically indexed on save
+
+
+
+DF3 data model
+~~~~~~~~~~~~~~
+
+The DF3 data model is layered on the top of Riak data model.
+
+. Buckets
+.. schemas. Schema documents
+.. documents. Data documents
+.. users. Users and roles
+.. jobs. Workflow entities
+. Links
+.. documents
+... schema -> points to the schemas/xx
+... creator -> points to users/yy
+. Search
+.. schemas identify specific fields as being those that are for default searches
+.. any field can be searched using a field:{search term} syntax
+
  
 Approach
 --------
