@@ -25,9 +25,10 @@ end
 
 
 
-# Run 'rake RIAK_HOME=/my/path/to/riak'
-# If you install riak somewhere else
+# Run 'rake RIAK_HOME=/my/path/to/riak', if you install riak somewhere else
 riak_home = ENV['RIAK_HOME'] || "#{ENV['HOME']}/riak-1.1.4"
+# Run 'rake RIAK_URL=http://hostname:port', if you run riak on another host or ports
+riak_url = ENV['RIAK_URL'] || "http://localhost:8098"
 
 namespace :riak do
 
@@ -41,11 +42,6 @@ namespace :riak do
   desc "Ping Riak"
   task :ping => :check_riak_home do
     sh "#{riak_home}/bin/riak ping"
-  end
-
-  desc "Run Riak migrations"
-  task :migrate => :check_riak_home do
-    sh "#{riak_home}/bin/riak status"
   end
 
   desc "stop riak"
@@ -64,6 +60,15 @@ namespace :riak do
   end
 
   desc "Stop riak, clobber the data, start and run migrations "
-  task :clean => [:stop, :drop, :start]
+  task :clean => [:stop, :drop, :start, :migrate]
+  
+  desc "Load migrations into riak"
+  task :migrate => [:check_riak_home] do
+    Dir.glob('migrations/*.sh') do |sh_file|
+      # Execute each migration shell script passing in the URL 
+      sh "#{sh_file} #{riak_url}"
+    end
+  end
+  
 
 end
