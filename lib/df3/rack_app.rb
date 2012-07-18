@@ -16,11 +16,11 @@ module DF3
           :type => :controller 
         }, 
         { 
-          :route_regex => '/projects/(\d+)/?', 
+          :route_regex => '/applications/(\d+)/?', 
           :type => :document 
         }, 
         { 
-          :route_regex => '/projects', 
+          :route_regex => '/applications', 
           :type => :collection 
         }, 
         { 

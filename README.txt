@@ -220,6 +220,10 @@ The DF3 data model is layered on the top of Riak data model.
 .. documents. Data documents
 .. users. Users and roles
 .. jobs. Workflow entities
+. Secondary indexes
+.. document : df_type_bin: document
+.. schema : df_type_bin: schema
+.. user : df_type_bin: user
 . Links
 .. documents
 ... schema -> points to the schemas/xx

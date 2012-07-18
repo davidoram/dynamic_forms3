@@ -1,35 +1,24 @@
-
-[ 
-   	{ 
-   	  "label": "Name",
-   	  "id": "name",
-   	  "type": "string"
-   	},
-   	{ 
-   	  "label": "Num kids",
-   	  "id": "kids",
-   	  "type": "integer"
-   	},
-   	{ 
-   	  "label": "Comment",
-   	  "id": "comment",
-   	  "type": "text"
-   	},
-   	{ 
-   	  "label": "Employee List",
-   	  "id": "employee_list",
-   	  "type": "list",
-   	  "fields": [
-   	    {
-   	      "label": "Name",
-   	      "id": "name",
-   	      "type": "string"
-   	    },
-   	    {
-   	      "label": "Date of Birth",
-   	      "id": "dob",
-   	      "type": "date"
-   	    }
-   	  ]
-   	}
-]	
+{
+	"title" : "sample schema 1",
+	"searchkeys": [ "name", "pets_name", "name" ],
+	"fields" : [ 
+		{ 
+		"id" :    "name",
+		"type" :  "string"
+		},
+		{ 
+		"id" :    "dob",
+		"type" :  "date"
+		},
+		{ 
+		"id" :    "pets",
+		"type" :  "array",
+		"fields" : [
+			{ 
+			  "id" :    "name",
+			  "type" :  "string"
+			}
+		]
+		}
+	]	
+}

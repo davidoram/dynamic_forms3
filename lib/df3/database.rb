@@ -12,18 +12,37 @@ module DF3
     # Query all documents in the 'schema' bucket for columns marked as indexed
     # Then construct a lenene search for documents in the bucket with those columns    
     def find_in_collection(collection, pageSize, pageStartIndex)
-  
-      GET the list of all fields of all schemas in the bucket that are included in the default serach
-      COnvert mydoc.collection.field -> mydoc_collection_field
-      Create a search term that looks for the value in all fields
-      Return and format
-  
+
+      search_keys = searchkeys(collection)
       
-      TODO - Find out how Riak Search works - Lunene?
-      Query all documents in the schema buck
-      Search here - returning results as indexes with pk field
-      
-      matches = @client.bucket(collection).get_index('pk')
+      # TODO construct a query from the search parameters
+      Riak::Bucket.new(@client,collection).get_index('df_type_bin', 'application')
+    end
+  
+    # Each schema document has an optional 'searchkeys' array which lists the
+    # keys that form the default set to be searched, get the list for all
+    # schemas & return
+    def searchkeys(collection)
+      result = []
+      if collection == 'applications'
+        map = "function(value, keyData, arg){ 
+               		var data = Riak.mapValuesJson(value)[0]; 
+               		if(data.searchkeys) 
+                 			return [data.searchkeys]; 
+               		else 
+                 			return []; 
+              }"
+            
+        reduce = "function(valueList, arg){ 
+                    return _.unique(_.flatten(valueList));
+                  }"
+                
+        result = Riak::MapReduce.new(@client).index('schemas', 'df_type_bin', 'schema')
+            .map(map)
+            .reduce(reduce, :keep => true)
+            .run
+      end
+      result
     end
   end
 end

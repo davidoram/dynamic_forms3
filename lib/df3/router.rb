@@ -74,7 +74,7 @@ module DF3
         pageStartIndex = request['pageStartIndex']
         pageStartIndex = pageStartIndex ||= 0
         data = @db.find_in_collection(url.collection, pageSize, pageStartIndex)
-        [200, {'Content-Type' => 'text/html'}, ['Collection GET TODO']]
+        [200, {'Content-Type' => 'text/html'}, ['Collection GET TODO', data.to_s]]
       when request.post?
         [200, {'Content-Type' => 'text/html'}, ['Collection POST TODO']]
       else

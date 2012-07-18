@@ -3,6 +3,7 @@ require 'erb'
 require 'fileutils'
 require 'rake/testtask'
 require 'json'
+require 'riak'
 
 desc "Run the server, in developer mode that will reload pages when you change the source"
 task :dev do
@@ -44,6 +45,11 @@ namespace :riak do
     sh "#{riak_home}/bin/riak ping"
   end
 
+  desc "Reload js libraries"
+  task :reload_js => :check_riak_home do
+    sh "#{riak_home}/bin/riak-admin js_reload"
+  end
+
   desc "stop riak"
   task :stop => :check_riak_home do
     sh "#{riak_home}/bin/riak stop"
@@ -52,6 +58,7 @@ namespace :riak do
   desc "start riak"
   task :start  => :check_riak_home do
     sh "#{riak_home}/bin/riak start"
+    sleep(2)
   end
 
   desc "delete all the data stored in riak"
@@ -68,6 +75,24 @@ namespace :riak do
       # Execute each migration shell script passing in the URL 
       sh "#{sh_file} #{riak_url}"
     end
+  end
+  
+  desc "Run a mapreduce job"
+  task :mapreduce => [:check_riak_home, :reload_js] do
+    map = "function(value, keyData, arg){ 
+           		var data = Riak.mapValuesJson(value)[0]; 
+           		if(data.searchkeys) 
+             			return [data.searchkeys]; 
+           		else 
+             			return []; 
+          }"
+    reduce = "function(valueList, arg){ 
+                return _.unique(_.flatten(valueList));
+              }"
+    client = Riak::Client.new
+    result = Riak::MapReduce.new(client).index('schemas', 'df_type_bin', 'schema').map(map).reduce(reduce, :keep => true).run
+    puts '---------------------'
+    puts result
   end
   
 
