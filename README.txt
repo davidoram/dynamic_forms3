@@ -11,7 +11,6 @@ Preface
 -------
 The design of dynamic_forms3 (df3)  has been preceded by the authors thought into the attendant problems of
 designing, implementing maintaining and enhancing procurement systems.
-Blah Blah
 
 Part 1 - Business Case
 ======================
